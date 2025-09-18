@@ -79,6 +79,12 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
+.Toastify__toast-body {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 250px; /* adjust as needed  */
+}
 
 @layer base {
   * {

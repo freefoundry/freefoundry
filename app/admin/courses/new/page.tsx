@@ -29,7 +29,8 @@ import {
   ImageIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { RichTextEditor } from "@/components/rich-text-editor";
+import { RichTextEditor } from "@/components/rich-text-editor"
+import { toast } from "react-toastify";
 
 export default function NewCoursePage() {
   const [title, setTitle] = useState("");
@@ -44,8 +45,13 @@ export default function NewCoursePage() {
   const [newTag, setNewTag] = useState("");
 
   // Course-specific fields
+  // Instructor fields
+  const [instructorName, setInstructorName] = useState("");
+  const [instructorTitle, setInstructorTitle] = useState("");
+  const [instructorBio, setInstructorBio] = useState("");
+  const [instructorAvatar, setInstructorAvatar] = useState("");
   const [platform, setPlatform] = useState("");
-  const [instructor, setInstructor] = useState("");
+
   const [duration, setDuration] = useState("");
   const [level, setLevel] = useState("");
   const [category, setCategory] = useState("");
@@ -76,9 +82,7 @@ export default function NewCoursePage() {
 
   const handleTitleChange = (value: string) => {
     setTitle(value);
-    if (!slug) {
       setSlug(generateSlug(value));
-    }
   };
 
   const addTag = () => {
@@ -119,62 +123,70 @@ export default function NewCoursePage() {
     );
   };
 
-  const handleSave = (saveType: "draft" | "publish" | "preview") => {
-    const courseData = {
-      id: Date.now(), // temporary ID until backend assigns a real one
-      slug,
-      title,
-      description: excerpt || content, // short description
-      fullDescription: content, // full description / rich text
-      excerpt,
-      platform,
-      instructor: {
-        name: instructor,
-        title: "", // you can expand later
-        bio: "",
-        rating: Number.parseFloat(rating) || 0,
-        students: Number.parseInt(students) || 0,
-        courses: 0,
-        avatar: "",
-      },
-      rating: Number.parseFloat(rating) || 0,
-      students: Number.parseInt(students) || 0,
-      duration,
-      level,
-      category,
-      tags,
-      price: price || "Free",
-      originalPrice,
-      expiryDate: expiryDate || null,
-      image: featuredImage,
-      isPopular,
-      isNew,
-      isTrending,
-      whatYouWillLearn,
-      requirements,
-      curriculum: [], // future: add curriculum builder
-      reviews: [], // future: add review system
-      relatedCourses: [], // future: add related courses
-      status:
-        saveType === "publish"
-          ? "published"
-          : saveType === "preview"
-          ? "preview"
-          : "draft",
-      visibility,
-      publishDate,
-    };
+  const handleSave = async (saveType: "draft" | "publish" | "preview") => {
+   const courseData = {
+     slug,
+     title,
+     description: excerpt || content || "No description available",
+     fullDescription: content || "No content provided",
+     excerpt,
+     platform: platform,
+     instructor: {
+       name: instructorName ,
+       title: instructorTitle || "",
+       bio: instructorBio || "",
+       rating: Number.parseFloat(rating) || 0,
+       students: Number.parseInt(students) || 0,
+       courses: 0,
+       avatar: instructorAvatar || "",
+     },
+     rating: Number.parseFloat(rating) || 0,
+     students: Number.parseInt(students) || 0,
+     duration: duration || "N/A",
+     level: level || "all-levels",
+     category: category || "other",
+     tags,
+     price: price || "0",
+     originalPrice: originalPrice || "0",
+     expiryDate: expiryDate || null,
+     image: featuredImage || "",
+     isPopular,
+     isNew,
+     isTrending,
+     whatYouWillLearn,
+     requirements,
+     curriculum: [],
+     reviews: [],
+     relatedCourses: [],
+     status:
+       saveType === "publish"
+         ? "published"
+         : saveType === "preview"
+         ? "preview"
+         : "draft",
+     visibility,
+     publishDate: publishDate || null,
+   };
+if (saveType === "preview") { 
+      // Open preview in new tab
+      console.log("Preview data:", courseData);
+} else {
+    try {
+      const res = await fetch("/api/courses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(courseData),
+      });
 
-    console.log(`Saving course as ${saveType}:`, courseData);
+      if (!res.ok) throw new Error("Failed to save course");
 
-    // Example API call
-    // await fetch("/api/courses", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(courseData),
-    // });
+      toast.success(saveType === 'draft' ? 'Course save as draft' : 'Course published successfully');
+    } catch (error: any) {
+      toast.error("Error saving course: " + error.message);
+    }
+  }
   };
-
+  
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -331,15 +343,9 @@ export default function NewCoursePage() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div>
-                    <Label htmlFor="instructor">Instructor</Label>
-                    <Input
-                      id="instructor"
-                      value={instructor}
-                      onChange={(e) => setInstructor(e.target.value)}
-                      placeholder="Instructor name"
-                    />
-                  </div>
+
+                  
+
                   <div>
                     <Label htmlFor="category">Category</Label>
                     <Select value={category} onValueChange={setCategory}>
@@ -396,6 +402,48 @@ export default function NewCoursePage() {
                       value={courseUrl}
                       onChange={(e) => setCourseUrl(e.target.value)}
                       placeholder="https://..."
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="instructorName">Instructor Name</Label>
+                    <Input
+                      id="instructorName"
+                      value={instructorName}
+                      onChange={(e) => setInstructorName(e.target.value)}
+                      placeholder="Instructor name"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="instructorTitle">Instructor Title</Label>
+                    <Input
+                      id="instructorTitle"
+                      value={instructorTitle}
+                      onChange={(e) => setInstructorTitle(e.target.value)}
+                      placeholder="e.g., Senior Web Developer"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="instructorBio">Instructor Bio</Label>
+                    <Textarea
+                      id="instructorBio"
+                      value={instructorBio}
+                      onChange={(e) => setInstructorBio(e.target.value)}
+                      placeholder="Short bio"
+                      rows={2}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="instructorAvatar">
+                      Instructor Avatar (URL)
+                    </Label>
+                    <Input
+                      id="instructorAvatar"
+                      value={instructorAvatar}
+                      onChange={(e) => setInstructorAvatar(e.target.value)}
+                      placeholder="https://example.com/avatar.jpg"
                     />
                   </div>
                 </div>
@@ -657,10 +705,38 @@ export default function NewCoursePage() {
                   </Button>
                 </div>
               ) : (
-                <Button variant="outline" className="w-full bg-transparent">
-                  <Upload className="h-4 w-4 mr-2" />
-                  Set Featured Image
-                </Button>
+             <>
+        {/* hidden input */}
+        <input
+          type="file"
+          accept="image/*"
+          id="featuredImageInput"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+
+            if (file.size > 5 * 1024 * 1024) { // 5 MB
+              toast.error("Image must be less than 5MB");
+              return;
+            }
+
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              setFeaturedImage(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+          }}
+        />
+        <Button
+          variant="outline"
+          className="w-full bg-transparent"
+          onClick={() => document.getElementById("featuredImageInput")?.click()}
+        >
+          <Upload className="h-4 w-4 mr-2" />
+          Set Featured Image
+        </Button>
+        </>
               )}
             </CardContent>
           </Card>

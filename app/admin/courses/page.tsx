@@ -1,96 +1,114 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Plus, Search, MoreHorizontal, Edit, Trash2, Eye, Copy, BookOpen, Users, Star } from "lucide-react"
-import Link from "next/link"
-
-// Mock data for courses
-const mockCourses = [
-  {
-    id: 1,
-    title: "Complete Python Bootcamp",
-    status: "published",
-    platform: "Udemy",
-    instructor: "Jose Portilla",
-    category: "Programming",
-    level: "Beginner",
-    rating: 4.6,
-    students: 45000,
-    price: "Free",
-    originalPrice: "$199.99",
-    dateCreated: "2024-01-15",
-    dateModified: "2024-01-20",
-    views: 1250,
-  },
-  {
-    id: 2,
-    title: "React.js Masterclass",
-    status: "draft",
-    platform: "Coursera",
-    instructor: "Meta Team",
-    category: "Web Development",
-    level: "Intermediate",
-    rating: 4.8,
-    students: 32000,
-    price: "Free Audit",
-    originalPrice: "$49/month",
-    dateCreated: "2024-01-18",
-    dateModified: "2024-01-22",
-    views: 890,
-  },
-  {
-    id: 3,
-    title: "Data Science Fundamentals",
-    status: "published",
-    platform: "Udemy",
-    instructor: "Kirill Eremenko",
-    category: "Data Science",
-    level: "Beginner",
-    rating: 4.5,
-    students: 28500,
-    price: "Free",
-    originalPrice: "$149.99",
-    dateCreated: "2024-01-20",
-    dateModified: "2024-01-25",
-    views: 2100,
-  },
-]
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Plus,
+  Search,
+  MoreHorizontal,
+  Edit,
+  Trash2,
+  Eye,
+  Copy,
+  BookOpen,
+  Users,
+  Star,
+} from "lucide-react";
+import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CoursesAdminPage() {
-  const [courses] = useState(mockCourses)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
-  const [categoryFilter, setCategoryFilter] = useState("all")
+  const [courses, setCourses] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+
+  // Fetch real courses
+  const fetchCourses = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch("/api/courses");
+      let data = await res.json();
+
+      const normalized = (data || []).map((course: any) => ({
+        ...course,
+        instructor: course.instructor ? JSON.parse(course.instructor) : {},
+        tags: course.tags ? JSON.parse(course.tags) : [],
+        requirements: course.requirements
+          ? JSON.parse(course.requirements)
+          : [],
+        outcomes: course.outcomes ? JSON.parse(course.outcomes) : [],
+      }));
+
+      setCourses(normalized);
+    } catch (error) {
+      console.error("❌ Failed to fetch courses:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
 
   const filteredCourses = courses.filter((course) => {
     const matchesSearch =
-      course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      course.instructor.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = statusFilter === "all" || course.status === statusFilter
-    const matchesCategory = categoryFilter === "all" || course.category === categoryFilter
+      course.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course.instructor?.name?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus =
+      statusFilter === "all" || course.status === statusFilter;
+    const matchesCategory =
+      categoryFilter === "all" || course.category === categoryFilter;
 
-    return matchesSearch && matchesStatus && matchesCategory
-  })
+    return matchesSearch && matchesStatus && matchesCategory;
+  });
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "published":
-        return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Published</Badge>
+        return (
+          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+            Published
+          </Badge>
+        );
       case "draft":
-        return <Badge variant="secondary">Draft</Badge>
+        return <Badge variant="secondary">Draft</Badge>;
       case "pending":
-        return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Pending</Badge>
+        return (
+          <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
+            Pending
+          </Badge>
+        );
       default:
-        return <Badge variant="outline">{status}</Badge>
+        return <Badge variant="outline">{status}</Badge>;
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -103,28 +121,48 @@ export default function CoursesAdminPage() {
                 <BookOpen className="h-6 w-6 mr-2" />
                 Courses
               </h1>
-              <p className="text-gray-600 mt-1">Manage your course content</p>
+              <div className="text-gray-600 mt-1">Manage your course content</div>
             </div>
-            <Button asChild className="bg-blue-600 hover:bg-blue-700">
-              <Link href="/admin/courses/new">
-                <Plus className="h-4 w-4 mr-2" />
-                Add New Course
-              </Link>
-            </Button>
+           <div className="flex items-center gap-3">
+        {/* 🔄 Sync Button */}
+        <Button
+          variant="outline"
+          onClick={() => fetchCourses()}
+          disabled={loading}
+        >
+          {loading ? "Syncing..." : "Sync"}
+        </Button>
+
+        {/* ➕ Add New Course */}
+        <Button asChild className="bg-blue-600 hover:bg-blue-700">
+          <Link href="/admin/courses/new">
+            <Plus className="h-4 w-4 mr-2" />
+            Add New Course
+          </Link>
+        </Button>
+      </div>
           </div>
         </div>
       </header>
 
       <div className="p-6">
-        {/* Stats Cards */}
+        {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
                 <BookOpen className="h-8 w-8 text-blue-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Total Courses</p>
-                  <p className="text-2xl font-bold">{courses.length}</p>
+                  <div className="text-sm font-medium text-gray-600">
+                    Total Courses
+                  </div>
+                  <div className="text-2xl font-bold">
+                    {loading ? (
+                      <Skeleton className="h-6 w-12" />
+                    ) : (
+                      courses.length
+                    )}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -134,8 +172,14 @@ export default function CoursesAdminPage() {
               <div className="flex items-center">
                 <Eye className="h-8 w-8 text-green-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Published</p>
-                  <p className="text-2xl font-bold">{courses.filter((c) => c.status === "published").length}</p>
+                  <div className="text-sm font-medium text-gray-600">Published</div>
+                  <div className="text-2xl font-bold">
+                    {loading ? (
+                      <Skeleton className="h-6 w-12" />
+                    ) : (
+                      courses.filter((c) => c.status === "published").length
+                    )}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -145,8 +189,14 @@ export default function CoursesAdminPage() {
               <div className="flex items-center">
                 <Edit className="h-8 w-8 text-yellow-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Drafts</p>
-                  <p className="text-2xl font-bold">{courses.filter((c) => c.status === "draft").length}</p>
+                  <div className="text-sm font-medium text-gray-600">Drafts</div>
+                  <div className="text-2xl font-bold">
+                    {loading ? (
+                      <Skeleton className="h-6 w-12" />
+                    ) : (
+                      courses.filter((c) => c.status === "draft").length
+                    )}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -156,10 +206,21 @@ export default function CoursesAdminPage() {
               <div className="flex items-center">
                 <Users className="h-8 w-8 text-purple-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Total Students</p>
-                  <p className="text-2xl font-bold">
-                    {courses.reduce((sum, course) => sum + course.students, 0).toLocaleString()}
-                  </p>
+                  <div className="text-sm font-medium text-gray-600">
+                    Total Students
+                  </div>
+                  <div className="text-2xl font-bold">
+                    {loading ? (
+                      <Skeleton className="h-6 w-16" />
+                    ) : (
+                      courses
+                        .reduce(
+                          (sum, course) => sum + (course.students || 0),
+                          0
+                        )
+                        .toLocaleString()
+                    )}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -198,10 +259,12 @@ export default function CoursesAdminPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Categories</SelectItem>
-                  <SelectItem value="Programming">Programming</SelectItem>
-                  <SelectItem value="Web Development">Web Development</SelectItem>
-                  <SelectItem value="Data Science">Data Science</SelectItem>
-                  <SelectItem value="Design">Design</SelectItem>
+                  <SelectItem value="programming">Programming</SelectItem>
+                  <SelectItem value="web-development">
+                    Web Development
+                  </SelectItem>
+                  <SelectItem value="data-science">Data Science</SelectItem>
+                  <SelectItem value="design">Design</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -211,98 +274,119 @@ export default function CoursesAdminPage() {
         {/* Courses Table */}
         <Card>
           <CardHeader>
-            <CardTitle>All Courses ({filteredCourses.length})</CardTitle>
+            <CardTitle>
+              All Courses ({loading ? 0 : filteredCourses.length})
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Course</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Platform</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Rating</TableHead>
-                    <TableHead>Students</TableHead>
-                    <TableHead>Price</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead className="w-[50px]"></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredCourses.map((course) => (
-                    <TableRow key={course.id}>
-                      <TableCell>
-                        <div>
-                          <div className="font-medium">{course.title}</div>
-                          <div className="text-sm text-gray-500">by {course.instructor}</div>
-                        </div>
-                      </TableCell>
-                      <TableCell>{getStatusBadge(course.status)}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{course.platform}</Badge>
-                      </TableCell>
-                      <TableCell>{course.category}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center">
-                          <Star className="h-4 w-4 text-yellow-400 mr-1 fill-current" />
-                          {course.rating}
-                        </div>
-                      </TableCell>
-                      <TableCell>{course.students.toLocaleString()}</TableCell>
-                      <TableCell>
-                        <div>
-                          <div className="font-medium text-green-600">{course.price}</div>
-                          <div className="text-xs text-gray-500 line-through">{course.originalPrice}</div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="text-sm">
-                          <div>{new Date(course.dateCreated).toLocaleDateString()}</div>
-                          <div className="text-gray-500">
-                            Modified: {new Date(course.dateModified).toLocaleDateString()}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem asChild>
-                              <Link href={`/admin/courses/${course.id}/edit`}>
-                                <Edit className="h-4 w-4 mr-2" />
-                                Edit
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                              <Link href={`/courses/${course.id}`}>
-                                <Eye className="h-4 w-4 mr-2" />
-                                View
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Copy className="h-4 w-4 mr-2" />
-                              Duplicate
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="text-red-600">
-                              <Trash2 className="h-4 w-4 mr-2" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
+              {loading ? (
+                <div className="space-y-3">
+                  {[...Array(5)].map((_, i) => (
+                    <Skeleton key={i} className="h-12 w-full" />
                   ))}
-                </TableBody>
-              </Table>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Course</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Platform</TableHead>
+                      <TableHead>Category</TableHead>
+                      <TableHead>Rating</TableHead>
+                      <TableHead>Students</TableHead>
+                      <TableHead>Price</TableHead>
+                      <TableHead>Date</TableHead>
+                      <TableHead className="w-[50px]"></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredCourses.map((course) => (
+                      <TableRow key={course.id}>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium">{course.title}</div>
+                            <div className="text-sm text-gray-500">
+                              by {course.instructor?.name || "Unknown"}
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>{getStatusBadge(course.status)}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">{course.platform}</Badge>
+                        </TableCell>
+                        <TableCell>{course.category}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center">
+                            <Star className="h-4 w-4 text-yellow-400 mr-1 fill-current" />
+                            {course.rating}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {(course.students || 0).toLocaleString()}
+                        </TableCell>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium text-green-600">
+                              {course.price}
+                            </div>
+                            <div className="text-xs text-gray-500 line-through">
+                              {course.originalPrice}
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm">
+                            <div>
+                              {new Date(course.createdAt).toLocaleDateString()}
+                            </div>
+                            <div className="text-gray-500">
+                              Modified:{" "}
+                              {new Date(course.updatedAt).toLocaleDateString()}
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem asChild>
+                                <Link href={`/admin/courses/${course.id}/edit`}>
+                                  <Edit className="h-4 w-4 mr-2" />
+                                  Edit
+                                </Link>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem asChild>
+                                <Link href={`/courses/${course.id}`}>
+                                  <Eye className="h-4 w-4 mr-2" />
+                                  View
+                                </Link>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem>
+                                <Copy className="h-4 w-4 mr-2" />
+                                Duplicate
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="text-red-600">
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
             </div>
           </CardContent>
         </Card>
       </div>
     </div>
-  )
+  );
 }

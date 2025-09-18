@@ -77,7 +77,7 @@ export type Job = {
   companyLogo?: string;
   featured?: boolean;
   urgent?: boolean;
-  applicationUrl: string;
+  applicationUrl?: string;
 };
 
 export type Resource = {

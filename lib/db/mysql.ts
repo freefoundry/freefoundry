@@ -79,28 +79,39 @@ export async function initTables() {
     )
   `);
 
-  const coursesDb = connectMySQL("courses");
+ const coursesDb = connectMySQL("courses");
   await coursesDb.query(`
     CREATE TABLE IF NOT EXISTS courses (
       id INT AUTO_INCREMENT PRIMARY KEY,
       slug VARCHAR(255) UNIQUE NOT NULL,
       title VARCHAR(255) NOT NULL,
-      instructor VARCHAR(255),
       description TEXT,
       content LONGTEXT,
+      excerpt TEXT,
+      platform VARCHAR(100),
+      instructor JSON,
       category VARCHAR(100),
       difficulty VARCHAR(100),
       duration VARCHAR(100),
-      price DECIMAL(10,2),
-      originalPrice DECIMAL(10,2),
+      courseUrl VARCHAR(500),
+      price DECIMAL(10,2) DEFAULT 0,
+      originalPrice DECIMAL(10,2) DEFAULT 0,
+      rating DECIMAL(3,2) DEFAULT 0,
+      students INT DEFAULT 0,
+      image VARCHAR(500),
+      isPopular BOOLEAN DEFAULT FALSE,
+      isNew BOOLEAN DEFAULT FALSE,
+      isTrending BOOLEAN DEFAULT FALSE,
       tags JSON,
       requirements JSON,
       outcomes JSON,
+      expiryDate DATETIME NULL,
       status VARCHAR(50) DEFAULT 'draft',
       visibility VARCHAR(50) DEFAULT 'public',
-      publishDate DATETIME,
+      publishDate DATETIME NULL,
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )
   `);
+
 }

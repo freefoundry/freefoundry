@@ -2,6 +2,8 @@ import type React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -99,7 +101,17 @@ export default function RootLayout({
         <meta name="theme-color" content="#3B82F6" />
         <meta name="msapplication-TileColor" content="#3B82F6" />
       </head>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        {children}{" "}
+        <ToastContainer
+          autoClose={3000}
+          closeButton={false}
+          closeOnClick
+          pauseOnHover
+          draggable
+          toastClassName="text-sm"
+        />
+      </body>
     </html>
   );
 }
