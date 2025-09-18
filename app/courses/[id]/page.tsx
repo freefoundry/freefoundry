@@ -66,6 +66,7 @@ const getCourseById = (
   // This would normally fetch from an API
   return {
     id: 1,
+    slug: "complete-python-bootcamp-go-from-zero-to-hero-in-python-3",
     title: "Complete Python Bootcamp: Go from Zero to Hero in Python 3",
     platform: "Udemy",
     instructor: {
@@ -311,6 +312,7 @@ You will get lifetime access to over 100 lectures plus corresponding Notebooks f
       {
         id: 2,
         title: "Advanced Python Programming",
+        slug: "advanced-python-programming",
         platform: "Udemy",
         instructor: {
           name: "Angela Yu",
@@ -333,6 +335,16 @@ You will get lifetime access to over 100 lectures plus corresponding Notebooks f
         image: "/placeholder.svg?height=180&width=320&text=Advanced+Python",
         description:
           "Take your Python skills to the next level with advanced concepts and techniques.",
+        fullDescription: "This course covers advanced Python programming concepts including decorators, generators, context managers, and more.",
+        whatYouWillLearn: [
+          "Master advanced Python concepts",
+          "Work with decorators and generators",
+          "Understand context managers",
+        ],
+        requirements: [
+          "Basic Python knowledge",
+          "Completion of a beginner Python course",
+        ],
         isPopular: false,
         isNew: true,
         isTrending: false,
@@ -340,6 +352,7 @@ You will get lifetime access to over 100 lectures plus corresponding Notebooks f
       {
         id: 3,
         title: "Python for Data Science",
+        slug: "python-for-data-science",
         platform: "Coursera",
         instructor: {
           name: "IBM Team",
@@ -362,6 +375,16 @@ You will get lifetime access to over 100 lectures plus corresponding Notebooks f
         image: "/placeholder.svg?height=180&width=320&text=Python+Data+Science",
         description:
           "Learn how to use Python for data analysis and machine learning.",
+        fullDescription: "This course teaches you how to use Python for data analysis, visualization, and machine learning.",
+        whatYouWillLearn: [
+          "Analyze data with Python",
+          "Create data visualizations",
+          "Apply machine learning techniques",
+        ],
+        requirements: [
+          "Basic programming knowledge",
+          "Interest in data science",
+        ],
         isPopular: true,
         isNew: false,
         isTrending: true,

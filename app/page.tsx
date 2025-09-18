@@ -105,13 +105,14 @@ export default function Home() {
               }
             />
             <FeatureCard
-              icon={<SearchIcon className="h-8 w-8 text-blue-600" />}
-              title="Smart Search"
-              description="Advanced filtering and categorization."
-              href="/resources#search"
+              icon={<GraduationCap className="h-8 w-8 text-blue-600" />}
+              title="Scholarships"
+              description="Discover funding opportunities for your education with comprehensive scholarship listings and
+                  application guidance."
+              href="/scholarships"
               linkText={
                 <>
-                  Try Search <ChevronRight className="h-4 w-4 ml-1" />
+                  Find Scholarships <ChevronRight className="h-4 w-4 ml-1" />
                 </>
               }
             />

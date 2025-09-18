@@ -209,9 +209,9 @@ The platform also has an active community of millions of developers who help eac
 export default function ResourceDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }) {
-  const { id } = React.use(params); // ✅ unwrap the promise
+  const { id } = params;
   const resource = getResourceById(id);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [mounted, setMounted] = useState(false);

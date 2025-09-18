@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { RichTextEditor } from "@/components/rich-text-editor";
+import { useRouter } from "next/navigation";
 
 export default function NewJobPage() {
   const [title, setTitle] = useState("");
@@ -62,6 +63,33 @@ export default function NewJobPage() {
   const [newBenefit, setNewBenefit] = useState("");
   const [responsibilities, setResponsibilities] = useState<string[]>([]);
   const [newResponsibility, setNewResponsibility] = useState("");
+
+  // Qualifications
+  const [qualifications, setQualifications] = useState<string[]>([]);
+  const [newQualification, setNewQualification] = useState("");
+
+  // Nice To Have
+  const [niceToHave, setNiceToHave] = useState<string[]>([]);
+  const [newNiceToHave, setNewNiceToHave] = useState("");
+
+  // Company Info
+  const [companyDescription, setCompanyDescription] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [companySize, setCompanySize] = useState("");
+  const [founded, setFounded] = useState("");
+  const [website, setWebsite] = useState("");
+  const [culture, setCulture] = useState<string[]>([]);
+  const [newCulture, setNewCulture] = useState("");
+
+  // Application Process
+  const [applicationSteps, setApplicationSteps] = useState<string[]>([]);
+  const [newStep, setNewStep] = useState("");
+  const [timeline, setTimeline] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactPhone, setContactPhone] = useState("");
+  const [contactRecruiter, setContactRecruiter] = useState("");
+    const [isEditingSlug, setIsEditingSlug] = useState(false);
+   const router = useRouter();
 
   // Auto-generate slug from title
   const generateSlug = (title: string) => {
@@ -131,13 +159,66 @@ export default function NewJobPage() {
       responsibilities.filter((resp) => resp !== respToRemove)
     );
   };
+useEffect(() => {
+  const stored = localStorage.getItem("previewJob");
+  if (stored) {
+    const jobData = JSON.parse(stored);
+
+    // Restore only if form is empty (avoid overwriting while editing)
+    if (!title && jobData.title) setTitle(jobData.title);
+    if (!slug && jobData.slug) setSlug(jobData.slug);
+    if (!content && jobData.fullDescription)
+      setContent(jobData.fullDescription);
+    if (!excerpt && jobData.excerpt) setExcerpt(jobData.excerpt);
+
+    if (!company && jobData.company) setCompany(jobData.company);
+    if (!location && jobData.location) setLocation(jobData.location);
+    if (!type && jobData.type) setType(jobData.type);
+    if (!workMode && jobData.workMode) setWorkMode(jobData.workMode);
+    if (!experience && jobData.experience) setExperience(jobData.experience);
+    if (!salary && jobData.salary) setSalary(jobData.salary);
+    if (!platform && jobData.platform) setPlatform(jobData.platform);
+
+    setTags(jobData.tags || []);
+    setRequirements(jobData.requirements || []);
+    setBenefits(jobData.benefits || []);
+    setResponsibilities(jobData.responsibilities || []);
+    setQualifications(jobData.qualifications || []);
+    setNiceToHave(jobData.niceToHave || []);
+    setCulture(jobData.companyInfo?.culture || []);
+    setApplicationSteps(jobData.applicationProcess?.steps || []);
+    setTimeline(jobData.applicationProcess?.timeline || "");
+    setContactEmail(jobData.applicationProcess?.contact?.email || "");
+    setContactPhone(jobData.applicationProcess?.contact?.phone || "");
+    setContactRecruiter(jobData.applicationProcess?.contact?.recruiter || "");
+  }
+}, []);
 
   const handleSave = (saveType: "draft" | "publish" | "preview") => {
     const jobData = {
-      title,
-      content,
-      excerpt,
+      id: Date.now(),
       slug,
+      title,
+      company,
+      location,
+      type,
+      workMode,
+      experience,
+      salary,
+      salaryType,
+      description: excerpt || content,
+      fullDescription: content,
+      excerpt,
+      requirements,
+      benefits,
+      responsibilities,
+      postedDate: new Date().toISOString().split("T")[0],
+      platform,
+      companyLogo: companyLogo || featuredImage,
+      applicationUrl,
+      featured,
+      urgent,
+      tags,
       status:
         saveType === "publish"
           ? "published"
@@ -146,28 +227,45 @@ export default function NewJobPage() {
           : "draft",
       visibility,
       publishDate,
-      featuredImage,
-      tags,
-      company,
-      location,
-      type,
-      workMode,
-      experience,
-      salary,
-      salaryType,
-      platform,
-      companyLogo,
-      applicationUrl,
-      featured,
-      urgent,
-      requirements,
-      benefits,
-      responsibilities,
-      postedDate: new Date().toISOString().split("T")[0],
-    };
 
+      // Extra fields JobDetailPage expects:
+      qualifications: [], // fill later in admin
+      niceToHave: [],
+      companyInfo: {
+        name: company,
+        description: "",
+        industry: "",
+        size: "",
+        founded: "",
+        website: "",
+        logo: companyLogo || "",
+        culture: [],
+      },
+      applicationProcess: {
+        steps: [],
+        timeline: "",
+        contact: {},
+      },
+      similarJobs: [],
+      views: 0,
+      applications: 0,
+      lastUpdated: new Date().toISOString().split("T")[0],
+    };
+if (saveType === "preview") {
+  // Store job in localStorage for preview
+  localStorage.setItem("previewJob", JSON.stringify(jobData));
+
+  // Redirect to preview page
+  router.push("/admin/jobs/new/preview");
+  return;
+}
     console.log(`Saving job as ${saveType}:`, jobData);
-    // Here you would typically send the data to your API
+    // Example API call
+    // await fetch("/api/jobs", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(jobData),
+    // });
   };
 
   return (
@@ -239,13 +337,21 @@ export default function NewJobPage() {
                   </div>
                   <div className="text-sm text-gray-500">
                     Permalink:{" "}
-                    <span className="text-blue-600">
-                      freefoundry.com/jobs/{slug || "job-slug"}
-                    </span>
+                    {isEditingSlug ? (
+                      <Input
+                        value={slug}
+                        onChange={(e) => setSlug(generateSlug(e.target.value))}
+                      />
+                    ) : (
+                      <span className="text-blue-600">
+                        freefoundry.com/jobs/{slug}
+                      </span>
+                    )}
                     <Button
                       variant="ghost"
                       size="sm"
                       className="ml-2 h-auto p-0 text-blue-600"
+                      onClick={() => setIsEditingSlug(!isEditingSlug)}
                     >
                       Edit
                     </Button>
@@ -269,11 +375,11 @@ export default function NewJobPage() {
                     <TabsTrigger value="text">Text</TabsTrigger>
                   </TabsList>
                   <TabsContent value="visual" className="mt-4">
-                     <RichTextEditor
-                                         value={content}
-                                         onChange={setContent}
-                                         placeholder="Write your comprehensive course description here. Include what students will learn, course structure, and any important details..."
-                                       />
+                    <RichTextEditor
+                      value={content}
+                      onChange={setContent}
+                      placeholder="Write your comprehensive course description here. Include what students will learn, course structure, and any important details..."
+                    />
                   </TabsContent>
                   <TabsContent value="text" className="mt-4">
                     <Textarea
@@ -568,6 +674,258 @@ export default function NewJobPage() {
                       </div>
                     ))}
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Qualification */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Qualifications</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex space-x-2 mb-4">
+                  <Input
+                    value={newQualification}
+                    onChange={(e) => setNewQualification(e.target.value)}
+                    placeholder="Add a qualification..."
+                    onKeyPress={(e) =>
+                      e.key === "Enter" &&
+                      setQualifications([...qualifications, newQualification])
+                    }
+                  />
+                  <Button
+                    onClick={() => {
+                      if (newQualification.trim()) {
+                        setQualifications([
+                          ...qualifications,
+                          newQualification,
+                        ]);
+                        setNewQualification("");
+                      }
+                    }}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  {qualifications.map((q, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center justify-between p-2 bg-gray-50 rounded"
+                    >
+                      <span className="text-sm">{q}</span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                          setQualifications(
+                            qualifications.filter((item) => item !== q)
+                          )
+                        }
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Nice To Have */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Nice To Have</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex space-x-2 mb-4">
+                  <Input
+                    value={newNiceToHave}
+                    onChange={(e) => setNewNiceToHave(e.target.value)}
+                    placeholder="Add a nice-to-have skill..."
+                    onKeyPress={(e) =>
+                      e.key === "Enter" &&
+                      setNiceToHave([...niceToHave, newNiceToHave])
+                    }
+                  />
+                  <Button
+                    onClick={() => {
+                      if (newNiceToHave.trim()) {
+                        setNiceToHave([...niceToHave, newNiceToHave]);
+                        setNewNiceToHave("");
+                      }
+                    }}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  {niceToHave.map((n, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center justify-between p-2 bg-gray-50 rounded"
+                    >
+                      <span className="text-sm">{n}</span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                          setNiceToHave(niceToHave.filter((item) => item !== n))
+                        }
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Company Info */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Company Info</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Input
+                  placeholder="Industry"
+                  value={industry}
+                  onChange={(e) => setIndustry(e.target.value)}
+                />
+                <Input
+                  placeholder="Company Size"
+                  value={companySize}
+                  onChange={(e) => setCompanySize(e.target.value)}
+                />
+                <Input
+                  placeholder="Founded"
+                  value={founded}
+                  onChange={(e) => setFounded(e.target.value)}
+                />
+                <Input
+                  placeholder="Website"
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                />
+                <Textarea
+                  placeholder="Company Description"
+                  value={companyDescription}
+                  onChange={(e) => setCompanyDescription(e.target.value)}
+                />
+
+                {/* Culture list */}
+                <div>
+                  <div className="flex space-x-2 mb-2">
+                    <Input
+                      value={newCulture}
+                      onChange={(e) => setNewCulture(e.target.value)}
+                      placeholder="Add culture value..."
+                      onKeyPress={(e) =>
+                        e.key === "Enter" &&
+                        setCulture([...culture, newCulture])
+                      }
+                    />
+                    <Button
+                      onClick={() => {
+                        if (newCulture.trim()) {
+                          setCulture([...culture, newCulture]);
+                          setNewCulture("");
+                        }
+                      }}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {culture.map((c, i) => (
+                      <Badge key={i} variant="secondary">
+                        {c}
+                        <button
+                          onClick={() =>
+                            setCulture(culture.filter((item) => item !== c))
+                          }
+                        >
+                          <X className="h-3 w-3 ml-1" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Application Process */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Application Process</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label>Timeline</Label>
+                  <Input
+                    value={timeline}
+                    onChange={(e) => setTimeline(e.target.value)}
+                    placeholder="e.g., 2-3 weeks"
+                  />
+                </div>
+                <div className="flex space-x-2 mb-2">
+                  <Input
+                    value={newStep}
+                    onChange={(e) => setNewStep(e.target.value)}
+                    placeholder="Add process step..."
+                    onKeyPress={(e) =>
+                      e.key === "Enter" &&
+                      setApplicationSteps([...applicationSteps, newStep])
+                    }
+                  />
+                  <Button
+                    onClick={() => {
+                      if (newStep.trim()) {
+                        setApplicationSteps([...applicationSteps, newStep]);
+                        setNewStep("");
+                      }
+                    }}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  {applicationSteps.map((s, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center justify-between p-2 bg-gray-50 rounded"
+                    >
+                      <span className="text-sm">{s}</span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                          setApplicationSteps(
+                            applicationSteps.filter((item) => item !== s)
+                          )
+                        }
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+                <div className="space-y-2">
+                  <Input
+                    placeholder="Contact Email"
+                    value={contactEmail}
+                    onChange={(e) => setContactEmail(e.target.value)}
+                  />
+                  <Input
+                    placeholder="Contact Phone"
+                    value={contactPhone}
+                    onChange={(e) => setContactPhone(e.target.value)}
+                  />
+                  <Input
+                    placeholder="Recruiter Name"
+                    value={contactRecruiter}
+                    onChange={(e) => setContactRecruiter(e.target.value)}
+                  />
                 </div>
               </CardContent>
             </Card>

@@ -62,6 +62,7 @@ export default function NewCoursePage() {
   const [newRequirement, setNewRequirement] = useState("");
   const [whatYouWillLearn, setWhatYouWillLearn] = useState<string[]>([]);
   const [newLearning, setNewLearning] = useState("");
+  const [isEditingSlug, setIsEditingSlug] = useState(false);
 
   // Auto-generate slug from title
   const generateSlug = (title: string) => {
@@ -120,10 +121,40 @@ export default function NewCoursePage() {
 
   const handleSave = (saveType: "draft" | "publish" | "preview") => {
     const courseData = {
-      title,
-      content,
-      excerpt,
+      id: Date.now(), // temporary ID until backend assigns a real one
       slug,
+      title,
+      description: excerpt || content, // short description
+      fullDescription: content, // full description / rich text
+      excerpt,
+      platform,
+      instructor: {
+        name: instructor,
+        title: "", // you can expand later
+        bio: "",
+        rating: Number.parseFloat(rating) || 0,
+        students: Number.parseInt(students) || 0,
+        courses: 0,
+        avatar: "",
+      },
+      rating: Number.parseFloat(rating) || 0,
+      students: Number.parseInt(students) || 0,
+      duration,
+      level,
+      category,
+      tags,
+      price: price || "Free",
+      originalPrice,
+      expiryDate: expiryDate || null,
+      image: featuredImage,
+      isPopular,
+      isNew,
+      isTrending,
+      whatYouWillLearn,
+      requirements,
+      curriculum: [], // future: add curriculum builder
+      reviews: [], // future: add review system
+      relatedCourses: [], // future: add related courses
       status:
         saveType === "publish"
           ? "published"
@@ -132,29 +163,18 @@ export default function NewCoursePage() {
           : "draft",
       visibility,
       publishDate,
-      featuredImage,
-      tags,
-      platform,
-      instructor,
-      duration,
-      level,
-      category,
-      price,
-      originalPrice,
-      expiryDate,
-      courseUrl,
-      rating: Number.parseFloat(rating) || 0,
-      students: Number.parseInt(students) || 0,
-      isPopular,
-      isNew,
-      isTrending,
-      requirements,
-      whatYouWillLearn,
     };
 
     console.log(`Saving course as ${saveType}:`, courseData);
-    // Here you would typically send the data to your API
+
+    // Example API call
+    // await fetch("/api/courses", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(courseData),
+    // });
   };
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -227,13 +247,19 @@ export default function NewCoursePage() {
                   </div>
                   <div className="text-sm text-gray-500">
                     Permalink:{" "}
-                    <span className="text-blue-600">
-                      freefoundry.com/courses/{slug || "course-slug"}
-                    </span>
+                    {isEditingSlug ? (
+                      <Input
+                        value={slug}
+                        onChange={(e) => setSlug(generateSlug(e.target.value))}
+                      />
+                    ) : (
+                      <span>freefoundry.com/courses/{slug}</span>
+                    )}
                     <Button
                       variant="ghost"
                       size="sm"
                       className="ml-2 h-auto p-0 text-blue-600"
+                      onClick={() => setIsEditingSlug(!isEditingSlug)}
                     >
                       Edit
                     </Button>

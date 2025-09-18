@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource mysql {
+  provider = "mysql"
+  url      = env("DATABASE_URL_MYSQL") // set this in .env
+}
+
+model Job {
+  id             Int      @id @default(autoincrement())
+  slug           String   @unique
+  title          String
+  company        String
+  location       String
+  type           String
+  workMode       String
+  experience     String
+  salary         String?
+  salaryType     String?
+  description    String?
+  fullDescription String?
+  excerpt        String?
+  requirements   String[]
+  benefits       String[]
+  responsibilities String[]
+  platform       String?
+  companyLogo    String?
+  applicationUrl String?
+  featured       Boolean   @default(false)
+  urgent         Boolean   @default(false)
+  tags           String[]
+  status         String    @default("draft")
+  visibility     String    @default("public")
+  publishDate    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Course {
+  id             Int      @id @default(autoincrement())
+  slug           String   @unique
+  title          String
+  instructor     String
+  description    String
+  content        String
+  category       String
+  difficulty     String
+  duration       String?
+  price          Float?
+  originalPrice  Float?
+  tags           String[]
+  requirements   String[]
+  outcomes       String[]
+  status         String    @default("draft")
+  visibility     String    @default("public")
+  publishDate    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}

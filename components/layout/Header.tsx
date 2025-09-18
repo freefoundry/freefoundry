@@ -57,6 +57,17 @@ export function Header({ showSearch = false }: Props) {
           >
             Jobs
           </Link>
+
+          <Link
+            href="/scholarships"
+            className={
+              isActive("/scholarships")
+                ? "text-blue-600 font-medium"
+                : "text-gray-600 hover:text-blue-600"
+            }
+          >
+            Scholarships
+          </Link>
         </nav>
 
         {/* Right side */}
