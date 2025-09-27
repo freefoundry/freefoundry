@@ -94,6 +94,8 @@ export async function initTables() {
       difficulty VARCHAR(100),
       duration VARCHAR(100),
       courseUrl VARCHAR(500),
+      certificate TINYINT(1) DEFAULT 0,
+      language VARCHAR(100) DEFAULT 'English'
       price DECIMAL(10,2) DEFAULT 0,
       originalPrice DECIMAL(10,2) DEFAULT 0,
       rating DECIMAL(3,2) DEFAULT 0,

@@ -77,6 +77,24 @@ export default function CoursesAdminPage() {
     fetchCourses();
   }, []);
 
+  const handleDelete = async (id: number) => {
+    if (!confirm("Are you sure you want to delete this course?")) return;
+
+    try {
+      const res = await fetch(`/api/courses/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) throw new Error("Failed to delete course");
+
+      // Update state without refetching everything
+      setCourses((prev) => prev.filter((course) => course.id !== id));
+    } catch (err: any) {
+      console.error("❌ Delete failed:", err);
+      alert("Error deleting course: " + err.message);
+    }
+  };
+
   const filteredCourses = courses.filter((course) => {
     const matchesSearch =
       course.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -121,26 +139,28 @@ export default function CoursesAdminPage() {
                 <BookOpen className="h-6 w-6 mr-2" />
                 Courses
               </h1>
-              <div className="text-gray-600 mt-1">Manage your course content</div>
+              <div className="text-gray-600 mt-1">
+                Manage your course content
+              </div>
             </div>
-           <div className="flex items-center gap-3">
-        {/* 🔄 Sync Button */}
-        <Button
-          variant="outline"
-          onClick={() => fetchCourses()}
-          disabled={loading}
-        >
-          {loading ? "Syncing..." : "Sync"}
-        </Button>
+            <div className="flex items-center gap-3">
+              {/* 🔄 Sync Button */}
+              <Button
+                variant="outline"
+                onClick={() => fetchCourses()}
+                disabled={loading}
+              >
+                {loading ? "Syncing..." : "Sync"}
+              </Button>
 
-        {/* ➕ Add New Course */}
-        <Button asChild className="bg-blue-600 hover:bg-blue-700">
-          <Link href="/admin/courses/new">
-            <Plus className="h-4 w-4 mr-2" />
-            Add New Course
-          </Link>
-        </Button>
-      </div>
+              {/* ➕ Add New Course */}
+              <Button asChild className="bg-blue-600 hover:bg-blue-700">
+                <Link href="/admin/courses/new">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add New Course
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -172,7 +192,9 @@ export default function CoursesAdminPage() {
               <div className="flex items-center">
                 <Eye className="h-8 w-8 text-green-600" />
                 <div className="ml-4">
-                  <div className="text-sm font-medium text-gray-600">Published</div>
+                  <div className="text-sm font-medium text-gray-600">
+                    Published
+                  </div>
                   <div className="text-2xl font-bold">
                     {loading ? (
                       <Skeleton className="h-6 w-12" />
@@ -189,7 +211,9 @@ export default function CoursesAdminPage() {
               <div className="flex items-center">
                 <Edit className="h-8 w-8 text-yellow-600" />
                 <div className="ml-4">
-                  <div className="text-sm font-medium text-gray-600">Drafts</div>
+                  <div className="text-sm font-medium text-gray-600">
+                    Drafts
+                  </div>
                   <div className="text-2xl font-bold">
                     {loading ? (
                       <Skeleton className="h-6 w-12" />
@@ -367,11 +391,14 @@ export default function CoursesAdminPage() {
                                   View
                                 </Link>
                               </DropdownMenuItem>
-                              <DropdownMenuItem>
+                              {/* <DropdownMenuItem>
                                 <Copy className="h-4 w-4 mr-2" />
                                 Duplicate
-                              </DropdownMenuItem>
-                              <DropdownMenuItem className="text-red-600">
+                              </DropdownMenuItem> */}
+                              <DropdownMenuItem
+                                className="text-red-600"
+                                onClick={() => handleDelete(course.id)}
+                              >
                                 <Trash2 className="h-4 w-4 mr-2" />
                                 Delete
                               </DropdownMenuItem>

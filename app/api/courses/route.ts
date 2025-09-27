@@ -36,7 +36,7 @@ export async function POST(req: Request) {
 
     let imageUrl = body.image || null;
 
-    // If image is base64 or file upload, send to Cloudinary
+    // ✅ Upload image to Cloudinary if it's base64
     if (body.image && body.image.startsWith("data:")) {
       const uploadRes = await cloudinary.uploader.upload(body.image, {
         folder: "courses",
@@ -47,8 +47,8 @@ export async function POST(req: Request) {
 
     const [result] = await db.query(
       `INSERT INTO courses 
-        (slug, title, instructor, description, content, excerpt, platform, category, difficulty, duration, courseUrl, price, originalPrice, rating, students, image, isPopular, isNew, isTrending, tags, requirements, outcomes, expiryDate, status, visibility, publishDate) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        (slug, title, instructor, description, content, excerpt, platform, category, difficulty, duration, courseUrl, certificate, language, price, originalPrice, rating, students, image, isPopular, isNew, isTrending, tags, requirements, outcomes, expiryDate, status, visibility, publishDate) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         body.slug,
         body.title,
@@ -63,11 +63,13 @@ export async function POST(req: Request) {
         body.level || body.difficulty || null,
         body.duration || null,
         body.courseUrl || null,
+        !!body.certificate, // ✅ Save as boolean
+        body.language || "English", // ✅ Save language
         parseFloat(body.price) || 0,
         parseFloat(body.originalPrice) || 0,
         parseFloat(body.rating) || 0,
         parseInt(body.students) || 0,
-        imageUrl, // ✅ Cloudinary URL saved
+        imageUrl,
         !!body.isPopular,
         !!body.isNew,
         !!body.isTrending,
@@ -81,7 +83,11 @@ export async function POST(req: Request) {
       ]
     );
 
-    return NextResponse.json({ id: (result as any).insertId, ...body, image: imageUrl });
+    return NextResponse.json({
+      id: (result as any).insertId,
+      ...body,
+      image: imageUrl,
+    });
   } catch (err: any) {
     console.error("❌ Course insert error:", err);
 
@@ -109,3 +115,4 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: message }, { status });
   }
 }
+

@@ -14,3 +14,7 @@ export function formatDate(dateString: string): string {
   // OR, if you want pretty format but still consistent:
   // return date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 }
+
+export function stripHtml(html: string) {
+  return html.replace(/<[^>]*>?/gm, "");
+}
