@@ -65,6 +65,7 @@ export async function initTables() {
       requirements JSON,
       benefits JSON,
       responsibilities JSON,
+      postedDate DATE,
       platform VARCHAR(100),
       companyLogo VARCHAR(500),
       applicationUrl VARCHAR(500),
@@ -74,10 +75,19 @@ export async function initTables() {
       status VARCHAR(50) DEFAULT 'draft',
       visibility VARCHAR(50) DEFAULT 'public',
       publishDate DATETIME,
+      qualifications JSON,
+      niceToHave JSON,
+      companyInfo JSON,
+      applicationProcess JSON,
+      similarJobs JSON,
+      views INT DEFAULT 0,
+      applications INT DEFAULT 0,
+      lastUpdated DATE,
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )
   `);
+
 
  const coursesDb = connectMySQL("courses");
   await coursesDb.query(`

@@ -31,6 +31,7 @@ import {
 import Link from "next/link";
 import { RichTextEditor } from "@/components/rich-text-editor"
 import { toast } from "react-toastify";
+import { useRouter } from "next/router";
 
 export default function CourseForm({
   mode = "create",
@@ -100,6 +101,7 @@ export default function CourseForm({
 
     const [isEditingSlug, setIsEditingSlug] = useState(false);
 
+    const router = useRouter();
 
   // Auto-generate slug from title
   const generateSlug = (title: string) => {
@@ -215,6 +217,7 @@ const res = await fetch(
       if (!res.ok) throw new Error("Failed to save course");
 
       toast.success(saveType === 'draft'  ? 'Course save as draft' : mode === 'edit' ? 'Course updated successfully' : 'Course published successfully');
+      router.push("/admin/courses");
     } catch (error: any) {
       toast.error("Error saving course: " + error.message);
     }

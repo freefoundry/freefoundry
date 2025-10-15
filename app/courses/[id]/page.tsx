@@ -94,7 +94,7 @@ export default function CourseDetailPage({
     );
   }
 
-if (!course || !course.id ) {
+if (!course || !course.id && !loading) {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header showSearch />
@@ -532,7 +532,7 @@ if (!course || !course.id ) {
                 <div className="text-center mb-6">
                   <div className="flex items-center justify-center space-x-2 mb-2">
                     <span className="text-3xl font-bold text-green-600">
-                      {course.price}
+                      course.price === "0.00" ? "Free" : course.price
                     </span>
                     <span className="text-lg text-gray-500 line-through">
                       {course.originalPrice}

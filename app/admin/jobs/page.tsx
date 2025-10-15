@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -49,93 +49,48 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import type { Job } from "@/lib/types";
-
-// Mock data for jobs
-const mockJobs: Job[] = [
-  {
-    id: 1,
-    title: "Senior Frontend Developer",
-    company: "TechCorp Inc.",
-    location: "San Francisco, CA",
-    type: "Full-time",
-    workMode: "Remote",
-    experience: "5+ years",
-    salary: "$120,000 - $150,000",
-    salaryType: "yearly",
-    description: "We are looking for a senior frontend developer...",
-    requirements: ["React", "TypeScript", "5+ years experience"],
-    benefits: ["Health insurance", "401k", "Remote work"],
-    postedDate: "2024-01-15",
-    platform: "LinkedIn",
-    companyLogo: "/placeholder.svg?height=40&width=40",
-    featured: true,
-    urgent: false,
-    // bookmarked: false,
-  },
-  {
-    id: 2,
-    title: "Full Stack Engineer",
-    company: "StartupXYZ",
-    location: "New York, NY",
-    type: "Full-time",
-    workMode: "Hybrid",
-    experience: "3-5 years",
-    salary: "$90,000 - $120,000",
-    salaryType: "yearly",
-    description: "Join our growing team as a full stack engineer...",
-    requirements: ["Node.js", "React", "MongoDB"],
-    benefits: ["Equity", "Flexible hours", "Learning budget"],
-    postedDate: "2024-01-14",
-    platform: "Indeed",
-    companyLogo: "/placeholder.svg?height=40&width=40",
-    featured: false,
-    urgent: true,
-    // bookmarked: false,
-  },
-  {
-    id: 3,
-    title: "UI/UX Designer",
-    company: "Design Studio",
-    location: "Los Angeles, CA",
-    type: "Contract",
-    workMode: "On-site",
-    experience: "2-4 years",
-    salary: "$70 - $90",
-    salaryType: "hourly",
-    description: "Creative UI/UX designer needed for exciting projects...",
-    requirements: ["Figma", "Adobe Creative Suite", "Portfolio"],
-    benefits: ["Creative freedom", "Flexible schedule"],
-    postedDate: "2024-01-13",
-    platform: "Dribbble",
-    companyLogo: "/placeholder.svg?height=40&width=40",
-    featured: false,
-    urgent: false,
-    // bookmarked: false,
-  },
-];
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function JobsAdminPage() {
-  const [jobs, setJobs] = useState<Job[]>(mockJobs);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [workModeFilter, setWorkModeFilter] = useState("all");
   const [selectedJobs, setSelectedJobs] = useState<number[]>([]);
   const [sortBy, setSortBy] = useState("newest");
 
-  // Filter and sort jobs
+  // ✅ Fetch jobs from API
+  const fetchJobs = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch("/api/jobs");
+      if (!res.ok) throw new Error("Failed to fetch jobs");
+      const data = await res.json();
+      setJobs(data);
+    } catch (err) {
+      console.error("❌ Error loading jobs:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+  // ✅ Filter and sort jobs
   const filteredJobs = jobs
     .filter((job) => {
       const matchesSearch =
-        job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.location.toLowerCase().includes(searchTerm.toLowerCase());
+        job.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.location?.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesType =
-        typeFilter === "all" || job.type.toLowerCase() === typeFilter;
+        typeFilter === "all" || job.type?.toLowerCase() === typeFilter;
       const matchesWorkMode =
         workModeFilter === "all" ||
-        job.workMode.toLowerCase() === workModeFilter;
+        job.workMode?.toLowerCase() === workModeFilter;
 
       return matchesSearch && matchesType && matchesWorkMode;
     })
@@ -173,16 +128,24 @@ export default function JobsAdminPage() {
         : filteredJobs.map((job) => job.id)
     );
   };
-
   const handleBulkAction = (action: string) => {
     console.log(`Bulk action: ${action} on jobs:`, selectedJobs);
     // Implement bulk actions here
     setSelectedJobs([]);
   };
+  const handleDeleteJob = async (jobId: number) => {
+    if (!confirm("Are you sure you want to delete this job?")) return;
 
-  const handleDeleteJob = (jobId: number) => {
-    setJobs((prev) => prev.filter((job) => job.id !== jobId));
-    setSelectedJobs((prev) => prev.filter((id) => id !== jobId));
+    try {
+      const res = await fetch(`/api/jobs/${jobId}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete job");
+
+      setJobs((prev) => prev.filter((job) => job.id !== jobId));
+      setSelectedJobs((prev) => prev.filter((id) => id !== jobId));
+    } catch (err: any) {
+      console.error("❌ Delete failed:", err);
+      alert("Error deleting job: " + err.message);
+    }
   };
 
   const handleToggleFeatured = (jobId: number) => {
@@ -245,9 +208,10 @@ export default function JobsAdminPage() {
                   <p className="text-sm font-medium text-gray-600">
                     Total Jobs
                   </p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {stats.total}
-                  </p>
+
+                  <div className="text-2xl font-bold text-gray-900">
+                    {loading ? <Skeleton className="h-6 w-12" /> : stats.total}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -261,9 +225,13 @@ export default function JobsAdminPage() {
                 </div>
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Featured</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {stats.featured}
-                  </p>
+                  <div className="text-2xl font-bold text-gray-900">
+                    {loading ? (
+                      <Skeleton className="h-6 w-12" />
+                    ) : (
+                      stats.featured
+                    )}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -277,9 +245,9 @@ export default function JobsAdminPage() {
                 </div>
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Urgent</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {stats.urgent}
-                  </p>
+                  <div className="text-2xl font-bold text-gray-900">
+                    {loading ? <Skeleton className="h-6 w-12" /> : stats.urgent}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -293,9 +261,9 @@ export default function JobsAdminPage() {
                 </div>
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Remote</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {stats.remote}
-                  </p>
+                  <div className="text-2xl font-bold text-gray-900">
+                    {loading ? <Skeleton className="h-6 w-12" /> : stats.remote}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -409,178 +377,196 @@ export default function JobsAdminPage() {
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>Jobs ({filteredJobs.length})</span>
-              <Button variant="outline" size="sm">
+              {/* <Button variant="outline" size="sm">
                 <Filter className="h-4 w-4 mr-2" />
                 More Filters
+              </Button> */}
+              <Button
+                variant="outline"
+                onClick={() => fetchJobs()}
+                disabled={loading}
+              >
+                {loading ? "Syncing..." : "Sync"}
               </Button>
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
             <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-12">
-                      <Checkbox
-                        checked={
-                          selectedJobs.length === filteredJobs.length &&
-                          filteredJobs.length > 0
-                        }
-                        onCheckedChange={handleSelectAll}
-                      />
-                    </TableHead>
-                    <TableHead>Job Details</TableHead>
-                    <TableHead>Company</TableHead>
-                    <TableHead>Location & Type</TableHead>
-                    <TableHead>Salary</TableHead>
-                    <TableHead>Posted</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="w-12"></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredJobs.map((job) => (
-                    <TableRow key={job.id}>
-                      <TableCell>
+              {loading ? (
+                <div className="space-y-3">
+                  {[...Array(5)].map((_, i) => (
+                    <Skeleton key={i} className="h-12 w-full" />
+                  ))}
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-12">
                         <Checkbox
-                          checked={selectedJobs.includes(job.id)}
-                          onCheckedChange={() => handleSelectJob(job.id)}
+                          checked={
+                            selectedJobs.length === filteredJobs.length &&
+                            filteredJobs.length > 0
+                          }
+                          onCheckedChange={handleSelectAll}
                         />
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <div className="flex items-center space-x-2">
-                            <Link
-                              href={`/admin/jobs/${job.id}`}
-                              className="font-medium text-blue-600 hover:text-blue-800"
-                            >
-                              {job.title}
-                            </Link>
-                            {job.featured && (
-                              <Badge variant="secondary" className="text-xs">
-                                <Star className="h-3 w-3 mr-1" />
-                                Featured
-                              </Badge>
-                            )}
-                            {job.urgent && (
-                              <Badge variant="destructive" className="text-xs">
-                                <TrendingUp className="h-3 w-3 mr-1" />
-                                Urgent
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="text-sm text-gray-600 line-clamp-1">
-                            {job.description}
-                          </p>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          <img
-                            src={job.companyLogo || "/placeholder.svg"}
-                            alt={job.company}
-                            className="h-8 w-8 rounded-full"
+                      </TableHead>
+                      <TableHead>Job Details</TableHead>
+                      <TableHead>Company</TableHead>
+                      <TableHead>Location & Type</TableHead>
+                      <TableHead>Salary</TableHead>
+                      <TableHead>Posted</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="w-12"></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredJobs.map((job) => (
+                      <TableRow key={job.id}>
+                        <TableCell>
+                          <Checkbox
+                            checked={selectedJobs.includes(job.id)}
+                            onCheckedChange={() => handleSelectJob(job.id)}
                           />
-                          <div>
-                            <p className="font-medium">{job.company}</p>
-                            <p className="text-sm text-gray-600">
-                              {job.platform}
+                        </TableCell>
+                        <TableCell>
+                          <div className="space-y-1">
+                            <div className="flex items-center space-x-2">
+                              <Link
+                                href={`/admin/jobs/${job.id}`}
+                                className="font-medium text-blue-600 hover:text-blue-800"
+                              >
+                                {job.title}
+                              </Link>
+                              {job.featured && (
+                                <Badge variant="secondary" className="text-xs">
+                                  <Star className="h-3 w-3 mr-1" />
+                                  Featured
+                                </Badge>
+                              )}
+                              {job.urgent && (
+                                <Badge
+                                  variant="destructive"
+                                  className="text-xs"
+                                >
+                                  <TrendingUp className="h-3 w-3 mr-1" />
+                                  Urgent
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-sm text-gray-600 line-clamp-1">
+                              {job.description}
                             </p>
                           </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <div className="flex items-center text-sm">
-                            <MapPin className="h-3 w-3 mr-1 text-gray-400" />
-                            {job.location}
-                          </div>
+                        </TableCell>
+                        <TableCell>
                           <div className="flex items-center space-x-2">
-                            <Badge variant="outline" className="text-xs">
-                              {job.type}
-                            </Badge>
-                            <Badge variant="outline" className="text-xs">
-                              {job.workMode}
-                            </Badge>
+                            <img
+                              src={job.companyLogo || "/placeholder.svg"}
+                              alt={job.company}
+                              className="h-8 w-8 rounded-full"
+                            />
+                            <div>
+                              <p className="font-medium">{job.company}</p>
+                              <p className="text-sm text-gray-600">
+                                {job.platform}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center text-sm">
-                          <DollarSign className="h-3 w-3 mr-1 text-gray-400" />
-                          {job.salary}
-                        </div>
-                        {job.salaryType && (
-                          <p className="text-xs text-gray-500">
-                            per {job.salaryType}
-                          </p>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center text-sm text-gray-600">
-                          <Calendar className="h-3 w-3 mr-1" />
-                          {new Date(job.postedDate).toLocaleDateString()}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="text-green-600">
-                          Active
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem asChild>
-                              <Link href={`/jobs/${job.id}`}>
-                                <Eye className="h-4 w-4 mr-2" />
-                                View
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                              <Link href={`/admin/jobs/${job.id}/edit`}>
-                                <Edit className="h-4 w-4 mr-2" />
-                                Edit
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Copy className="h-4 w-4 mr-2" />
-                              Duplicate
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              onClick={() => handleToggleFeatured(job.id)}
-                            >
-                              <Star className="h-4 w-4 mr-2" />
-                              {job.featured
-                                ? "Remove Featured"
-                                : "Make Featured"}
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              onClick={() => handleDeleteJob(job.id)}
-                              className="text-red-600"
-                            >
-                              <Trash2 className="h-4 w-4 mr-2" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                        </TableCell>
+                        <TableCell>
+                          <div className="space-y-1">
+                            <div className="flex items-center text-sm">
+                              <MapPin className="h-3 w-3 mr-1 text-gray-400" />
+                              {job.location}
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Badge variant="outline" className="text-xs">
+                                {job.type}
+                              </Badge>
+                              <Badge variant="outline" className="text-xs">
+                                {job.workMode}
+                              </Badge>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center text-sm">
+                            <DollarSign className="h-3 w-3 mr-1 text-gray-400" />
+                            {job.salary}
+                          </div>
+                          {job.salaryType && (
+                            <p className="text-xs text-gray-500">
+                              per {job.salaryType}
+                            </p>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center text-sm text-gray-600">
+                            <Calendar className="h-3 w-3 mr-1" />
+                            {new Date(job.postedDate).toLocaleDateString()}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className="text-green-600">
+                            Active
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuItem asChild>
+                                <Link href={`/jobs/${job.id}`}>
+                                  <Eye className="h-4 w-4 mr-2" />
+                                  View
+                                </Link>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem asChild>
+                                <Link href={`/admin/jobs/${job.id}/edit`}>
+                                  <Edit className="h-4 w-4 mr-2" />
+                                  Edit
+                                </Link>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem>
+                                <Copy className="h-4 w-4 mr-2" />
+                                Duplicate
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                onClick={() => handleToggleFeatured(job.id)}
+                              >
+                                <Star className="h-4 w-4 mr-2" />
+                                {job.featured
+                                  ? "Remove Featured"
+                                  : "Make Featured"}
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                onClick={() => handleDeleteJob(job.id)}
+                                className="text-red-600"
+                              >
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
             </div>
           </CardContent>
         </Card>
 
-        {filteredJobs.length === 0 && (
+        {filteredJobs.length === 0 && !loading && (
           <div className="text-center py-12">
             <Building className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
