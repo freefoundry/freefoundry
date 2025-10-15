@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function AdminScholarshipsLoading() {
+export default function ScholarshipsLoading() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}

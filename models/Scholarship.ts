@@ -2,6 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IScholarship extends Document {
   title: string;
+  slug: string;
   provider: string;
   description: string;
   amount: string;
@@ -23,11 +24,17 @@ export interface IScholarship extends Document {
   requirements: string[];
   benefits: string[];
   status: "draft" | "published" | "archived";
+  visibility: "public" | "private";
+  featuredImage?: string;
+  publishDate?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 const ScholarshipSchema: Schema = new Schema<IScholarship>(
   {
     title: { type: String, required: true },
+    slug: { type: String, required: true, unique: true },
     provider: { type: String, required: true },
     description: { type: String, required: true },
     amount: { type: String, required: true },
@@ -53,6 +60,13 @@ const ScholarshipSchema: Schema = new Schema<IScholarship>(
       enum: ["draft", "published", "archived"],
       default: "draft",
     },
+    visibility: {
+      type: String,
+      enum: ["public", "private"],
+      default: "public",
+    },
+    featuredImage: { type: String },
+    publishDate: { type: Date },
   },
   { timestamps: true }
 );

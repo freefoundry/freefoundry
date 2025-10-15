@@ -20,7 +20,7 @@ export async function connectMongo(name: DbName): Promise<Connection> {
 
   if (name === "resources") {
     uri = process.env.MONGODB_RESOURCES_URI;
-    console.log("MONGODB_RESOURCES_URI:", uri);
+    console.log('MONGODB_RESOURCES_URI:', uri);
   } else if (name === "scholarships") {
     uri = process.env.MONGODB_SCHOLARSHIPS_URI;
   }
