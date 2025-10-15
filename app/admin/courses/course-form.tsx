@@ -31,7 +31,7 @@ import {
 import Link from "next/link";
 import { RichTextEditor } from "@/components/rich-text-editor"
 import { toast } from "react-toastify";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function CourseForm({
   mode = "create",
