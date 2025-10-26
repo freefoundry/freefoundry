@@ -1,37 +1,128 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
-  BookOpen,
-  Search,
-  Briefcase,
-  FileText,
-  PenToolIcon as Tool,
-  GraduationCap,
-  ChevronRight,
-  Clock,
-  Users,
-  CheckCircle,
-  Bell,
-  SearchIcon,
-} from "lucide-react";
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Header } from "@/components/layout/Header";
 import { Hero } from "@/components/sections/Hero";
 import { FeatureCard } from "@/components/cards/FeatureCard";
 import { CourseCard } from "@/components/cards/CourseCard";
-import { courses as mockCourses, jobs as mockJobs } from "@/lib/mock-data";
 import { JobCard } from "@/components/cards/JobCard";
 import { CTASection } from "@/components/sections/CTASection";
 import { Footer } from "@/components/layout/Footer";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  BookOpen,
+  Briefcase,
+  FileText,
+  GraduationCap,
+  PenToolIcon as Tool,
+  ChevronRight,
+  Users,
+  CheckCircle,
+} from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function Home() {
+  const [courses, setCourses] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+   const [jobs, setJobs] = useState<any[]>([]);
+   const [loadingJobs, setLoadingJobs] = useState(true);
+
+  useEffect(() => {
+    async function fetchCourses() {
+      const platformNames: Record<string, string> = {
+        udemy: "Udemy",
+        coursera: "Coursera",
+        edx: "edX",
+        pluralsight: "Pluralsight",
+        skillshare: "Skillshare",
+        linkedin: "LinkedIn Learning",
+        codecademy: "Codecademy",
+        freecodecamp: "freeCodeCamp",
+        "khan-academy": "Khan Academy",
+        youtube: "YouTube",
+        default: "Other",
+      };
+      try {
+        setLoading(true);
+        const res = await fetch("/api/courses", { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to fetch courses");
+
+        const data = await res.json();
+
+        // ✅ Normalize and take only 3
+        const normalized = (data.data || data || []).map((c: any) => ({
+          ...c,
+          tags: typeof c.tags === "string" ? JSON.parse(c.tags) : c.tags || [],
+          requirements:
+            typeof c.requirements === "string"
+              ? JSON.parse(c.requirements)
+              : c.requirements || [],
+          outcomes:
+            typeof c.outcomes === "string"
+              ? JSON.parse(c.outcomes)
+              : c.outcomes || [],
+          instructor:
+            typeof c.instructor === "string"
+              ? JSON.parse(c.instructor)
+              : c.instructor || {},
+          platform:
+            platformNames[c.platform?.toLowerCase()] || platformNames.default,
+        }));
+
+        setCourses(normalized.slice(0, 3));
+      } catch (err: any) {
+        console.error("❌ Error fetching courses:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchCourses();
+  }, []);
+
+  // ✅ Fetch Jobs (similar logic)
+  useEffect(() => {
+    async function fetchJobs() {
+      try {
+        setLoadingJobs(true);
+        const res = await fetch("/api/jobs", { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to fetch jobs");
+
+        const data = await res.json();
+
+        // Normalize job data
+        const normalized = (data.data || data || []).map((j: any) => ({
+          ...j,
+          requirements:
+            typeof j.requirements === "string"
+              ? JSON.parse(j.requirements)
+              : j.requirements || [],
+          benefits:
+            typeof j.benefits === "string"
+              ? JSON.parse(j.benefits)
+              : j.benefits || [],
+        }));
+        setJobs(normalized.slice(0, 3));
+      } catch (err: any) {
+        console.error("❌ Error fetching jobs:", err);
+        setError(err.message);
+      } finally {
+        setLoadingJobs(false);
+      }
+    }
+
+    fetchJobs();
+  }, []);
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
       <Header showSearch />
 
-      {/* Hero Section */}
+      {/* Hero */}
       <Hero
         title={
           <>
@@ -46,7 +137,7 @@ export default function Home() {
         badgeText="100% Free Resources"
       />
 
-      {/* Features Section */}
+      {/* Features */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -55,7 +146,7 @@ export default function Home() {
             </h2>
             <p className="text-gray-600 max-w-xl mx-auto">
               Curated resources for self-learners, students, and professionals
-              without financial barriers
+              without financial barriers.
             </p>
           </div>
 
@@ -63,7 +154,7 @@ export default function Home() {
             <FeatureCard
               icon={<BookOpen className="h-8 w-8 text-blue-600" />}
               title="Free Courses"
-              description="Access thousands of free Udemy courses with automatic expiry detection."
+              description="Access thousands of free Udemy and Coursera courses with expiry detection."
               href="/courses"
               linkText={
                 <>
@@ -74,7 +165,7 @@ export default function Home() {
             <FeatureCard
               icon={<GraduationCap className="h-8 w-8 text-blue-600" />}
               title="Study Materials"
-              description="WAEC, JAMB, and tertiary resources at no cost."
+              description="Access WAEC, JAMB, and tertiary resources at no cost."
               href="/resources"
               linkText={
                 <>
@@ -85,7 +176,7 @@ export default function Home() {
             <FeatureCard
               icon={<Briefcase className="h-8 w-8 text-blue-600" />}
               title="Job Opportunities"
-              description="Remote and local roles with salary insights."
+              description="Find remote and local roles with salary insights."
               href="/jobs"
               linkText={
                 <>
@@ -93,132 +184,11 @@ export default function Home() {
                 </>
               }
             />
-            <FeatureCard
-              icon={<FileText className="h-8 w-8 text-blue-600" />}
-              title="Tech Blog"
-              description="Curated articles and expert guides."
-              href="/resources#blog"
-              linkText={
-                <>
-                  Read Articles <ChevronRight className="h-4 w-4 ml-1" />
-                </>
-              }
-            />
-            <FeatureCard
-              icon={<GraduationCap className="h-8 w-8 text-blue-600" />}
-              title="Scholarships"
-              description="Discover funding opportunities for your education with comprehensive scholarship listings and
-                  application guidance."
-              href="/scholarships"
-              linkText={
-                <>
-                  Find Scholarships <ChevronRight className="h-4 w-4 ml-1" />
-                </>
-              }
-            />
-            <FeatureCard
-              icon={<Tool className="h-8 w-8 text-blue-600" />}
-              title="Career Tools"
-              description="Resume builders, GPA calculators, and more."
-              href="/resources#tools"
-              linkText={
-                <>
-                  Access Tools <ChevronRight className="h-4 w-4 ml-1" />
-                </>
-              }
-            />
           </div>
         </div>
       </section>
 
-      {/* Target Audience Section */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <Badge className="mb-2">For Everyone</Badge>
-            <h2 className="text-3xl font-bold mb-4">Who We're Built For</h2>
-            <p className="text-gray-600 max-w-xl mx-auto">
-              FreeFoundry serves diverse learning needs without financial
-              barriers
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-              <div className="flex items-center mb-4">
-                <div className="bg-blue-100 p-2 rounded-lg mr-4">
-                  <GraduationCap className="h-6 w-6 text-blue-600" />
-                </div>
-                <h3 className="text-lg font-semibold">Students</h3>
-              </div>
-              <ul className="space-y-2 text-gray-600">
-                <li className="flex items-center">
-                  <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
-                  <span>Secondary & tertiary education</span>
-                </li>
-                <li className="flex items-center">
-                  <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
-                  <span>WAEC/JAMB preparation materials</span>
-                </li>
-                <li className="flex items-center">
-                  <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
-                  <span>Course supplements & study guides</span>
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-              <div className="flex items-center mb-4">
-                <div className="bg-blue-100 p-2 rounded-lg mr-4">
-                  <Users className="h-6 w-6 text-blue-600" />
-                </div>
-                <h3 className="text-lg font-semibold">
-                  Self-Taught Developers
-                </h3>
-              </div>
-              <ul className="space-y-2 text-gray-600">
-                <li className="flex items-center">
-                  <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
-                  <span>Programming & development courses</span>
-                </li>
-                <li className="flex items-center">
-                  <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
-                  <span>Project-based learning resources</span>
-                </li>
-                <li className="flex items-center">
-                  <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
-                  <span>Developer tools & productivity aids</span>
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-              <div className="flex items-center mb-4">
-                <div className="bg-blue-100 p-2 rounded-lg mr-4">
-                  <Briefcase className="h-6 w-6 text-blue-600" />
-                </div>
-                <h3 className="text-lg font-semibold">Career Switchers</h3>
-              </div>
-              <ul className="space-y-2 text-gray-600">
-                <li className="flex items-center">
-                  <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
-                  <span>Career transition guidance</span>
-                </li>
-                <li className="flex items-center">
-                  <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
-                  <span>Industry-specific resources</span>
-                </li>
-                <li className="flex items-center">
-                  <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
-                  <span>Portfolio & resume building tools</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Courses Section */}
+      {/* Featured Courses */}
       <section id="courses" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
@@ -227,18 +197,40 @@ export default function Home() {
               href="/courses"
               className="text-blue-600 hover:text-blue-700 flex items-center"
             >
-              View All Courses
+              View All Courses <ChevronRight className="h-4 w-4 ml-1" />
             </Link>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mockCourses.slice(0, 3).map((c) => (
-              <CourseCard key={c.id} course={c} />
-            ))}
-          </div>
+
+          {loading ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(3)].map((_, i) => (
+                <Card key={i} className="overflow-hidden">
+                  <Skeleton className="w-full h-48" />
+                  <CardContent className="p-5 space-y-3">
+                    <Skeleton className="h-6 w-3/4" /> {/* Title */}
+                    <Skeleton className="h-4 w-1/2" /> {/* Instructor */}
+                    <Skeleton className="h-4 w-full" /> {/* Description */}
+                    <div className="flex gap-3">
+                      <Skeleton className="h-4 w-12" />
+                      <Skeleton className="h-4 w-12" />
+                      <Skeleton className="h-4 w-12" />
+                    </div>
+                    <Skeleton className="h-6 w-24" /> {/* Button */}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {courses.map((course) => (
+                <CourseCard key={course._id || course.id} course={course} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Latest Job Opportunities */}
+      {/* Latest Jobs */}
       <section id="jobs" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
@@ -252,41 +244,32 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mockJobs.slice(0, 3).map((job) => (
-              <JobCard key={job.id} job={job} variant="teaser" />
-            ))}
-          </div>
+          {loadingJobs ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(3)].map((_, i) => (
+                <Card key={i} className="overflow-hidden">
+                  <Skeleton className="w-full h-48" />
+                  <CardContent className="p-5 space-y-3">
+                    <Skeleton className="h-6 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-6 w-24" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {jobs.map((job) => (
+                <JobCard key={job._id || job.id} job={job} variant={"teaser"} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Statistics Section */}
-      <section className="py-16 px-4 bg-[#0052CC10] text-white">
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-[#0052CC]">
-            <div>
-              <p className="text-4xl font-bold mb-2">1,000+</p>
-              <p className="text-[#0052CC]">Free Resources</p>
-            </div>
-            <div>
-              <p className="text-4xl font-bold mb-2">15,000+</p>
-              <p className="text-[#0052CC]">Happy Learners</p>
-            </div>
-            <div>
-              <p className="text-4xl font-bold mb-2">24/7</p>
-              <p className="text-[#0052CC]">Always Available</p>
-            </div>
-            <div>
-              <p className="text-4xl font-bold mb-2">100%</p>
-              <p className="text-[#0052CC]">Free</p>
-            </div>
-          </div>
-        </div>
-      </section>
-      {/* CTA Section */}
+      {/* CTA + Footer */}
       <CTASection />
-
-      {/* Footer */}
       <Footer />
     </div>
   );

@@ -162,7 +162,7 @@ export const jobs: Job[] = [
 
 export const resources: Resource[] = [
   {
-    id: 1,
+    _id: 1,
     title: "MDN Web Docs",
     description: "Comprehensive resource for web developers, by Mozilla.",
     category: "Web Development",
@@ -175,7 +175,7 @@ export const resources: Resource[] = [
     image: "/placeholder.svg?height=200&width=300",
   },
   {
-    id: 2,
+    _id: 2,
     title: "Figma",
     description: "Collaborative interface design tool.",
     category: "Design",
@@ -187,7 +187,7 @@ export const resources: Resource[] = [
     image: "/placeholder.svg?height=200&width=300",
   },
   {
-    id: 3,
+    _id: 3,
     title: "Python Cheat Sheet",
     description: "Quick reference PDF for Python basics.",
     category: "Programming",

@@ -23,7 +23,7 @@ export function JobCard({
   initiallyBookmarked = false,
   variant = "list",
 }: {
-  job: Job;
+  job: any;
   initiallyBookmarked?: boolean;
   variant?: Variant;
 }) {
@@ -64,7 +64,7 @@ export function JobCard({
           <div className="flex flex-wrap gap-2 mb-4">
             {job.workMode && <Badge variant="secondary">{job.workMode}</Badge>}
             {job.type && <Badge variant="secondary">{job.type}</Badge>}
-            {job.requirements?.slice(0, 2).map((s) => (
+            {job.requirements?.slice(0, 2).map((s: string) => (
               <Badge key={s} variant="secondary">
                 {s}
               </Badge>
@@ -125,10 +125,10 @@ export function JobCard({
                 </Button>
               </div>
               <div className="flex flex-wrap gap-2 mb-3">
-                {job.featured && (
+                {job.featured === 1 && (
                   <Badge className="bg-blue-600">Featured</Badge>
                 )}
-                {job.urgent && <Badge className="bg-red-600">Urgent</Badge>}
+                {job.urgent === 1 && (<Badge className="bg-red-600">Urgent</Badge>)}
                 <Badge variant="outline">{job.type}</Badge>
                 <Badge variant="outline">{job.workMode}</Badge>
                 <Badge variant="outline">{job.experience}</Badge>
@@ -147,7 +147,7 @@ export function JobCard({
                   Required Skills:
                 </h4>
                 <div className="flex flex-wrap gap-1">
-                  {job.requirements.slice(0, 5).map((req) => (
+                  {job.requirements.slice(0, 5).map((req: string) => (
                     <Badge key={req} variant="outline" className="text-xs">
                       {req}
                     </Badge>

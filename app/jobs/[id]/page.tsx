@@ -123,12 +123,12 @@ export default function JobDetailPage({
             <p className="text-gray-600 mb-4">
               Sorry, this job doesn’t exist or may have been removed.
             </p>
-            <Link
+            {/* <Link
               href="/jobs"
               className="inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
             >
               Browse Jobs
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>

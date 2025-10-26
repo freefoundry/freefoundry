@@ -49,9 +49,9 @@ export interface Course {
   originalPrice?: string;
   expiryDate?: string | null;
   image?: string;
-  isPopular: boolean;
-  isNew: boolean;
-  isTrending: boolean;
+  isPopular: number;
+  isNew: number;
+  isTrending: number;
   whatYouWillLearn: string[];
   requirements: string[];
   curriculum?: CurriculumSection[];
@@ -81,20 +81,44 @@ export type Job = {
 };
 
 export type Resource = {
-  id: number;
+  _id?: string; // MongoDB ID
+  slug: string;
   title: string;
-  description: string;
-  category: string;
-  type: "Website" | "Tool" | "PDF" | string;
-  url: string;
+  content?: string;
+  excerpt?: string;
+
+  status: "draft" | "published" | "preview";
+  visibility: "public" | "private" | "password";
+
+  publishDate?: string;
+  featuredImage?: string;
+
   tags: string[];
-  rating: number;
-  featured?: boolean;
-  dateAdded: string;
-  image?: string;
+  type: string;
+  category: string;
+  author?: string;
+
+  downloadUrl?: string;
+  fileSize?: string;
+  fileFormat?: string;
+  difficulty?: string;
+  estimatedTime?: string;
+  price?: string;
+  originalPrice?: string;
+
+  isFeatured: boolean;
+  isPopular: boolean;
+
+  requirements: string[];
+  features: string[];
+  whatYouWillGet?: string[];
+
+  createdAt: string;
+  updatedAt: string;
 };
+
 export interface Scholarship {
-  id: number;
+  _id: number;
   title: string;
   provider: string;
   amount: string;
@@ -118,4 +142,5 @@ export interface Scholarship {
   ageLimit?: string;
   image: string;
   dateAdded: string;
+  status: "draft" | "published" | "archived";
 }

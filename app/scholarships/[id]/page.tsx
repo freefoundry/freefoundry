@@ -22,95 +22,198 @@ import {
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import type { Scholarship } from "@/lib/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ScholarshipDetailPage() {
   const params = useParams();
   const [scholarship, setScholarship] = useState<Scholarship | null>(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [timeUntilDeadline, setTimeUntilDeadline] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  // Mock data - in real app, this would come from API
-  const scholarships: Scholarship[] = [
-    {
-      id: 1,
-      title: "Chevening Scholarships",
-      provider: "UK Government",
-      amount: "Full funding",
-      currency: "GBP",
-      type: "Full",
-      level: "Graduate",
-      field: "Any Field",
-      location: "United Kingdom",
-      country: "UK",
-      eligibility: [
-        "Bachelor's degree",
-        "2+ years work experience",
-        "English proficiency",
-      ],
-      requirements: [
-        "IELTS 6.5",
-        "Leadership potential",
-        "UK return commitment",
-      ],
-      benefits: [
-        "Full tuition",
-        "Living allowance",
-        "Travel costs",
-        "Visa fees",
-      ],
-      applicationDeadline: "2024-11-05",
-      description:
-        "Chevening Scholarships are the UK government's global scholarship programme, funded by the Foreign and Commonwealth Office and partner organisations. The scholarships are awarded to outstanding emerging leaders to pursue a one-year master's degree in the UK. There are approximately 1,500 awards available globally for the 2024/2025 academic year, demonstrating the UK's ongoing commitment to developing global leaders.",
-      applicationUrl: "https://chevening.org",
-      tags: ["Government", "Leadership", "International"],
-      featured: true,
-      renewable: false,
-      numberOfAwards: 1500,
-      gpaRequirement: "Upper Second Class",
-      image: "/placeholder.svg?height=400&width=600&text=Chevening+Scholarship",
-      dateAdded: "2024-01-15",
-    },
-  ];
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
+  // ✅ Fetch real data from API
   useEffect(() => {
-    const scholarshipId = Number.parseInt(params.id as string);
-    const foundScholarship = scholarships.find((s) => s.id === scholarshipId);
-    setScholarship(foundScholarship || null);
-  }, [params.id]);
+    const fetchScholarship = async () => {
+      try {
+        setLoading(true);
+        const id = params.id as string;
 
+        const res = await fetch(`${baseUrl}/api/scholarships/${id}`, {
+          cache: "no-store",
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch scholarship");
+
+        const data = await res.json();
+        setScholarship(data);
+      } catch (error) {
+        console.error("❌ Error fetching scholarship:", error);
+        setScholarship(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (params.id) {
+      fetchScholarship();
+    }
+  }, [params.id, baseUrl]);
+
+  // ✅ Update time remaining until deadline
   useEffect(() => {
-    if (scholarship) {
+    if (scholarship?.applicationDeadline) {
       const updateTimeUntilDeadline = () => {
-        const deadline = new Date(scholarship.applicationDeadline);
+        const deadline = new Date(scholarship!.applicationDeadline);
         const now = new Date();
-        const timeDiff = deadline.getTime() - now.getTime();
+        const diff = deadline.getTime() - now.getTime();
 
-        if (timeDiff <= 0) {
+        if (diff <= 0) {
           setTimeUntilDeadline("Application deadline has passed");
           return;
         }
 
-        const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
         const hours = Math.floor(
-          (timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
         );
-        const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 
-        if (days > 0) {
+        if (days > 0)
           setTimeUntilDeadline(`${days} days, ${hours} hours remaining`);
-        } else if (hours > 0) {
+        else if (hours > 0)
           setTimeUntilDeadline(`${hours} hours, ${minutes} minutes remaining`);
-        } else {
-          setTimeUntilDeadline(`${minutes} minutes remaining`);
-        }
+        else setTimeUntilDeadline(`${minutes} minutes remaining`);
       };
 
       updateTimeUntilDeadline();
-      const interval = setInterval(updateTimeUntilDeadline, 60000); // Update every minute
-
+      const interval = setInterval(updateTimeUntilDeadline, 60000);
       return () => clearInterval(interval);
     }
   }, [scholarship]);
+
+ if (loading) {
+   return (
+     <div className="min-h-screen bg-gray-50">
+       {/* Header */}
+       <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+           <div className="flex items-center space-x-2">
+             <Skeleton className="h-9 w-9 rounded" />
+             <Skeleton className="h-6 w-32" />
+           </div>
+           <nav className="hidden md:flex items-center space-x-6">
+             <Skeleton className="h-4 w-16" />
+             <Skeleton className="h-4 w-20" />
+             <Skeleton className="h-4 w-12" />
+             <Skeleton className="h-4 w-24" />
+           </nav>
+         </div>
+       </header>
+
+       <div className="container mx-auto px-4 py-8">
+         {/* Back Button */}
+         <Skeleton className="h-10 w-40 mb-6" />
+
+         <div className="grid lg:grid-cols-3 gap-8">
+           {/* Main Content */}
+           <div className="lg:col-span-2 space-y-6">
+             {/* Header Card */}
+             <Card>
+               <CardContent className="p-6">
+                 <div className="flex justify-between items-start mb-4">
+                   <div className="flex-1">
+                     <div className="flex items-center gap-2 mb-2">
+                       <Skeleton className="h-6 w-20" />
+                       <Skeleton className="h-6 w-24" />
+                     </div>
+                     <Skeleton className="h-8 w-3/4 mb-2" />
+                     <Skeleton className="h-6 w-1/2" />
+                   </div>
+                   <div className="flex gap-2">
+                     <Skeleton className="h-8 w-8" />
+                     <Skeleton className="h-8 w-8" />
+                   </div>
+                 </div>
+
+                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                   {Array.from({ length: 4 }).map((_, i) => (
+                     <div key={i} className="flex items-center gap-2">
+                       <Skeleton className="h-5 w-5" />
+                       <div>
+                         <Skeleton className="h-4 w-16 mb-1" />
+                         <Skeleton className="h-3 w-12" />
+                       </div>
+                     </div>
+                   ))}
+                 </div>
+
+                 <div className="flex flex-wrap gap-2">
+                   {Array.from({ length: 3 }).map((_, i) => (
+                     <Skeleton key={i} className="h-6 w-16" />
+                   ))}
+                 </div>
+               </CardContent>
+             </Card>
+           </div>
+
+           {/* Sidebar */}
+           <div className="space-y-6">
+             <Card>
+               <CardContent className="p-6">
+                 <div className="text-center">
+                   <Skeleton className="h-8 w-8 mx-auto mb-3" />
+                   <Skeleton className="h-5 w-32 mx-auto mb-2" />
+                   <Skeleton className="h-6 w-40 mx-auto mb-1" />
+                   <Skeleton className="h-4 w-28 mx-auto" />
+                 </div>
+               </CardContent>
+             </Card>
+
+             <Card>
+               <CardContent className="p-6">
+                 <Skeleton className="h-12 w-full mb-4" />
+                 <Skeleton className="h-3 w-48 mx-auto" />
+               </CardContent>
+             </Card>
+
+             <Card>
+               <CardHeader>
+                 <Skeleton className="h-6 w-24" />
+               </CardHeader>
+               <CardContent className="space-y-4">
+                 {Array.from({ length: 4 }).map((_, i) => (
+                   <div key={i}>
+                     <div className="flex justify-between">
+                       <Skeleton className="h-4 w-24" />
+                       <Skeleton className="h-4 w-20" />
+                     </div>
+                     {i < 3 && <div className="border-t mt-4" />}
+                   </div>
+                 ))}
+               </CardContent>
+             </Card>
+
+             <Card>
+               <CardHeader>
+                 <Skeleton className="h-6 w-36" />
+               </CardHeader>
+               <CardContent>
+                 <Skeleton className="h-5 w-32 mb-2" />
+                 <div className="space-y-1">
+                   <Skeleton className="h-3 w-full" />
+                   <Skeleton className="h-3 w-3/4" />
+                 </div>
+               </CardContent>
+             </Card>
+           </div>
+         </div>
+       </div>
+     </div>
+   );
+ }
+
 
   if (!scholarship) {
     return (
@@ -118,7 +221,8 @@ export default function ScholarshipDetailPage() {
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Scholarship Not Found</h1>
           <p className="text-gray-600 mb-4">
-            The scholarship you're looking for doesn't exist.
+            The scholarship you’re looking for doesn’t exist or has been
+            removed.
           </p>
           <Button asChild>
             <Link href="/scholarships">Back to Scholarships</Link>
@@ -127,34 +231,28 @@ export default function ScholarshipDetailPage() {
       </div>
     );
   }
-
-  const getDeadlineStatus = () => {
-    const deadline = new Date(scholarship.applicationDeadline);
-    const now = new Date();
-    const daysUntilDeadline = Math.ceil(
-      (deadline.getTime() - now.getTime()) / (1000 * 3600 * 24)
-    );
-
-    if (daysUntilDeadline < 0)
-      return { status: "expired", color: "text-red-600", bgColor: "bg-red-50" };
-    if (daysUntilDeadline <= 7)
-      return {
-        status: "urgent",
-        color: "text-orange-600",
-        bgColor: "bg-orange-50",
-      };
-    if (daysUntilDeadline <= 30)
-      return {
-        status: "soon",
-        color: "text-yellow-600",
-        bgColor: "bg-yellow-50",
-      };
-    return {
-      status: "normal",
-      color: "text-green-600",
-      bgColor: "bg-green-50",
+ 
+  // ✅ Determine deadline status color
+    const getDeadlineStatus = () => {
+      // If there's no scholarship or no deadline, return a neutral status to avoid accessing null
+      if (!scholarship?.applicationDeadline) {
+        return { color: "text-gray-600", bg: "bg-gray-100", label: "No deadline" };
+      }
+  
+      const deadline = new Date(scholarship.applicationDeadline);
+      const now = new Date();
+      const daysLeft = Math.ceil(
+        (deadline.getTime() - now.getTime()) / (1000 * 3600 * 24)
+      );
+  
+      if (daysLeft < 0)
+        return { color: "text-red-600", bg: "bg-red-50", label: "Expired" };
+      if (daysLeft <= 7)
+        return { color: "text-orange-600", bg: "bg-orange-50", label: "Urgent" };
+      if (daysLeft <= 30)
+        return { color: "text-yellow-600", bg: "bg-yellow-50", label: "Soon" };
+      return { color: "text-green-600", bg: "bg-green-50", label: "Open" };
     };
-  };
 
   const deadlineStatus = getDeadlineStatus();
 
@@ -163,33 +261,23 @@ export default function ScholarshipDetailPage() {
       {/* Header */}
       <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <img
-              src="/freelogo.svg"
-              alt="FreeFoundry Logo"
-              className="w-full"
-            />
-          </div>
+          <Link href="/">
+            <img src="/freelogo.svg" alt="FreeFoundry" className="h-8" />
+          </Link>
           <nav className="hidden md:flex items-center space-x-6">
-            <Link
-              href="/courses"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
-            >
+            <Link href="/courses" className="text-gray-600 hover:text-blue-600">
               Courses
             </Link>
             <Link
               href="/resources"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
+              className="text-gray-600 hover:text-blue-600"
             >
               Resources
             </Link>
-            <Link
-              href="/jobs"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
-            >
+            <Link href="/jobs" className="text-gray-600 hover:text-blue-600">
               Jobs
             </Link>
-            <Link href="/scholarships" className="text-blue-600 font-medium">
+            <Link href="/scholarships" className="text-blue-600 font-semibold">
               Scholarships
             </Link>
           </nav>
@@ -197,7 +285,6 @@ export default function ScholarshipDetailPage() {
       </header>
 
       <div className="container mx-auto px-4 py-8">
-        {/* Back Button */}
         <Button variant="ghost" asChild className="mb-6">
           <Link href="/scholarships">
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -206,28 +293,24 @@ export default function ScholarshipDetailPage() {
         </Button>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Main Content */}
+          {/* Left Column */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Header Card */}
             <Card>
               <CardContent className="p-6">
                 <div className="flex justify-between items-start mb-4">
-                  <div className="flex-1">
+                  <div>
                     <div className="flex items-center gap-2 mb-2">
-                      {scholarship.featured && (
+                      {scholarship?.featured && (
                         <Badge className="bg-blue-600">Featured</Badge>
                       )}
-                      <Badge variant="outline">
-                        {scholarship.type} Funding
-                      </Badge>
+                      <Badge variant="outline">{scholarship?.type}</Badge>
                     </div>
-                    <h1 className="text-3xl font-bold mb-2">
-                      {scholarship.title}
+                    <h1 className="text-3xl font-bold mb-1">
+                      {scholarship?.title}
                     </h1>
-                    <p className="text-lg text-gray-600">
-                      by {scholarship.provider}
-                    </p>
+                    <p className="text-gray-600">by {scholarship?.provider}</p>
                   </div>
+
                   <div className="flex gap-2">
                     <Button
                       variant="outline"
@@ -246,12 +329,12 @@ export default function ScholarshipDetailPage() {
                   </div>
                 </div>
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div className="grid md:grid-cols-2 gap-4 mb-6">
                   <div className="flex items-center gap-2">
                     <DollarSign className="h-5 w-5 text-green-600" />
                     <div>
                       <p className="font-semibold text-green-600">
-                        {scholarship.amount}
+                        {scholarship?.amount}
                       </p>
                       <p className="text-xs text-gray-500">Funding Amount</p>
                     </div>
@@ -260,7 +343,7 @@ export default function ScholarshipDetailPage() {
                   <div className="flex items-center gap-2">
                     <GraduationCap className="h-5 w-5 text-blue-600" />
                     <div>
-                      <p className="font-semibold">{scholarship.level}</p>
+                      <p className="font-semibold">{scholarship?.level}</p>
                       <p className="text-xs text-gray-500">Education Level</p>
                     </div>
                   </div>
@@ -268,8 +351,10 @@ export default function ScholarshipDetailPage() {
                   <div className="flex items-center gap-2">
                     <MapPin className="h-5 w-5 text-purple-600" />
                     <div>
-                      <p className="font-semibold">{scholarship.location}</p>
-                      <p className="text-xs text-gray-500">Study Location</p>
+                      <p className="font-semibold">
+                        {scholarship?.country || scholarship?.location || "—"}
+                      </p>
+                      <p className="text-xs text-gray-500">Country</p>
                     </div>
                   </div>
 
@@ -277,20 +362,22 @@ export default function ScholarshipDetailPage() {
                     <Users className="h-5 w-5 text-orange-600" />
                     <div>
                       <p className="font-semibold">
-                        {scholarship.numberOfAwards}
+                        {scholarship?.numberOfAwards || 0}
                       </p>
                       <p className="text-xs text-gray-500">Awards Available</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-2">
-                  {scholarship.tags.map((tag: string) => (
-                    <Badge key={tag} variant="outline" className="text-xs">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
+                {(scholarship?.tags?.length ?? 0) > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {(scholarship?.tags ?? []).map((tag, i) => (
+                      <Badge key={i} variant="outline" className="text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
 
@@ -300,175 +387,104 @@ export default function ScholarshipDetailPage() {
                 <CardTitle>About This Scholarship</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-700 leading-relaxed">
-                  {scholarship.description}
-                </p>
-              </CardContent>
+                  <div
+                    className="text-gray-700 leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: scholarship?.description ?? "" }}
+                  />
+                </CardContent>
             </Card>
 
             {/* Benefits */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Benefits & Coverage</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-2 gap-4">
-                  {scholarship.benefits.map(
-                    (benefit: string, index: number) => (
-                      <div key={index} className="flex items-center gap-2">
-                        <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
-                        <span>{benefit}</span>
+            {(scholarship?.benefits?.length ?? 0) > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Benefits & Coverage</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {(scholarship?.benefits ?? []).map((b, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <CheckCircle className="h-5 w-5 text-green-600" />
+                        <span>{b}</span>
                       </div>
-                    )
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Eligibility */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Eligibility Criteria</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {scholarship.eligibility.map(
-                    (criterion: string, index: number) => (
-                      <div key={index} className="flex items-start gap-2">
-                        <CheckCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                        <span>{criterion}</span>
-                      </div>
-                    )
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+            {(scholarship?.eligibility?.length ?? 0) > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Eligibility Criteria</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
+                    {(scholarship?.eligibility ?? []).map((e, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5" />
+                        <span>{e}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Requirements */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Application Requirements</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {scholarship.requirements.map(
-                    (requirement: string, index: number) => (
-                      <div key={index} className="flex items-start gap-2">
-                        <AlertCircle className="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" />
-                        <span>{requirement}</span>
-                      </div>
-                    )
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+            {(scholarship?.requirements?.length ?? 0) > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Application Requirements</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
+                    {scholarship?.requirements?.map((r, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <AlertCircle className="h-5 w-5 text-orange-600 mt-0.5" />
+                        <span>{r}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Application Deadline */}
-            <Card className={deadlineStatus.bgColor}>
-              <CardContent className="p-6">
-                <div className="text-center">
-                  <Clock
-                    className={`h-8 w-8 mx-auto mb-3 ${deadlineStatus.color}`}
-                  />
-                  <h3 className="font-semibold mb-2">Application Deadline</h3>
-                  <p className="text-lg font-bold mb-1">
-                    {new Date(
-                      scholarship.applicationDeadline
-                    ).toLocaleDateString("en-US", {
-                      weekday: "long",
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </p>
-                  <p className={`text-sm ${deadlineStatus.color}`}>
-                    {timeUntilDeadline}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Apply Now */}
-            <Card>
-              <CardContent className="p-6">
-                <Button asChild className="w-full mb-4" size="lg">
-                  <a
-                    href={scholarship.applicationUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Apply Now
-                    <ExternalLink className="h-4 w-4 ml-2" />
-                  </a>
-                </Button>
-                <p className="text-xs text-gray-500 text-center">
-                  You will be redirected to the official application portal
+            <Card className={deadlineStatus.bg}>
+              <CardContent className="p-6 text-center">
+                <Clock
+                  className={`h-8 w-8 mx-auto mb-3 ${deadlineStatus.color}`}
+                />
+                <h3 className="font-semibold mb-2">Application Deadline</h3>
+                <p className="text-lg font-bold mb-1">
+                  {scholarship?.applicationDeadline ? new Date(scholarship.applicationDeadline).toLocaleDateString(
+                    "en-US",
+                    { year: "numeric", month: "long", day: "numeric" }
+                  ) : null}
+                </p>
+                <p className={`text-sm ${deadlineStatus.color}`}>
+                  {timeUntilDeadline}
                 </p>
               </CardContent>
             </Card>
 
-            {/* Quick Facts */}
             <Card>
-              <CardHeader>
-                <CardTitle>Quick Facts</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Field of Study:</span>
-                  <span className="font-medium">{scholarship.field}</span>
-                </div>
-                <Separator />
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Renewable:</span>
-                  <span className="font-medium">
-                    {scholarship.renewable ? "Yes" : "No"}
-                  </span>
-                </div>
-                <Separator />
-                {scholarship.gpaRequirement && (
-                  <>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">GPA Requirement:</span>
-                      <span className="font-medium">
-                        {scholarship.gpaRequirement}
-                      </span>
-                    </div>
-                    <Separator />
-                  </>
-                )}
-                {scholarship.ageLimit && (
-                  <>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Age Limit:</span>
-                      <span className="font-medium">
-                        {scholarship.ageLimit}
-                      </span>
-                    </div>
-                    <Separator />
-                  </>
-                )}
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Awards Available:</span>
-                  <span className="font-medium">
-                    {scholarship.numberOfAwards.toLocaleString()}
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Provider Info */}
-            <Card>
-              <CardHeader>
-                <CardTitle>About the Provider</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="font-medium mb-2">{scholarship.provider}</p>
-                <p className="text-sm text-gray-600">
-                  Learn more about this scholarship provider and their other
-                  funding opportunities.
+              <CardContent className="p-6">
+                <Button asChild className="w-full mb-4" size="lg">
+                  <a
+                    href={scholarship?.applicationUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Apply Now <ExternalLink className="h-4 w-4 ml-2" />
+                  </a>
+                </Button>
+                <p className="text-xs text-gray-500 text-center">
+                  You will be redirected to the official application portal.
                 </p>
               </CardContent>
             </Card>

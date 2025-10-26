@@ -1,5 +1,8 @@
-import mongoose, { Schema, Document } from "mongoose";
+import { Schema, Connection, Model, Document } from "mongoose";
 
+/**
+ * Scholarship document interface
+ */
 export interface IScholarship extends Document {
   title: string;
   slug: string;
@@ -31,7 +34,10 @@ export interface IScholarship extends Document {
   updatedAt?: Date;
 }
 
-const ScholarshipSchema: Schema = new Schema<IScholarship>(
+/**
+ * Schema definition
+ */
+const ScholarshipSchema = new Schema<IScholarship>(
   {
     title: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
@@ -71,5 +77,14 @@ const ScholarshipSchema: Schema = new Schema<IScholarship>(
   { timestamps: true }
 );
 
-export default mongoose.models.Scholarship ||
-  mongoose.model<IScholarship>("Scholarship", ScholarshipSchema);
+/**
+ * Utility: Safely get the Scholarship model for a given Mongoose connection.
+ * This ensures we can use multiple databases (e.g. "resources", "scholarships")
+ * without model re-registration errors.
+ */
+export function getScholarshipModel(conn: Connection): Model<IScholarship> {
+  return (
+    conn.models.Scholarship ||
+    conn.model<IScholarship>("Scholarship", ScholarshipSchema)
+  );
+}

@@ -1,40 +1,40 @@
 import { NextResponse } from "next/server";
 import { connectMongo } from "@/lib/db/mongodb";
-import { getScholarshipModel } from "@/models/Scholarship";
+import { getResourceModel } from "@/models/Resource";
 import cloudinary from "@/lib/cloudinary";
 
 // ==========================
-// GET all scholarships (auto publish by date)
+// GET all resources (auto publish by date)
 // ==========================
 export async function GET() {
   try {
-    const conn = await connectMongo("scholarships");
-    const Scholarship = getScholarshipModel(conn);
+    const conn = await connectMongo("resources");
+    const Resource = getResourceModel(conn);
 
-    // Auto-publish draft → published when publishDate is reached
-    await Scholarship.updateMany(
+    // ✅ Auto-publish draft resources when publishDate is reached
+    await Resource.updateMany(
       { status: "draft", publishDate: { $lte: new Date() } },
       { $set: { status: "published" } }
     );
 
-    const scholarships = await Scholarship.find().sort({ createdAt: -1 });
-    return NextResponse.json(scholarships);
+    const resources = await Resource.find().sort({ createdAt: -1 });
+    return NextResponse.json(resources);
   } catch (err: any) {
-    console.error("❌ Scholarship fetch error:", err);
+    console.error("❌ Resource fetch error:", err);
     return NextResponse.json(
-      { error: err.message || "Failed to fetch scholarships." },
+      { error: err.message || "Failed to fetch resources." },
       { status: 500 }
     );
   }
 }
 
 // ==========================
-// CREATE a new scholarship
+// CREATE a new resource
 // ==========================
 export async function POST(req: Request) {
   try {
-    const conn = await connectMongo("scholarships");
-    const Scholarship = getScholarshipModel(conn);
+    const conn = await connectMongo("resources");
+    const Resource = getResourceModel(conn);
     const data = await req.json();
 
     // ✅ Validate title
@@ -54,21 +54,20 @@ export async function POST(req: Request) {
         .replace(/^-|-$/g, "");
 
     // ✅ Prevent duplicate slug
-    const existing = await Scholarship.findOne({ slug });
+    const existing = await Resource.findOne({ slug });
     if (existing) {
       return NextResponse.json(
-        { error: "A scholarship with this slug already exists." },
+        { error: "A resource with this slug already exists." },
         { status: 409 }
       );
     }
 
     // ✅ Handle Cloudinary image upload (if Base64)
     let imageUrl = data.featuredImage || null;
-
     if (data.featuredImage && data.featuredImage.startsWith("data:")) {
       try {
         const uploadRes = await cloudinary.uploader.upload(data.featuredImage, {
-          folder: "scholarships",
+          folder: "resources",
           resource_type: "image",
         });
         imageUrl = uploadRes.secure_url;
@@ -81,8 +80,8 @@ export async function POST(req: Request) {
       }
     }
 
-    // ✅ Create scholarship document
-    const scholarship = await Scholarship.create({
+    // ✅ Create resource document
+    const resource = await Resource.create({
       ...data,
       slug,
       featuredImage: imageUrl,
@@ -92,9 +91,9 @@ export async function POST(req: Request) {
       updatedAt: new Date(),
     });
 
-    return NextResponse.json(scholarship, { status: 201 });
+    return NextResponse.json(resource, { status: 201 });
   } catch (err: any) {
-    console.error("❌ Error creating scholarship:", err);
+    console.error("❌ Error creating resource:", err);
 
     let message = "Unknown error occurred.";
     let status = 500;

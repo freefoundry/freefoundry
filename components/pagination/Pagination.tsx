@@ -69,7 +69,7 @@ export function Pagination({
                 variant={page === p ? "default" : "outline"}
                 size="sm"
                 onClick={() => onPageChange(p)}
-                className={`w-10 h-10 ${
+                className={`w-7 h-7 ${
                   page === p ? "bg-blue-600 text-white" : ""
                 }`}
               >

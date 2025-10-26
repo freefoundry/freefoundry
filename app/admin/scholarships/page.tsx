@@ -102,7 +102,7 @@ export default function AdminScholarshipsPage() {
   });
 
   const handleSelectAll = (checked: boolean) => {
-    setSelectedScholarships(checked ? filteredScholarships.map((s) => s.id) : []);
+    setSelectedScholarships(checked ? filteredScholarships.map((s) => s._id) : []);
   };
 
   const handleSelectScholarship = (id: number, checked: boolean) => {
@@ -127,12 +127,14 @@ export default function AdminScholarshipsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
+      <div className=" px-4 py-8">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold mb-2">Scholarships Management</h1>
-            <p className="text-gray-600">Manage scholarship opportunities and applications</p>
+            <p className="text-gray-600">
+              Manage scholarship opportunities and applications
+            </p>
           </div>
           <Button asChild>
             <Link href="/admin/scholarships/new">
@@ -190,53 +192,77 @@ export default function AdminScholarshipsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <Card>
                 <CardHeader className="flex justify-between items-center pb-2">
-                  <CardTitle className="text-sm font-medium">Total Scholarships</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Total Scholarships
+                  </CardTitle>
                   <GraduationCap className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{scholarships.length}</div>
-                  <p className="text-xs text-muted-foreground">+2 from last month</p>
+                  <div className="text-2xl font-bold">
+                    {scholarships.length}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    +2 from last month
+                  </p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex justify-between items-center pb-2">
-                  <CardTitle className="text-sm font-medium">Active Applications</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Active Applications
+                  </CardTitle>
                   <Calendar className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">
-                    {scholarships.filter(
-                      (s) => getDeadlineStatus(s.applicationDeadline).status !== "expired"
-                    ).length}
+                    {
+                      scholarships.filter(
+                        (s) =>
+                          getDeadlineStatus(s.applicationDeadline).status !==
+                          "expired"
+                      ).length
+                    }
                   </div>
-                  <p className="text-xs text-muted-foreground">Accepting applications</p>
+                  <p className="text-xs text-muted-foreground">
+                    Accepting applications
+                  </p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex justify-between items-center pb-2">
-                  <CardTitle className="text-sm font-medium">Featured</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Featured
+                  </CardTitle>
                   <Users className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">
                     {scholarships.filter((s) => s.featured).length}
                   </div>
-                  <p className="text-xs text-muted-foreground">Featured scholarships</p>
+                  <p className="text-xs text-muted-foreground">
+                    Featured scholarships
+                  </p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex justify-between items-center pb-2">
-                  <CardTitle className="text-sm font-medium">Total Awards</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Total Awards
+                  </CardTitle>
                   <DollarSign className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">
-                    {scholarships.reduce((sum, s) => sum + s.numberOfAwards, 0).toLocaleString()}
+                    {scholarships
+                      .reduce((sum, s) => sum + s.numberOfAwards, 0)
+                      .toLocaleString()}
                   </div>
-                  <p className="text-xs text-muted-foreground">Available positions</p>
+                  <p className="text-xs text-muted-foreground">
+                    Available positions
+                  </p>
                 </CardContent>
               </Card>
             </div>
@@ -268,7 +294,10 @@ export default function AdminScholarshipsPage() {
                     </SelectContent>
                   </Select>
 
-                  <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                  <Select
+                    value={selectedStatus}
+                    onValueChange={setSelectedStatus}
+                  >
                     <SelectTrigger className="w-full md:w-48">
                       <SelectValue placeholder="Filter by status" />
                     </SelectTrigger>
@@ -296,16 +325,32 @@ export default function AdminScholarshipsPage() {
                     {selectedScholarships.length} scholarship(s) selected
                   </span>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => handleBulkAction("feature")}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleBulkAction("feature")}
+                    >
                       Feature
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => handleBulkAction("unfeature")}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleBulkAction("unfeature")}
+                    >
                       Unfeature
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => handleBulkAction("export")}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleBulkAction("export")}
+                    >
                       <Download className="h-4 w-4 mr-1" /> Export
                     </Button>
-                    <Button variant="destructive" size="sm" onClick={() => handleBulkAction("delete")}>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleBulkAction("delete")}
+                    >
                       <Trash2 className="h-4 w-4 mr-1" /> Delete
                     </Button>
                   </div>
@@ -322,7 +367,8 @@ export default function AdminScholarshipsPage() {
                       <TableHead className="w-12">
                         <Checkbox
                           checked={
-                            selectedScholarships.length === filteredScholarships.length &&
+                            selectedScholarships.length ===
+                              filteredScholarships.length &&
                             filteredScholarships.length > 0
                           }
                           onCheckedChange={handleSelectAll}
@@ -334,22 +380,28 @@ export default function AdminScholarshipsPage() {
                       <TableHead>Level</TableHead>
                       <TableHead>Location</TableHead>
                       <TableHead>Deadline</TableHead>
+                      <TableHead>Deadline Status</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead className="w-12"></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {filteredScholarships.map((s) => {
-                      const deadlineInfo = getDeadlineStatus(s.applicationDeadline);
-                      const isSelected = selectedScholarships.includes(s.id);
+                      const deadlineInfo = getDeadlineStatus(
+                        s.applicationDeadline
+                      );
+                      const isSelected = selectedScholarships.includes(s._id);
 
                       return (
-                        <TableRow key={s.id}>
+                        <TableRow key={s._id}>
                           <TableCell>
                             <Checkbox
                               checked={isSelected}
                               onCheckedChange={(checked) =>
-                                handleSelectScholarship(s.id, checked as boolean)
+                                handleSelectScholarship(
+                                  s._id,
+                                  checked as boolean
+                                )
                               }
                             />
                           </TableCell>
@@ -362,23 +414,35 @@ export default function AdminScholarshipsPage() {
                               />
                               <div>
                                 <div className="font-medium">{s.title}</div>
-                                <div className="text-sm text-gray-500">{s.field}</div>
+                                <div className="text-sm text-gray-500">
+                                  {s.field}
+                                </div>
                                 <div className="flex gap-1 mt-1">
                                   {s.featured && (
-                                    <Badge className="bg-blue-600 text-xs">Featured</Badge>
+                                    <Badge className="bg-blue-600 text-xs">
+                                      Featured
+                                    </Badge>
                                   )}
-                                  <Badge variant="outline" className="text-xs">{s.type}</Badge>
+                                  <Badge variant="outline" className="text-xs">
+                                    {s.type}
+                                  </Badge>
                                 </div>
                               </div>
                             </div>
                           </TableCell>
                           <TableCell>
                             <div className="font-medium">{s.provider}</div>
-                            <div className="text-sm text-gray-500">{s.country}</div>
+                            <div className="text-sm text-gray-500">
+                              {s.country}
+                            </div>
                           </TableCell>
                           <TableCell>
-                            <div className="font-medium text-green-600">{s.amount}</div>
-                            <div className="text-sm text-gray-500">{s.currency}</div>
+                            <div className="font-medium text-green-600">
+                              {s.amount}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {s.currency}
+                            </div>
                           </TableCell>
                           <TableCell>
                             <Badge variant="outline">{s.level}</Badge>
@@ -391,11 +455,18 @@ export default function AdminScholarshipsPage() {
                           </TableCell>
                           <TableCell>
                             <div className="text-sm">
-                              {new Date(s.applicationDeadline).toLocaleDateString()}
+                              {new Date(
+                                s.applicationDeadline
+                              ).toLocaleDateString()}
                             </div>
                           </TableCell>
                           <TableCell>
-                            <Badge className={deadlineInfo.color}>{deadlineInfo.text}</Badge>
+                            <Badge className={deadlineInfo.color}>
+                              {deadlineInfo.text}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {s.status}
                           </TableCell>
                           <TableCell>
                             <DropdownMenu>
@@ -406,12 +477,14 @@ export default function AdminScholarshipsPage() {
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
                                 <DropdownMenuItem asChild>
-                                  <Link href={`/scholarships/${s.id}`}>
+                                  <Link href={`/scholarships/${s._id}`}>
                                     <Eye className="h-4 w-4 mr-2" /> View
                                   </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem asChild>
-                                  <Link href={`/admin/scholarships/${s.id}/edit`}>
+                                  <Link
+                                    href={`/admin/scholarships/${s._id}/edit`}
+                                  >
                                     <Edit className="h-4 w-4 mr-2" /> Edit
                                   </Link>
                                 </DropdownMenuItem>

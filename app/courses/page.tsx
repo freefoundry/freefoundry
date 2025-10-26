@@ -27,6 +27,7 @@
   import Link from "next/link";
   import { Header } from "@/components/layout/Header";
   import { Skeleton } from "@/components/ui/skeleton";
+import { Pagination } from "@/components/pagination/Pagination";
 
   type Course = {
     id: number;
@@ -229,8 +230,8 @@
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">Free Courses</h1>
             <p className="text-gray-600">
-              Discover {totalCourses} curated free courses from top platforms like
-              Udemy and Coursera
+              Discover {totalCourses} curated free courses from top platforms
+              like Udemy and Coursera
             </p>
           </div>
 
@@ -304,7 +305,10 @@
                               id={`platform-${platform}`}
                               checked={selectedPlatforms.includes(platform)}
                               onCheckedChange={(checked) =>
-                                handlePlatformChange(platform, checked as boolean)
+                                handlePlatformChange(
+                                  platform,
+                                  checked as boolean
+                                )
                               }
                             />
                             <Label
@@ -333,7 +337,10 @@
                               id={`category-${category}`}
                               checked={selectedCategories.includes(category)}
                               onCheckedChange={(checked) =>
-                                handleCategoryChange(category, checked as boolean)
+                                handleCategoryChange(
+                                  category,
+                                  checked as boolean
+                                )
                               }
                             />
                             <Label
@@ -365,7 +372,10 @@
                                 handleLevelChange(level, checked as boolean)
                               }
                             />
-                            <Label htmlFor={`level-${level}`} className="text-sm">
+                            <Label
+                              htmlFor={`level-${level}`}
+                              className="text-sm"
+                            >
                               {level}
                             </Label>
                           </div>
@@ -432,7 +442,9 @@
                     <SelectItem value="popular">Most Popular</SelectItem>
                     <SelectItem value="rating">Highest Rated</SelectItem>
                     <SelectItem value="newest">Newest</SelectItem>
-                    <SelectItem value="duration-short">Shortest First</SelectItem>
+                    <SelectItem value="duration-short">
+                      Shortest First
+                    </SelectItem>
                     <SelectItem value="duration-long">Longest First</SelectItem>
                   </SelectContent>
                 </Select>
@@ -469,6 +481,7 @@
                   </Button>
                 </div>
               ) : (
+                <>
                 <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
                   {courses.map((course) => (
                     <Card
@@ -515,9 +528,10 @@
                         </p>
                         <p
                           className="text-gray-600 text-sm mb-4 line-clamp-2"
-                          dangerouslySetInnerHTML={{ __html: course.description }}
-                        >
-                        </p>
+                          dangerouslySetInnerHTML={{
+                            __html: course.description,
+                          }}
+                        ></p>
                         <div className="flex items-center gap-4 text-xs text-gray-500 mb-4">
                           <div className="flex items-center">
                             <Star className="h-3 w-3 text-yellow-400 mr-1 fill-current" />
@@ -554,7 +568,9 @@
                             {course.expiryDate && (
                               <p className="text-xs text-orange-600 mt-1">
                                 Until{" "}
-                                {new Date(course.expiryDate).toLocaleDateString()}
+                                {new Date(
+                                  course.expiryDate
+                                ).toLocaleDateString()}
                               </p>
                             )}
                           </div>
@@ -564,10 +580,23 @@
                         </div>
                       </CardContent>
                     </Card>
+                    
                   ))}
                 </div>
+                 {totalCourses > coursesPerPage && (
+              <Pagination
+                total={totalCourses}
+                perPage={coursesPerPage}
+                page={currentPage}
+                onPageChange={(p) => setCurrentPage(p)}
+                showSizer
+                onPerPageChange={(n) => setCoursesPerPage(n)}
+              />
+            )}
+            </>
               )}
             </div>
+           
           </div>
         </div>
       </div>

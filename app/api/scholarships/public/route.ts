@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
+import type { SortOrder } from "mongoose";
 import { connectMongo } from "@/lib/db/mongodb";
-import Scholarship from "@/models/Scholarship";
+import { getScholarshipModel } from "@/models/Scholarship";
 
-// --- Utility: Build MongoDB query dynamically ---
+// ==========================
+// Utility: Build MongoDB Query
+// ==========================
 function buildMongoQuery({ search, type, level, field, country }: any) {
   const query: any = { visibility: "public" };
 
-  // ✅ Search by title, provider, field, or tags
   if (search) {
     query.$or = [
       { title: { $regex: search, $options: "i" } },
@@ -16,48 +18,36 @@ function buildMongoQuery({ search, type, level, field, country }: any) {
     ];
   }
 
-  // ✅ Filter by type (Full, Partial, etc.)
-  if (type && type !== "all") {
-    query.type = type;
-  }
-
-  // ✅ Filter by level (Graduate, PhD, etc.)
-  if (level && level !== "all") {
-    query.level = level;
-  }
-
-  // ✅ Filter by field of study
-  if (field && field !== "all") {
-    query.field = field;
-  }
-
-  // ✅ Filter by country
-  if (country && country !== "all") {
-    query.country = country;
-  }
+  if (type && type !== "all") query.type = type;
+  if (level && level !== "all") query.level = level;
+  if (field && field !== "all") query.field = field;
+  if (country && country !== "all") query.country = country;
 
   return query;
 }
 
-// --- Utility: Handle sorting ---
-import type { SortOrder } from "mongoose";
-
+// ==========================
+// Utility: Sort Option Builder
+// ==========================
 function getSortOption(sort: string): Record<string, SortOrder> {
   switch (sort) {
     case "popular":
-      return { views: -1 as SortOrder };
+      return { views: -1 };
     case "deadline":
-      return { applicationDeadline: 1 as SortOrder };
+      return { applicationDeadline: 1 };
     case "oldest":
-      return { createdAt: 1 as SortOrder };
+      return { createdAt: 1 };
     default:
-      return { createdAt: -1 as SortOrder }; // newest first
+      return { createdAt: -1 }; // newest first
   }
 }
 
-// --- Shared handler ---
+// ==========================
+// Shared Query Handler
+// ==========================
 async function handleQuery(params: any) {
-  await connectMongo("scholarships");
+  const conn = await connectMongo("scholarships");
+  const Scholarship = getScholarshipModel(conn);
 
   const {
     page = 1,
@@ -72,7 +62,6 @@ async function handleQuery(params: any) {
 
   const query = buildMongoQuery({ search, type, level, field, country });
   const sortOption = getSortOption(sort);
-
   const skip = (Number(page) - 1) * Number(limit);
 
   const [data, total] = await Promise.all([

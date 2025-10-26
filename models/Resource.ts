@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Connection } from "mongoose";
 
 export interface IResource extends Document {
   title: string;
@@ -10,9 +10,9 @@ export interface IResource extends Document {
   publishDate?: Date;
   featuredImage?: string;
   tags: string[];
-  type: string;
-  category: string;
-  author: string;
+  type?: string;
+  category?: string;
+  author?: string;
   downloadUrl?: string;
   fileSize?: string;
   fileFormat?: string;
@@ -25,14 +25,16 @@ export interface IResource extends Document {
   requirements: string[];
   features: string[];
   whatYouWillGet: string[];
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
-const ResourceSchema: Schema = new Schema<IResource>(
+const ResourceSchema = new Schema<IResource>(
   {
     title: { type: String, required: true },
     content: { type: String, required: true },
     excerpt: String,
-    slug: { type: String, unique: true, required: true },
+    slug: { type: String, required: true, unique: true, trim: true },
     status: {
       type: String,
       enum: ["draft", "published", "preview"],
@@ -45,7 +47,7 @@ const ResourceSchema: Schema = new Schema<IResource>(
     },
     publishDate: Date,
     featuredImage: String,
-    tags: [String],
+    tags: { type: [String], default: [] },
     type: String,
     category: String,
     author: String,
@@ -58,12 +60,16 @@ const ResourceSchema: Schema = new Schema<IResource>(
     originalPrice: String,
     isFeatured: { type: Boolean, default: false },
     isPopular: { type: Boolean, default: false },
-    requirements: [String],
-    features: [String],
-    whatYouWillGet: [String],
+    requirements: { type: [String], default: [] },
+    features: { type: [String], default: [] },
+    whatYouWillGet: { type: [String], default: [] },
   },
   { timestamps: true }
 );
 
-export default mongoose.models.Resource ||
-  mongoose.model<IResource>("Resource", ResourceSchema);
+// ✅ Dynamic model getter (safe for Next.js hot reload)
+export function getResourceModel(conn: Connection) {
+  return (
+    conn.models.Resource || conn.model<IResource>("Resource", ResourceSchema)
+  );
+}
