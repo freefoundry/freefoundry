@@ -100,7 +100,7 @@ export default function JobDetailPage({
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header showSearch />
+        <Header showSearch type="jobs" />
         <div className="container mx-auto px-4 py-8 space-y-4">
           <Skeleton className="h-8 w-1/3" />
           <Skeleton className="h-6 w-1/4" />
@@ -113,7 +113,7 @@ export default function JobDetailPage({
   if (!job) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
-        <Header showSearch />
+        <Header showSearch type="jobs" />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <Building className="h-10 w-10 text-red-500 mx-auto mb-4" />
@@ -142,7 +142,7 @@ export default function JobDetailPage({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header showSearch />
+      <Header showSearch type="jobs" />
 
       {/* Breadcrumb */}
       <div className="bg-white border-b">

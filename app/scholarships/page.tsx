@@ -31,6 +31,7 @@ import {
 import Link from "next/link";
 import { Header } from "@/components/layout/Header";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Pagination } from "@/components/pagination/Pagination";
 
 type Scholarship = {
   _id: string;
@@ -164,7 +165,7 @@ export default function ScholarshipsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header showSearch />
+      <Header showSearch type="scholarships" />
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -302,17 +303,31 @@ export default function ScholarshipsPage() {
             ) : scholarships.length === 0 ? (
               <NoScholarships clearAll={clearAllFilters} />
             ) : (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {scholarships.map((s) => (
-                  <ScholarshipCard
-                    key={s._id}
-                    scholarship={s}
-                    toggleBookmark={toggleBookmark}
-                    bookmarked={bookmarked.includes(s._id)}
-                    getDeadlineStatus={getDeadlineStatus}
-                  />
-                ))}
-              </div>
+              <>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {scholarships.map((s) => (
+                    <ScholarshipCard
+                      key={s._id}
+                      scholarship={s}
+                      toggleBookmark={toggleBookmark}
+                      bookmarked={bookmarked.includes(s._id)}
+                      getDeadlineStatus={getDeadlineStatus}
+                    />
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {totalScholarships > perPage && (
+                  <div className="mt-6">
+                    <Pagination
+                      total={totalScholarships}
+                      perPage={perPage}
+                      page={currentPage}
+                      onPageChange={(page) => setCurrentPage(page)}
+                    />
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

@@ -31,6 +31,7 @@ import {
 import Link from "next/link";
 import { Header } from "@/components/layout/Header";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Pagination } from "@/components/pagination/Pagination";
 
 type Job = {
   id: number;
@@ -68,7 +69,7 @@ export default function JobsPage() {
   const [sortBy, setSortBy] = useState("newest");
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [jobsPerPage] = useState(8);
+  const [jobsPerPage] = useState(5);
   const [bookmarkedJobs, setBookmarkedJobs] = useState<number[]>([]);
 
   // Fetch jobs
@@ -190,7 +191,7 @@ export default function JobsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header showSearch />
+      <Header showSearch type="jobs" />
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -337,17 +338,30 @@ export default function JobsPage() {
             ) : jobs.length === 0 ? (
               <NoJobs clearAll={clearAllFilters} />
             ) : (
-              <div className="space-y-4">
-                {jobs.map((job) => (
-                  <JobCard
-                    key={job.id}
-                    job={job}
-                    toggleBookmark={toggleBookmark}
-                    bookmarked={bookmarkedJobs.includes(job.id)}
-                    getDaysAgo={getDaysAgo}
-                  />
-                ))}
-              </div>
+              <>
+                <div className="space-y-4">
+                  {jobs.map((job) => (
+                    <JobCard
+                      key={job.id}
+                      job={job}
+                      toggleBookmark={toggleBookmark}
+                      bookmarked={bookmarkedJobs.includes(job.id)}
+                      getDaysAgo={getDaysAgo}
+                    />
+                  ))}
+                </div>
+
+                {totalJobs > jobsPerPage && (
+                  <div className="mt-6">
+                    <Pagination
+                      total={totalJobs}
+                      perPage={jobsPerPage}
+                      page={currentPage}
+                      onPageChange={(p) => setCurrentPage(p)}
+                    />
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

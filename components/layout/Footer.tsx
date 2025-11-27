@@ -8,9 +8,9 @@ export function Footer() {
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <img
-                src="/placeholder.svg?height=36&width=36"
+                src="/bluelogo.svg"
                 alt="FreeFoundry Logo"
-                className="h-8 w-8"
+                className="w-10 h-10"
               />
               <span className="text-xl font-bold text-white">FreeFoundry</span>
             </div>

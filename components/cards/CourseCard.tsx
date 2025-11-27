@@ -20,6 +20,9 @@ const platformColors: Record<string, string> = {
 };
 
 export function CourseCard({ course }: { course: any }) {
+  const isExpired =
+    course.expiryDate && new Date(course.expiryDate) < new Date();
+
   return (
     <Card
       key={course.id}
@@ -119,16 +122,22 @@ export function CourseCard({ course }: { course: any }) {
             <span className="font-semibold text-green-600">
               {course.price === "0.00" || course.price === "Free"
                 ? "Free"
-                : course.price}
+                : "$" +  course.price}
             </span>
             {course.originalPrice && (
               <span className="text-xs text-gray-500 line-through ml-2">
-                {course.originalPrice}
+                {"$" + course.originalPrice}
               </span>
             )}
             {course.expiryDate && (
-              <p className="text-xs text-orange-600 mt-1">
-                Until {new Date(course.expiryDate).toLocaleDateString()}
+              <p
+                className={`text-xs mt-1 ${
+                  isExpired ? "text-red-600 font-semibold" : "text-orange-600"
+                }`}
+              >
+                {isExpired
+                  ? "Expired"
+                  : `Until ${new Date(course.expiryDate).toLocaleDateString()}`}
               </p>
             )}
           </div>

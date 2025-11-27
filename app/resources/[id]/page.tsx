@@ -197,7 +197,7 @@ export default function ResourceDetailPage({ params }: { params: Promise<{ id: s
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header showSearch />
+      <Header showSearch type="resources" />
 
       {/* Breadcrumb */}
       <div className="bg-white border-b">
@@ -305,8 +305,7 @@ export default function ResourceDetailPage({ params }: { params: Promise<{ id: s
                   dangerouslySetInnerHTML={{
                     __html: resource.content ?? "",
                   }}
-                >
-                </p>
+                ></p>
               </CardContent>
             </Card>
 
@@ -355,14 +354,14 @@ export default function ResourceDetailPage({ params }: { params: Promise<{ id: s
                       </Link>
                     </Button>
                   ) : null}
-                  <Button
+                  {/* <Button
                     variant="outline"
                     className="w-full bg-transparent"
                     size="lg"
                   >
                     <Bookmark className="h-4 w-4 mr-2" />
                     Add to Collection
-                  </Button>
+                  </Button> */}
                 </div>
 
                 <div className="space-y-3 text-sm">

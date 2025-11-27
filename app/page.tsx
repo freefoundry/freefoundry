@@ -120,7 +120,7 @@ export default function Home() {
   }, []);
   return (
     <div className="min-h-screen bg-white">
-      <Header showSearch />
+      <Header showSearch  />
 
       {/* Hero */}
       <Hero
@@ -131,7 +131,7 @@ export default function Home() {
         }
         subtitle="Discover curated free learning resources, courses, tutorials, tech blogs, study materials, and tools designed to empower your learning journey."
         primaryHref="/courses"
-        primaryText="Explore Resources"
+        primaryText="Explore Courses"
         secondaryText="Join Community"
         imageSrc="https://alterainstitute.com/blog/content/images/2024/12/data-src-image-11293e72-5d3a-47f1-ad99-d1c394682d22.jpeg"
         badgeText="100% Free Resources"

@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/select";
 import type { Resource } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Pagination } from "@/components/pagination/Pagination";
 
 export default function ResourcesPage() {
   const [resources, setResources] = useState<Resource[]>([]);
@@ -169,7 +170,7 @@ export default function ResourcesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header showSearch />
+      <Header showSearch type="resources" />
 
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-2">Learning Resources</h1>
@@ -309,62 +310,79 @@ export default function ResourcesPage() {
                 <p className="text-gray-500">No resources found</p>
               </div>
             ) : (
-              <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {resources.map((r) => (
-                  <Card
-                    key={r._id}
-                    className="overflow-hidden hover:shadow-lg transition-shadow"
-                  >
-                    <div className="relative">
-                      <img
-                        src={r.featuredImage || "/placeholder.svg"}
-                        alt={r.title}
-                        className="w-full h-48 object-cover"
-                      />
-                      {r.isFeatured && (
-                        <Badge className="absolute top-3 left-3 bg-blue-600">
-                          Featured
-                        </Badge>
-                      )}
-                    </div>
-
-                    <CardContent className="p-5">
-                      <h3 className="font-semibold text-lg mb-1 line-clamp-1">
-                        {r.title}
-                      </h3>
-                      <p className="text-sm text-blue-600 mb-2">{r.category}</p>
-                      <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                        {r.excerpt || r.content}
-                      </p>
-
-                      <div className="flex flex-wrap gap-1 mb-4">
-                        {r.tags?.slice(0, 3).map((tag) => (
-                          <Badge
-                            key={tag}
-                            variant="outline"
-                            className="text-xs"
-                          >
-                            <Tag className="h-2 w-2 mr-1" />
-                            {tag}
+              <>
+                <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {resources.map((r) => (
+                    <Card
+                      key={r._id}
+                      className="overflow-hidden hover:shadow-lg transition-shadow"
+                    >
+                      {/* Resource content here */}
+                      <div className="relative">
+                        <img
+                          src={r.featuredImage || "/placeholder.svg"}
+                          alt={r.title}
+                          className="w-full h-48 object-cover"
+                        />
+                        {r.isFeatured && (
+                          <Badge className="absolute top-3 left-3 bg-blue-600">
+                            Featured
                           </Badge>
-                        ))}
+                        )}
                       </div>
 
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center text-xs text-gray-500">
-                          <Calendar className="h-3 w-3 mr-1" />
-                          {new Date(r.createdAt || "").toLocaleDateString()}
+                      <CardContent className="p-5">
+                        <h3 className="font-semibold text-lg mb-1 line-clamp-1">
+                          {r.title}
+                        </h3>
+                        <p className="text-sm text-blue-600 mb-2">
+                          {r.category}
+                        </p>
+                        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                          {r.excerpt || r.content}
+                        </p>
+
+                        <div className="flex flex-wrap gap-1 mb-4">
+                          {r.tags?.slice(0, 3).map((tag) => (
+                            <Badge
+                              key={tag}
+                              variant="outline"
+                              className="text-xs"
+                            >
+                              <Tag className="h-2 w-2 mr-1" />
+                              {tag}
+                            </Badge>
+                          ))}
                         </div>
-                        <Button size="sm" asChild>
-                          <Link href={`/resources/${r.slug || r._id}`}>
-                            <ExternalLink className="h-3 w-3 mr-1" /> View
-                          </Link>
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center text-xs text-gray-500">
+                            <Calendar className="h-3 w-3 mr-1" />
+                            {new Date(r.createdAt || "").toLocaleDateString()}
+                          </div>
+                          <Button size="sm" asChild>
+                            <Link href={`/resources/${r.slug || r._id}`}>
+                              <ExternalLink className="h-3 w-3 mr-1" /> View
+                            </Link>
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {totalResources > resourcesPerPage && (
+                  <div className="mt-6">
+                    <Pagination
+                      total={totalResources}
+                      perPage={resourcesPerPage}
+                      page={currentPage}
+                      onPageChange={(page) => setCurrentPage(page)}
+                    />
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

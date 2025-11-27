@@ -38,11 +38,12 @@ export default function CourseDetailPage({
   const [loading, setLoading] = useState(true);
   const [isBookmarked, setIsBookmarked] = useState(false);
 
+
   // fetch course from API
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-         const { id } = await params;
+        const { id } = await params;
         setLoading(true);
         const res = await fetch(`/api/courses/${id}`);
         const data = await res.json();
@@ -94,35 +95,35 @@ export default function CourseDetailPage({
     );
   }
 
-if (!course || !course.id && !loading) {
-  return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header showSearch />
-      <div className="flex flex-1 items-center justify-center px-4">
-        <div className="text-center max-w-md">
-          <div className="flex justify-center mb-4">
-            <div className="p-4 rounded-full bg-red-100 text-red-600">
-              <BookOpen className="h-8 w-8" />
+  if (!course || (!course.id && !loading)) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        <Header showSearch type="courses" />
+        <div className="flex flex-1 items-center justify-center px-4">
+          <div className="text-center max-w-md">
+            <div className="flex justify-center mb-4">
+              <div className="p-4 rounded-full bg-red-100 text-red-600">
+                <BookOpen className="h-8 w-8" />
+              </div>
             </div>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">
+              Course Not Found
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Sorry, the course you are looking for doesn’t exist or may have
+              been removed.
+            </p>
+            <Link
+              href="/courses"
+              className="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            >
+              Browse Courses
+            </Link>
           </div>
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">
-            Course Not Found
-          </h2>
-          <p className="text-gray-600 mb-6">
-            Sorry, the course you are looking for doesn’t exist or may have been removed.
-          </p>
-          <Link
-            href="/courses"
-            className="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-          >
-            Browse Courses
-          </Link>
         </div>
       </div>
-    </div>
-  );
-}
-
+    );
+  }
 
   const getDaysUntilExpiry = () => {
     if (!course.expiryDate) return null;
@@ -146,7 +147,8 @@ if (!course || !course.id && !loading) {
     }
   };
   const totalLectures = course.curriculum?.reduce(
-    (acc: number, section: { lectures: any[] }) => acc + section.lectures.length,
+    (acc: number, section: { lectures: any[] }) =>
+      acc + section.lectures.length,
     0
   );
 
@@ -532,13 +534,13 @@ if (!course || !course.id && !loading) {
                 <div className="text-center mb-6">
                   <div className="flex items-center justify-center space-x-2 mb-2">
                     <span className="text-3xl font-bold text-green-600">
-                      course.price === "0.00" ? "Free" : course.price
+                      {course.price === "0.00" ? "Free" : "$" + course.price}
                     </span>
                     <span className="text-lg text-gray-500 line-through">
-                      {course.originalPrice}
+                      {"$" + course.originalPrice}
                     </span>
                   </div>
-                  {daysLeft && daysLeft > 0 && (
+                  {daysLeft && daysLeft > 0 ? (
                     <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-4">
                       <div className="flex items-center justify-center space-x-2 text-orange-700">
                         <Calendar className="h-4 w-4" />
@@ -548,6 +550,15 @@ if (!course || !course.id && !loading) {
                         </span>
                       </div>
                     </div>
+                  ) : (
+                      <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
+                        <div className="flex items-center justify-center space-x-2 text-red-700">
+                          <Calendar className="h-4 w-4" />
+                          <span className="text-sm font-medium">
+                            This offer has expired.
+                          </span>
+                        </div>
+                      </div>
                   )}
                 </div>
 
