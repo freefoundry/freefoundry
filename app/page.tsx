@@ -120,7 +120,7 @@ export default function Home() {
   }, []);
   return (
     <div className="min-h-screen bg-white">
-      <Header showSearch  />
+      <Header showSearch />
 
       {/* Hero */}
       <Hero
@@ -184,6 +184,115 @@ export default function Home() {
                 </>
               }
             />
+          </div>
+        </div>
+      </section>
+
+      {/* About Us */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Text */}
+            <div>
+              <Badge className="mb-4" variant="secondary">
+                About FreeFoundry
+              </Badge>
+
+              <h2 className="text-3xl font-bold mb-6">
+                Learning Should Be Accessible to Everyone
+              </h2>
+
+              <p className="text-gray-600 mb-6 leading-relaxed">
+                <strong>FreeFoundry</strong> is a curated learning platform
+                built to remove financial barriers from education. We bring
+                together free courses, study materials, job opportunities, and
+                career tools from trusted sources; all in one place.
+              </p>
+
+              <p className="text-gray-600 mb-8 leading-relaxed">
+                Whether you’re a student, self-learner, or professional looking
+                to upskill, FreeFoundry helps you learn smarter without paying a
+                dime.
+              </p>
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="text-blue-600 w-6 h-6 mt-1" />
+                  <p className="text-gray-700">
+                    Carefully curated, high-quality free resources
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="text-blue-600 w-6 h-6 mt-1" />
+                  <p className="text-gray-700">
+                    Courses, jobs, scholarships and materials updated regularly
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="text-blue-600 w-6 h-6 mt-1" />
+                  <p className="text-gray-700">
+                    Built for learners across all skill levels
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="text-blue-600 w-6 h-6 mt-1" />
+                  <p className="text-gray-700">No paywalls, no hidden fees</p>
+                </div>
+              </div>
+
+              {/* <div className="mt-8 flex gap-4">
+          <Link href="/about">
+            <Button>
+              Learn More About Us
+            </Button>
+          </Link>
+
+          <Link href="/courses">
+            <Button variant="outline">
+              Explore Courses
+            </Button>
+          </Link>
+        </div> */}
+            </div>
+
+            {/* Visual / Stats */}
+            <div className="bg-gray-50 rounded-2xl p-8 grid grid-cols-2 gap-6">
+              <div className="flex flex-col items-start gap-2">
+                <Users className="w-8 h-8 text-blue-600" />
+                <h4 className="text-lg font-semibold">Built for Learners</h4>
+                <p className="text-gray-600 text-sm">
+                  Designed to support students, self-learners, and
+                  professionals.
+                </p>
+              </div>
+
+              <div className="flex flex-col items-start gap-2">
+                <BookOpen className="w-8 h-8 text-blue-600" />
+                <h4 className="text-lg font-semibold">Curated Resources</h4>
+                <p className="text-gray-600 text-sm">
+                  Carefully selected free courses and learning materials.
+                </p>
+              </div>
+
+              <div className="flex flex-col items-start gap-2">
+                <GraduationCap className="w-8 h-8 text-blue-600" />
+                <h4 className="text-lg font-semibold">Quality First</h4>
+                <p className="text-gray-600 text-sm">
+                  Focused on usefulness, clarity, and real-world value.
+                </p>
+              </div>
+
+              <div className="flex flex-col items-start gap-2">
+                <Briefcase className="w-8 h-8 text-blue-600" />
+                <h4 className="text-lg font-semibold">Growing Daily</h4>
+                <p className="text-gray-600 text-sm">
+                  New courses, resources, and opportunities added regularly.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>

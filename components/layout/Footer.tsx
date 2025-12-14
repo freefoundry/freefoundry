@@ -1,6 +1,29 @@
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 export function Footer() {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setMessage("");
+
+    const res = await fetch("/api/newsletter", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await res.json();
+    setLoading(false);
+    setMessage(data.message);
+
+    if (res.ok) setEmail("");
+  }
+
   return (
     <footer className="bg-gray-800 text-gray-300 pt-12 pb-6">
       <div className="container mx-auto px-4">
@@ -59,7 +82,7 @@ export function Footer() {
                   Contact
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <a href="#" className="text-gray-400 hover:text-white">
                   Privacy Policy
                 </a>
@@ -68,7 +91,7 @@ export function Footer() {
                 <a href="#" className="text-gray-400 hover:text-white">
                   Terms of Service
                 </a>
-              </li>
+              </li> */}
             </ul>
           </div>
 
@@ -77,14 +100,21 @@ export function Footer() {
             <p className="text-gray-400 mb-4">
               Get notified about new resources and opportunities.
             </p>
-            <form className="flex">
+            <form onSubmit={handleSubmit} className="flex">
               <input
                 type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Your email"
                 className="px-3 py-2 w-full rounded-l-md focus:outline-none"
               />
-              <Button className="rounded-l-none">Subscribe</Button>
+              <Button disabled={loading} className="rounded-l-none">
+                {loading ? "..." : "Subscribe"}
+              </Button>
             </form>
+
+            {message && <p className="text-sm mt-2 text-gray-400">{message}</p>}
           </div>
         </div>
 

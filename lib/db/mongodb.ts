@@ -1,6 +1,6 @@
 import mongoose, { Connection } from "mongoose";
 
-type DbName = "resources" | "scholarships";
+type DbName = "resources" | "scholarships" | "users";
 
 type ConnectionCache = {
   [key in DbName]?: {
@@ -18,13 +18,13 @@ if (!(global as any).mongoose) {
 export async function connectMongo(name: DbName): Promise<Connection> {
   let uri: string | undefined;
 
-  if (name === "resources") {
-    uri = process.env.MONGODB_RESOURCES_URI;
-    console.log('MONGODB_RESOURCES_URI:', uri);
-  } else if (name === "scholarships") {
-    uri = process.env.MONGODB_SCHOLARSHIPS_URI;
-  }
-
+if (name === "resources") {
+  uri = process.env.MONGODB_RESOURCES_URI;
+} else if (name === "scholarships") {
+  uri = process.env.MONGODB_SCHOLARSHIPS_URI;
+} else if (name === "users") {
+  uri = process.env.MONGODB_USERS_URI;
+}
   if (!uri) {
     throw new Error(`⚠️ Missing MongoDB URI for ${name}`);
   }
