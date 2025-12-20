@@ -23,6 +23,13 @@ export function CourseCard({ course }: { course: any }) {
   const isExpired =
     course.expiryDate && new Date(course.expiryDate) < new Date();
 
+    const instructorName =
+      typeof course.instructor === "object"
+        ? course.instructor?.name
+        : course.instructor;
+
+
+      
   return (
     <Card
       key={course.id}
@@ -69,10 +76,8 @@ export function CourseCard({ course }: { course: any }) {
         <h3 className="font-semibold text-lg mb-1 line-clamp-2">
           {course.title}
         </h3>
-        {course.instructor && (
-          <p className="text-sm text-gray-600 mb-2">
-            by {course.instructor?.name || course.instructor}
-          </p>
+        {instructorName && (
+          <p className="text-sm text-gray-600 mb-2">by {instructorName}</p>
         )}
 
         {/* Description */}
@@ -122,7 +127,7 @@ export function CourseCard({ course }: { course: any }) {
             <span className="font-semibold text-green-600">
               {course.price === "0.00" || course.price === "Free"
                 ? "Free"
-                : "$" +  course.price}
+                : "$" + course.price}
             </span>
             {course.originalPrice && (
               <span className="text-xs text-gray-500 line-through ml-2">
