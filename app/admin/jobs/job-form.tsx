@@ -115,6 +115,7 @@ export default function JobForm({
   const [contactRecruiter, setContactRecruiter] = useState(
     job?.contactRecruiter || ""
   );
+  const [currency, setCurrency] = useState(job?.currency || "NGN");
 
   // Slug editing
   const [isEditingSlug, setIsEditingSlug] = useState(false);
@@ -205,6 +206,7 @@ export default function JobForm({
       if (!salary && jobData.salary) setSalary(jobData.salary);
       if (!platform && jobData.platform) setPlatform(jobData.platform);
 
+
       setTags(jobData.tags || []);
       setRequirements(jobData.requirements || []);
       setBenefits(jobData.benefits || []);
@@ -220,6 +222,23 @@ export default function JobForm({
     }
   }, []);
 const handleSave = async (saveType: "draft" | "publish" | "preview") => {
+const todayDate = () => {
+   const d = new Date();
+
+   const yyyy = d.getFullYear();
+   const mm = String(d.getMonth() + 1).padStart(2, "0");
+   const dd = String(d.getDate()).padStart(2, "0");
+   const hh = String(d.getHours()).padStart(2, "0");
+   const mi = String(d.getMinutes()).padStart(2, "0");
+   const ss = String(d.getSeconds()).padStart(2, "0");
+
+   return `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
+};
+const normalizeDateForClient = (date: any) => {
+  if (!date) return null;
+  return new Date(date).toISOString().split("T")[0];
+};
+
   const jobData = {
     slug,
     title,
@@ -229,6 +248,7 @@ const handleSave = async (saveType: "draft" | "publish" | "preview") => {
     workMode,
     experience,
     salary,
+    currency,
     salaryType,
     description: excerpt,
     fullDescription: content,
@@ -236,7 +256,7 @@ const handleSave = async (saveType: "draft" | "publish" | "preview") => {
     requirements,
     benefits,
     responsibilities,
-    postedDate: job?.postedDate || new Date().toISOString().split("T")[0],
+    postedDate: job?.postedDate || todayDate(),
     platform,
     companyLogo, // can be URL or base64
     applicationUrl,
@@ -275,7 +295,7 @@ const handleSave = async (saveType: "draft" | "publish" | "preview") => {
     similarJobs: [],
     views: 0,
     applications: 0,
-    lastUpdated: new Date().toISOString().split("T")[0],
+    lastUpdated: todayDate(),
   };
 
   if (saveType === "preview") {
@@ -518,13 +538,33 @@ const handleSave = async (saveType: "draft" | "publish" | "preview") => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="salary">Salary Range</Label>
-                    <Input
-                      id="salary"
-                      value={salary}
-                      onChange={(e) => setSalary(e.target.value)}
-                      placeholder="e.g., $80,000 - $120,000"
-                    />
+
+                    <div className="flex items-center gap-2 mt-1">
+                      <Select value={currency} onValueChange={setCurrency}>
+                        <SelectTrigger className="w-24">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="NGN">NGN</SelectItem>
+                          <SelectItem value="USD">USD</SelectItem>
+                          <SelectItem value="EUR">EUR</SelectItem>
+                          <SelectItem value="GBP">GBP</SelectItem>
+                          <SelectItem value="INR">INR</SelectItem>
+                          <SelectItem value="AUD">AUD</SelectItem>
+                          <SelectItem value="CAD">CAD</SelectItem>
+                        </SelectContent>
+                      </Select>
+
+                      <Input
+                        id="salary"
+                        value={salary}
+                        onChange={(e) => setSalary(e.target.value)}
+                        placeholder="80,000 - 120,000"
+                        className="flex-1"
+                      />
+                    </div>
                   </div>
+
                   <div>
                     <Label htmlFor="salaryType">Salary Type</Label>
                     <Select value={salaryType} onValueChange={setSalaryType}>

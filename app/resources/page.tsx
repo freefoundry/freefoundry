@@ -51,59 +51,59 @@ export default function ResourcesPage() {
   const [resourcesPerPage] = useState(9);
 
   // Fetch resources
- useEffect(() => {
-   const fetchResources = async () => {
-     setLoading(true);
+  useEffect(() => {
+    const fetchResources = async () => {
+      setLoading(true);
 
-     try {
-       const body = {
-         page: currentPage,
-         limit: resourcesPerPage,
-         search: searchTerm || undefined,
-         categories: selectedCategories,
-         types: selectedTypes,
-         sort: sortBy,
-       };
+      try {
+        const body = {
+          page: currentPage,
+          limit: resourcesPerPage,
+          search: searchTerm || undefined,
+          categories: selectedCategories,
+          types: selectedTypes,
+          sort: sortBy,
+        };
 
-       const res = await fetch("/api/resources/public", {
-         method: "POST",
-         headers: { "Content-Type": "application/json" },
-         body: JSON.stringify(body),
-       });
+        const res = await fetch("/api/resources/public", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
 
-       if (!res.ok) throw new Error("Failed to load resources");
-       const data = await res.json();
+        if (!res.ok) throw new Error("Failed to load resources");
+        const data = await res.json();
 
-       // ✅ Normalize resource fields if backend returns stringified arrays
-       const normalized = (data.data || []).map((r: any) => ({
-         ...r,
-         tags: typeof r.tags === "string" ? JSON.parse(r.tags) : r.tags || [],
-         category:
-           typeof r.category === "string"
-             ? r.category
-             : r.category || "General",
-         type: typeof r.type === "string" ? r.type : "Website",
-       }));
+        //  Normalize resource fields if backend returns stringified arrays
+        const normalized = (data.data || []).map((r: any) => ({
+          ...r,
+          tags: typeof r.tags === "string" ? JSON.parse(r.tags) : r.tags || [],
+          category:
+            typeof r.category === "string"
+              ? r.category
+              : r.category || "General",
+          type: typeof r.type === "string" ? r.type : "Website",
+        }));
 
-       setResources(normalized);
-       setTotalResources(data.pagination?.total || 0);
-     } catch (err: any) {
-       console.error("❌ Failed to fetch resources:", err);
-       setError(err.message);
-     } finally {
-       setLoading(false);
-     }
-   };
+        setResources(normalized);
+        setTotalResources(data.pagination?.total || 0);
+      } catch (err: any) {
+        console.error("❌ Failed to fetch resources:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-   fetchResources();
- }, [
-   searchTerm,
-   selectedCategories,
-   selectedTypes,
-   sortBy,
-   currentPage,
-   resourcesPerPage,
- ]);
+    fetchResources();
+  }, [
+    searchTerm,
+    selectedCategories,
+    selectedTypes,
+    sortBy,
+    currentPage,
+    resourcesPerPage,
+  ]);
 
   const handleCategoryChange = (category: string, checked: boolean) => {
     setSelectedCategories((prev) =>
@@ -138,7 +138,6 @@ export default function ResourcesPage() {
     }
   };
 
-  
   // Extract unique categories/types from loaded data
   // Static filter options (random but relevant)
   const categories = [

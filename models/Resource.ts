@@ -67,7 +67,7 @@ const ResourceSchema = new Schema<IResource>(
   { timestamps: true }
 );
 
-// ✅ Dynamic model getter (safe for Next.js hot reload)
+//  Dynamic model getter (safe for Next.js hot reload)
 export function getResourceModel(conn: Connection) {
   return (
     conn.models.Resource || conn.model<IResource>("Resource", ResourceSchema)

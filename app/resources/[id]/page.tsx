@@ -29,18 +29,21 @@ import { formatDate } from "@/lib/utils";
 import type { Resource } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function ResourceDetailPage({ params }: { params: Promise<{ id: string }> }) {
-
+export default function ResourceDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const [resource, setResource] = useState<Resource | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
 
-  // ✅ Fetch resource from API
+  //  Fetch resource from API
   useEffect(() => {
     async function fetchResource() {
       try {
-         const { id } = await params;
+        const { id } = await params;
         setLoading(true);
         const baseUrl =
           process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
@@ -134,51 +137,51 @@ export default function ResourceDetailPage({ params }: { params: Promise<{ id: s
           </div>
         </div>
         <div className="container mx-auto px-4 py-8">
-                <div className="grid lg:grid-cols-3 gap-8">
-                  {/* Main Content Skeleton */}
-                  <div className="lg:col-span-2 space-y-8">
-                    {/* Resource Header Skeleton */}
-                    <div>
-                      <div className="flex gap-2 mb-4">
-                        <Skeleton className="h-6 w-20" />
-                        <Skeleton className="h-6 w-24" />
-                        <Skeleton className="h-6 w-28" />
-                      </div>
-                      <Skeleton className="h-10 w-full mb-4" />
-                      <Skeleton className="h-6 w-3/4 mb-6" />
-                      <div className="flex gap-6 mb-6">
-                        <Skeleton className="h-4 w-20" />
-                        <Skeleton className="h-4 w-24" />
-                        <Skeleton className="h-4 w-28" />
-                      </div>
-                      <div className="flex gap-2 mb-6">
-                        {[...Array(6)].map((_, i) => (
-                          <Skeleton key={i} className="h-6 w-16" />
-                        ))}
-                      </div>
-                    </div>
-        
-                    {/* Tabs Skeleton */}
-                    <div>
-                      <div className="flex space-x-4 mb-6">
-                        {[...Array(4)].map((_, i) => (
-                          <Skeleton key={i} className="h-10 w-24" />
-                        ))}
-                      </div>
-                      <Card>
-                        <CardHeader>
-                          <Skeleton className="h-6 w-48" />
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                          {[...Array(4)].map((_, i) => (
-                            <Skeleton key={i} className="h-4 w-full" />
-                          ))}
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </div>
-                  </div>
-                  </div>
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Main Content Skeleton */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* Resource Header Skeleton */}
+              <div>
+                <div className="flex gap-2 mb-4">
+                  <Skeleton className="h-6 w-20" />
+                  <Skeleton className="h-6 w-24" />
+                  <Skeleton className="h-6 w-28" />
+                </div>
+                <Skeleton className="h-10 w-full mb-4" />
+                <Skeleton className="h-6 w-3/4 mb-6" />
+                <div className="flex gap-6 mb-6">
+                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-4 w-28" />
+                </div>
+                <div className="flex gap-2 mb-6">
+                  {[...Array(6)].map((_, i) => (
+                    <Skeleton key={i} className="h-6 w-16" />
+                  ))}
+                </div>
+              </div>
+
+              {/* Tabs Skeleton */}
+              <div>
+                <div className="flex space-x-4 mb-6">
+                  {[...Array(4)].map((_, i) => (
+                    <Skeleton key={i} className="h-10 w-24" />
+                  ))}
+                </div>
+                <Card>
+                  <CardHeader>
+                    <Skeleton className="h-6 w-48" />
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {[...Array(4)].map((_, i) => (
+                      <Skeleton key={i} className="h-4 w-full" />
+                    ))}
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

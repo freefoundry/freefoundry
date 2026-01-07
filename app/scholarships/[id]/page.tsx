@@ -33,7 +33,7 @@ export default function ScholarshipDetailPage() {
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-  // ✅ Fetch real data from API
+  //  Fetch real data from API
   useEffect(() => {
     const fetchScholarship = async () => {
       try {
@@ -61,7 +61,7 @@ export default function ScholarshipDetailPage() {
     }
   }, [params.id, baseUrl]);
 
-  // ✅ Update time remaining until deadline
+  //  Update time remaining until deadline
   useEffect(() => {
     if (scholarship?.applicationDeadline) {
       const updateTimeUntilDeadline = () => {
@@ -93,127 +93,126 @@ export default function ScholarshipDetailPage() {
     }
   }, [scholarship]);
 
- if (loading) {
-   return (
-     <div className="min-h-screen bg-gray-50">
-       {/* Header */}
-       <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-           <div className="flex items-center space-x-2">
-             <Skeleton className="h-9 w-9 rounded" />
-             <Skeleton className="h-6 w-32" />
-           </div>
-           <nav className="hidden md:flex items-center space-x-6">
-             <Skeleton className="h-4 w-16" />
-             <Skeleton className="h-4 w-20" />
-             <Skeleton className="h-4 w-12" />
-             <Skeleton className="h-4 w-24" />
-           </nav>
-         </div>
-       </header>
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        {/* Header */}
+        <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Skeleton className="h-9 w-9 rounded" />
+              <Skeleton className="h-6 w-32" />
+            </div>
+            <nav className="hidden md:flex items-center space-x-6">
+              <Skeleton className="h-4 w-16" />
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-4 w-12" />
+              <Skeleton className="h-4 w-24" />
+            </nav>
+          </div>
+        </header>
 
-       <div className="container mx-auto px-4 py-8">
-         {/* Back Button */}
-         <Skeleton className="h-10 w-40 mb-6" />
+        <div className="container mx-auto px-4 py-8">
+          {/* Back Button */}
+          <Skeleton className="h-10 w-40 mb-6" />
 
-         <div className="grid lg:grid-cols-3 gap-8">
-           {/* Main Content */}
-           <div className="lg:col-span-2 space-y-6">
-             {/* Header Card */}
-             <Card>
-               <CardContent className="p-6">
-                 <div className="flex justify-between items-start mb-4">
-                   <div className="flex-1">
-                     <div className="flex items-center gap-2 mb-2">
-                       <Skeleton className="h-6 w-20" />
-                       <Skeleton className="h-6 w-24" />
-                     </div>
-                     <Skeleton className="h-8 w-3/4 mb-2" />
-                     <Skeleton className="h-6 w-1/2" />
-                   </div>
-                   <div className="flex gap-2">
-                     <Skeleton className="h-8 w-8" />
-                     <Skeleton className="h-8 w-8" />
-                   </div>
-                 </div>
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Main Content */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Header Card */}
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Skeleton className="h-6 w-20" />
+                        <Skeleton className="h-6 w-24" />
+                      </div>
+                      <Skeleton className="h-8 w-3/4 mb-2" />
+                      <Skeleton className="h-6 w-1/2" />
+                    </div>
+                    <div className="flex gap-2">
+                      <Skeleton className="h-8 w-8" />
+                      <Skeleton className="h-8 w-8" />
+                    </div>
+                  </div>
 
-                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                   {Array.from({ length: 4 }).map((_, i) => (
-                     <div key={i} className="flex items-center gap-2">
-                       <Skeleton className="h-5 w-5" />
-                       <div>
-                         <Skeleton className="h-4 w-16 mb-1" />
-                         <Skeleton className="h-3 w-12" />
-                       </div>
-                     </div>
-                   ))}
-                 </div>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    {Array.from({ length: 4 }).map((_, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <Skeleton className="h-5 w-5" />
+                        <div>
+                          <Skeleton className="h-4 w-16 mb-1" />
+                          <Skeleton className="h-3 w-12" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
 
-                 <div className="flex flex-wrap gap-2">
-                   {Array.from({ length: 3 }).map((_, i) => (
-                     <Skeleton key={i} className="h-6 w-16" />
-                   ))}
-                 </div>
-               </CardContent>
-             </Card>
-           </div>
+                  <div className="flex flex-wrap gap-2">
+                    {Array.from({ length: 3 }).map((_, i) => (
+                      <Skeleton key={i} className="h-6 w-16" />
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
 
-           {/* Sidebar */}
-           <div className="space-y-6">
-             <Card>
-               <CardContent className="p-6">
-                 <div className="text-center">
-                   <Skeleton className="h-8 w-8 mx-auto mb-3" />
-                   <Skeleton className="h-5 w-32 mx-auto mb-2" />
-                   <Skeleton className="h-6 w-40 mx-auto mb-1" />
-                   <Skeleton className="h-4 w-28 mx-auto" />
-                 </div>
-               </CardContent>
-             </Card>
+            {/* Sidebar */}
+            <div className="space-y-6">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="text-center">
+                    <Skeleton className="h-8 w-8 mx-auto mb-3" />
+                    <Skeleton className="h-5 w-32 mx-auto mb-2" />
+                    <Skeleton className="h-6 w-40 mx-auto mb-1" />
+                    <Skeleton className="h-4 w-28 mx-auto" />
+                  </div>
+                </CardContent>
+              </Card>
 
-             <Card>
-               <CardContent className="p-6">
-                 <Skeleton className="h-12 w-full mb-4" />
-                 <Skeleton className="h-3 w-48 mx-auto" />
-               </CardContent>
-             </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <Skeleton className="h-12 w-full mb-4" />
+                  <Skeleton className="h-3 w-48 mx-auto" />
+                </CardContent>
+              </Card>
 
-             <Card>
-               <CardHeader>
-                 <Skeleton className="h-6 w-24" />
-               </CardHeader>
-               <CardContent className="space-y-4">
-                 {Array.from({ length: 4 }).map((_, i) => (
-                   <div key={i}>
-                     <div className="flex justify-between">
-                       <Skeleton className="h-4 w-24" />
-                       <Skeleton className="h-4 w-20" />
-                     </div>
-                     {i < 3 && <div className="border-t mt-4" />}
-                   </div>
-                 ))}
-               </CardContent>
-             </Card>
+              <Card>
+                <CardHeader>
+                  <Skeleton className="h-6 w-24" />
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i}>
+                      <div className="flex justify-between">
+                        <Skeleton className="h-4 w-24" />
+                        <Skeleton className="h-4 w-20" />
+                      </div>
+                      {i < 3 && <div className="border-t mt-4" />}
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
 
-             <Card>
-               <CardHeader>
-                 <Skeleton className="h-6 w-36" />
-               </CardHeader>
-               <CardContent>
-                 <Skeleton className="h-5 w-32 mb-2" />
-                 <div className="space-y-1">
-                   <Skeleton className="h-3 w-full" />
-                   <Skeleton className="h-3 w-3/4" />
-                 </div>
-               </CardContent>
-             </Card>
-           </div>
-         </div>
-       </div>
-     </div>
-   );
- }
-
+              <Card>
+                <CardHeader>
+                  <Skeleton className="h-6 w-36" />
+                </CardHeader>
+                <CardContent>
+                  <Skeleton className="h-5 w-32 mb-2" />
+                  <div className="space-y-1">
+                    <Skeleton className="h-3 w-full" />
+                    <Skeleton className="h-3 w-3/4" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!scholarship) {
     return (
@@ -231,28 +230,32 @@ export default function ScholarshipDetailPage() {
       </div>
     );
   }
- 
-  // ✅ Determine deadline status color
-    const getDeadlineStatus = () => {
-      // If there's no scholarship or no deadline, return a neutral status to avoid accessing null
-      if (!scholarship?.applicationDeadline) {
-        return { color: "text-gray-600", bg: "bg-gray-100", label: "No deadline" };
-      }
-  
-      const deadline = new Date(scholarship.applicationDeadline);
-      const now = new Date();
-      const daysLeft = Math.ceil(
-        (deadline.getTime() - now.getTime()) / (1000 * 3600 * 24)
-      );
-  
-      if (daysLeft < 0)
-        return { color: "text-red-600", bg: "bg-red-50", label: "Expired" };
-      if (daysLeft <= 7)
-        return { color: "text-orange-600", bg: "bg-orange-50", label: "Urgent" };
-      if (daysLeft <= 30)
-        return { color: "text-yellow-600", bg: "bg-yellow-50", label: "Soon" };
-      return { color: "text-green-600", bg: "bg-green-50", label: "Open" };
-    };
+
+  //  Determine deadline status color
+  const getDeadlineStatus = () => {
+    // If there's no scholarship or no deadline, return a neutral status to avoid accessing null
+    if (!scholarship?.applicationDeadline) {
+      return {
+        color: "text-gray-600",
+        bg: "bg-gray-100",
+        label: "No deadline",
+      };
+    }
+
+    const deadline = new Date(scholarship.applicationDeadline);
+    const now = new Date();
+    const daysLeft = Math.ceil(
+      (deadline.getTime() - now.getTime()) / (1000 * 3600 * 24)
+    );
+
+    if (daysLeft < 0)
+      return { color: "text-red-600", bg: "bg-red-50", label: "Expired" };
+    if (daysLeft <= 7)
+      return { color: "text-orange-600", bg: "bg-orange-50", label: "Urgent" };
+    if (daysLeft <= 30)
+      return { color: "text-yellow-600", bg: "bg-yellow-50", label: "Soon" };
+    return { color: "text-green-600", bg: "bg-green-50", label: "Open" };
+  };
 
   const deadlineStatus = getDeadlineStatus();
 
@@ -387,11 +390,13 @@ export default function ScholarshipDetailPage() {
                 <CardTitle>About This Scholarship</CardTitle>
               </CardHeader>
               <CardContent>
-                  <div
-                    className="text-gray-700 leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: scholarship?.description ?? "" }}
-                  />
-                </CardContent>
+                <div
+                  className="text-gray-700 leading-relaxed"
+                  dangerouslySetInnerHTML={{
+                    __html: scholarship?.description ?? "",
+                  }}
+                />
+              </CardContent>
             </Card>
 
             {/* Benefits */}
@@ -461,10 +466,15 @@ export default function ScholarshipDetailPage() {
                 />
                 <h3 className="font-semibold mb-2">Application Deadline</h3>
                 <p className="text-lg font-bold mb-1">
-                  {scholarship?.applicationDeadline ? new Date(scholarship.applicationDeadline).toLocaleDateString(
-                    "en-US",
-                    { year: "numeric", month: "long", day: "numeric" }
-                  ) : null}
+                  {scholarship?.applicationDeadline
+                    ? new Date(
+                        scholarship.applicationDeadline
+                      ).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })
+                    : null}
                 </p>
                 <p className={`text-sm ${deadlineStatus.color}`}>
                   {timeUntilDeadline}

@@ -68,7 +68,7 @@ export default function ResourcesAdminPage() {
   const [sortBy, setSortBy] = useState("newest");
   const [selectedResources, setSelectedResources] = useState<string[]>([]);
 
-  // ✅ Fetch resources from API
+  //  Fetch resources from API
   useEffect(() => {
     fetchResources();
   }, []);
@@ -87,7 +87,7 @@ export default function ResourcesAdminPage() {
     }
   }
 
-  // ✅ Handle Delete
+  //  Handle Delete
   async function handleDelete(id: string, title?: string) {
     const confirmed = confirm(
       `Are you sure you want to delete "${title || "this resource"}"?`
@@ -104,16 +104,16 @@ export default function ResourcesAdminPage() {
         throw new Error(errData.error || "Failed to delete resource");
       }
 
-      // ✅ Remove from state instantly
+      //  Remove from state instantly
       setResources((prev) => prev.filter((r) => r._id !== id));
-      alert("✅ Resource deleted successfully");
+      alert(" Resource deleted successfully");
     } catch (err: any) {
       console.error("❌ Delete failed:", err);
       alert(`Failed to delete resource: ${err.message}`);
     }
   }
 
-  // ✅ Apply filters and sorting
+  //  Apply filters and sorting
   const filteredResources = resources
     .filter((resource) => {
       const matchesSearch =

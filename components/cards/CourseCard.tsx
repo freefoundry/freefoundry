@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Clock, Users, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Course } from "@/lib/types";
+import { currencySymbols } from "@/lib/currency";
 
 const platformColors: Record<string, string> = {
   Udemy: "text-purple-600",
@@ -125,15 +126,23 @@ export function CourseCard({ course }: { course: any }) {
         <div className="flex items-center justify-between">
           <div>
             <span className="font-semibold text-green-600">
-              {course.price === "0.00" || course.price === "Free"
-                ? "Free"
-                : "$" + course.price}
+              {Number(course.price) === 0 ? (
+                "Free"
+              ) : (
+                <>
+                  {currencySymbols[course.currency] || course.currency}
+                  {Number(course.price).toLocaleString()}
+                </>
+              )}
             </span>
-            {course.originalPrice && (
+
+            {Number(course.originalPrice) > 0 && Number(course.price) > 0 && (
               <span className="text-xs text-gray-500 line-through ml-2">
-                {"$" + course.originalPrice}
+                {currencySymbols[course.currency] || course.currency}
+                {Number(course.originalPrice).toLocaleString()}
               </span>
             )}
+
             {course.expiryDate && (
               <p
                 className={`text-xs mt-1 ${

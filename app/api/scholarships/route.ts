@@ -37,7 +37,7 @@ export async function POST(req: Request) {
     const Scholarship = getScholarshipModel(conn);
     const data = await req.json();
 
-    // ✅ Validate title
+    //  Validate title
     if (!data.title) {
       return NextResponse.json(
         { error: "Title is required." },
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // ✅ Auto-generate slug
+    //  Auto-generate slug
     const slug =
       data.slug ||
       data.title
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-|-$/g, "");
 
-    // ✅ Prevent duplicate slug
+    //  Prevent duplicate slug
     const existing = await Scholarship.findOne({ slug });
     if (existing) {
       return NextResponse.json(
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // ✅ Handle Cloudinary image upload (if Base64)
+    //  Handle Cloudinary image upload (if Base64)
     let imageUrl = data.featuredImage || null;
 
     if (data.featuredImage && data.featuredImage.startsWith("data:")) {
@@ -81,7 +81,7 @@ export async function POST(req: Request) {
       }
     }
 
-    // ✅ Create scholarship document
+    //  Create scholarship document
     const scholarship = await Scholarship.create({
       ...data,
       slug,

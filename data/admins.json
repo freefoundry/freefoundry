@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "email": "admin@yourapp.com",
+    "password": "admin123",
+    "name": "Super Admin",
+    "role": "super-admin"
+  },
+  {
+    "id": 2,
+    "email": "editor@yourapp.com",
+    "password": "editor123",
+    "name": "Content Editor",
+    "role": "editor"
+  }
+]

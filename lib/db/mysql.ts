@@ -1,49 +1,106 @@
-import mysql, { Pool } from "mysql2/promise";
+// import mysql, { Pool } from "mysql2/promise";
+
+// type DbName = "courses" | "jobs";
+
+// type ConnectionCache = {
+//   [key in DbName]?: Pool;
+// };
+
+// let cached: ConnectionCache = (global as any).mysql || {};
+// if (!(global as any).mysql) {
+//   (global as any).mysql = cached;
+// }
+
+// export function connectMySQL(name: DbName): Pool {
+//   let host, user, password, database;
+
+//   if (name === "courses") {
+//     host = process.env.MYSQL_COURSES_HOST;
+//     user = process.env.MYSQL_COURSES_USER;
+//     password = process.env.MYSQL_COURSES_PASSWORD;
+//     database = process.env.MYSQL_COURSES_DATABASE;
+//   } else if (name === "jobs") {
+//     host = process.env.MYSQL_JOBS_HOST;
+//     user = process.env.MYSQL_JOBS_USER;
+//     password = process.env.MYSQL_JOBS_PASSWORD;
+//     database = process.env.MYSQL_JOBS_DATABASE;
+//   }
+
+//   console.log(`Connecting to MySQL database: ${name} at ${host}`);
+//   if (!host || !user || !password || !database) {
+//     throw new Error(`⚠️ Missing MySQL config for ${name}`);
+//   }
+
+//   if (!cached[name]) {
+//     cached[name] = mysql.createPool({
+//       host,
+//       user,
+//       password,
+//       database,
+//       port: Number(process.env.MYSQL_COURSES_PORT) || 19039,
+
+//       //  REQUIRED FOR AIVEN
+//       ssl: {
+//         rejectUnauthorized: false,
+//       },
+
+//       waitForConnections: true,
+//       connectionLimit: 5,
+//       queueLimit: 0,
+
+//       //  THESE TWO LINES FIX EVERYTHING
+//       timezone: "local",
+//       dateStrings: true,
+//     });
+//   }
+
+//   return cached[name]!;
+// }
+import mysql from "mysql2/promise";
 
 type DbName = "courses" | "jobs";
 
-type ConnectionCache = {
-  [key in DbName]?: Pool;
-};
-
-let cached: ConnectionCache = (global as any).mysql || {};
-if (!(global as any).mysql) {
-  (global as any).mysql = cached;
-}
-
-export function connectMySQL(name: DbName): Pool {
-  let host, user, password, database;
-
+function getConfig(name: DbName) {
   if (name === "courses") {
-    host = process.env.MYSQL_COURSES_HOST;
-    user = process.env.MYSQL_COURSES_USER;
-    password = process.env.MYSQL_COURSES_PASSWORD;
-    database = process.env.MYSQL_COURSES_DATABASE; // freefoundry_courses
-  } else if (name === "jobs") {
-    host = process.env.MYSQL_JOBS_HOST;
-    user = process.env.MYSQL_JOBS_USER;
-    password = process.env.MYSQL_JOBS_PASSWORD;
-    database = process.env.MYSQL_JOBS_DATABASE; // freefoundry_jobs
+    return {
+      host: process.env.MYSQL_COURSES_HOST!,
+      port: Number(process.env.MYSQL_COURSES_PORT),
+      user: process.env.MYSQL_COURSES_USER!,
+      password: process.env.MYSQL_COURSES_PASSWORD!,
+      database: process.env.MYSQL_COURSES_DATABASE!,
+    };
   }
 
-  if (!host || !user || !password || !database) {
-    throw new Error(`⚠️ Missing MySQL config for ${name}`);
-  }
-
-  if (!cached[name]) {
-    cached[name] = mysql.createPool({
-      host,
-      user,
-      password,
-      database,
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0,
-    });
-  }
-
-  return cached[name]!;
+  return {
+    host: process.env.MYSQL_JOBS_HOST!,
+    port: Number(process.env.MYSQL_JOBS_PORT),
+    user: process.env.MYSQL_JOBS_USER!,
+    password: process.env.MYSQL_JOBS_PASSWORD!,
+    database: process.env.MYSQL_JOBS_DATABASE!,
+  };
 }
+
+/**
+ * Looks like a pool, but is serverless-safe
+ */
+export function connectMySQL(name: DbName) {
+  return {
+    async query(sql: string, values?: any[]) {
+      const conn = await mysql.createConnection({
+        ...getConfig(name),
+        ssl: { rejectUnauthorized: false },
+      });
+
+      try {
+        const [rows] = await conn.query(sql, values);
+        return [rows];
+      } finally {
+        await conn.end();
+      }
+    },
+  };
+}
+
 
 export async function initTables() {
   const jobsDb = connectMySQL("jobs");
@@ -88,8 +145,7 @@ export async function initTables() {
     )
   `);
 
-
- const coursesDb = connectMySQL("courses");
+  const coursesDb = connectMySQL("courses");
   await coursesDb.query(`
     CREATE TABLE IF NOT EXISTS courses (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -125,5 +181,4 @@ export async function initTables() {
       updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )
   `);
-
 }

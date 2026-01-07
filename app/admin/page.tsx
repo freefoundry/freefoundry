@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Card,
@@ -147,6 +147,16 @@ export default function AdminDashboard() {
         return "bg-gray-100 text-gray-800";
     }
   };
+  const [admin, setAdmin] = useState<{ name: string; role: string } | null>(
+    null
+  );
+
+  useEffect(() => {
+    const stored = localStorage.getItem("admin-user");
+    if (stored) {
+      setAdmin(JSON.parse(stored));
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -163,10 +173,25 @@ export default function AdminDashboard() {
               </p>
             </div>
             <div className="flex items-center space-x-4">
+              {/* Admin Info */}
+              {admin && (
+                <div className="text-right">
+                  <p className="text-sm font-medium text-gray-900">
+                    {admin.name}
+                  </p>
+                  <p className="text-xs text-gray-500 capitalize">
+                    {admin.role.replace("-", " ")}
+                  </p>
+                </div>
+              )}
+
+              <Separator orientation="vertical" className="h-8" />
+
               <Button variant="outline" size="sm">
                 <Bell className="h-4 w-4 mr-2" />
                 Notifications
               </Button>
+
               <Button variant="outline" size="sm">
                 <Settings className="h-4 w-4 mr-2" />
                 Settings
@@ -178,7 +203,7 @@ export default function AdminDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Users</CardTitle>
@@ -249,7 +274,7 @@ export default function AdminDashboard() {
               </p>
             </CardContent>
           </Card>
-        </div>
+        </div> */}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Navigation Cards */}
@@ -274,7 +299,7 @@ export default function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    <div className="flex justify-between text-sm">
+                    {/* <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Published</span>
                       <span className="font-medium">
                         {stats.courses.published}
@@ -289,7 +314,7 @@ export default function AdminDashboard() {
                       <span className="font-medium text-green-600">
                         {stats.courses.trending}
                       </span>
-                    </div>
+                    </div> */}
                     <Separator />
                     <div className="flex space-x-2">
                       <Button asChild size="sm" className="flex-1">
@@ -330,7 +355,7 @@ export default function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    <div className="flex justify-between text-sm">
+                    {/* <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Active</span>
                       <span className="font-medium">{stats.jobs.active}</span>
                     </div>
@@ -343,7 +368,7 @@ export default function AdminDashboard() {
                       <span className="font-medium text-blue-600">
                         {stats.jobs.applications}
                       </span>
-                    </div>
+                    </div> */}
                     <Separator />
                     <div className="flex space-x-2">
                       <Button asChild size="sm" className="flex-1">
@@ -384,7 +409,7 @@ export default function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    <div className="flex justify-between text-sm">
+                    {/* <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Published</span>
                       <span className="font-medium">
                         {stats.resources.published}
@@ -401,7 +426,7 @@ export default function AdminDashboard() {
                       <span className="font-medium text-purple-600">
                         {stats.resources.downloads.toLocaleString()}
                       </span>
-                    </div>
+                    </div> */}
                     <Separator />
                     <div className="flex space-x-2">
                       <Button asChild size="sm" className="flex-1">
@@ -444,7 +469,7 @@ export default function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    <div className="flex justify-between text-sm">
+                    {/* <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Active</span>
                       <span className="font-medium">
                         {stats.scholarships.active}
@@ -461,7 +486,7 @@ export default function AdminDashboard() {
                       <span className="font-medium text-orange-600">
                         {stats.scholarships.applications}
                       </span>
-                    </div>
+                    </div> */}
                     <Separator />
                     <div className="flex space-x-2">
                       <Button asChild size="sm" className="flex-1">
@@ -489,7 +514,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Recent Activity */}
-          <div>
+          {/* <div>
             <h2 className="text-xl font-semibold text-gray-900 mb-6">
               Recent Activity
             </h2>
@@ -548,7 +573,6 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
 
-            {/* Quick Actions */}
             <Card className="mt-6">
               <CardHeader>
                 <CardTitle className="text-lg">Quick Actions</CardTitle>
@@ -599,7 +623,7 @@ export default function AdminDashboard() {
                 </div>
               </CardContent>
             </Card>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

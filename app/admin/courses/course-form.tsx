@@ -29,7 +29,7 @@ import {
   ImageIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { RichTextEditor } from "@/components/rich-text-editor"
+import { RichTextEditor } from "@/components/rich-text-editor";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
@@ -40,68 +40,63 @@ export default function CourseForm({
   mode?: "create" | "edit";
   course?: any;
 }) {
-    const [title, setTitle] = useState(course?.title || "");
-    const [content, setContent] = useState(course?.content || "");
-    const [excerpt, setExcerpt] = useState(course?.excerpt || "");
-    const [slug, setSlug] = useState(course?.slug || "");
-    const [status, setStatus] = useState(course?.status || "draft");
-    const [visibility, setVisibility] = useState(
-      course?.visibility || "public"
-    );
-    const [publishDate, setPublishDate] = useState(course?.publishDate || "");
-    const [featuredImage, setFeaturedImage] = useState(course?.image || "");
-    const [tags, setTags] = useState<string[]>(course?.tags || []);
-    const [newTag, setNewTag] = useState("");
+  const [title, setTitle] = useState(course?.title || "");
+  const [content, setContent] = useState(course?.content || "");
+  const [excerpt, setExcerpt] = useState(course?.excerpt || "");
+  const [slug, setSlug] = useState(course?.slug || "");
+  const [status, setStatus] = useState(course?.status || "draft");
+  const [visibility, setVisibility] = useState(course?.visibility || "public");
+  const [publishDate, setPublishDate] = useState(course?.publishDate || "");
+  const [featuredImage, setFeaturedImage] = useState(course?.image || "");
+  const [tags, setTags] = useState<string[]>(course?.tags || []);
+  const [newTag, setNewTag] = useState("");
+const [currency, setCurrency] = useState(course?.currency || "NGN");
 
-    // Instructor fields
-    const [instructorName, setInstructorName] = useState(
-      course?.instructor?.name || ""
-    );
-    const [instructorTitle, setInstructorTitle] = useState(
-      course?.instructor?.title || ""
-    );
-    const [instructorBio, setInstructorBio] = useState(
-      course?.instructor?.bio || ""
-    );
-    const [instructorAvatar, setInstructorAvatar] = useState(
-      course?.instructor?.avatar || ""
-    );
-    const [platform, setPlatform] = useState(course?.platform || "");
+  // Instructor fields
+  const [instructorName, setInstructorName] = useState(
+    course?.instructor?.name || ""
+  );
+  const [instructorTitle, setInstructorTitle] = useState(
+    course?.instructor?.title || ""
+  );
+  const [instructorBio, setInstructorBio] = useState(
+    course?.instructor?.bio || ""
+  );
+  const [instructorAvatar, setInstructorAvatar] = useState(
+    course?.instructor?.avatar || ""
+  );
+  const [platform, setPlatform] = useState(course?.platform || "");
 
-    const [certificate, setCertificate] = useState(
-      course?.certificate || false
-    );
-    const [language, setLanguage] = useState(course?.language || "English");
-    const [duration, setDuration] = useState(course?.duration || "");
-    const [level, setLevel] = useState(course?.level || "");
-    const [category, setCategory] = useState(course?.category || "");
-    const [price, setPrice] = useState(course?.price || "");
-    const [originalPrice, setOriginalPrice] = useState(
-      course?.originalPrice || ""
-    );
-    const [expiryDate, setExpiryDate] = useState(course?.expiryDate || "");
-    const [courseUrl, setCourseUrl] = useState(course?.courseUrl || "");
-    const [rating, setRating] = useState(course?.rating?.toString() || "");
-    const [students, setStudents] = useState(
-      course?.students?.toString() || ""
-    );
+  const [certificate, setCertificate] = useState(course?.certificate || false);
+  const [language, setLanguage] = useState(course?.language || "English");
+  const [duration, setDuration] = useState(course?.duration || "");
+  const [level, setLevel] = useState(course?.level || "");
+  const [category, setCategory] = useState(course?.category || "");
+  const [price, setPrice] = useState(course?.price || "");
+  const [originalPrice, setOriginalPrice] = useState(
+    course?.originalPrice || ""
+  );
+  const [expiryDate, setExpiryDate] = useState(course?.expiryDate || "");
+  const [courseUrl, setCourseUrl] = useState(course?.courseUrl || "");
+  const [rating, setRating] = useState(course?.rating?.toString() || "");
+  const [students, setStudents] = useState(course?.students?.toString() || "");
 
-    const [isPopular, setIsPopular] = useState(!!course?.isPopular);
-    const [isNew, setIsNew] = useState(!!course?.isNew);
-    const [isTrending, setIsTrending] = useState(!!course?.isTrending);
+  const [isPopular, setIsPopular] = useState(!!course?.isPopular);
+  const [isNew, setIsNew] = useState(!!course?.isNew);
+  const [isTrending, setIsTrending] = useState(!!course?.isTrending);
 
-    const [requirements, setRequirements] = useState<string[]>(
-      course?.requirements || []
-    );
-    const [newRequirement, setNewRequirement] = useState("");
-    const [whatYouWillLearn, setWhatYouWillLearn] = useState<string[]>(
-      course?.whatYouWillLearn || []
-    );
-    const [newLearning, setNewLearning] = useState("");
+  const [requirements, setRequirements] = useState<string[]>(
+    course?.requirements || []
+  );
+  const [newRequirement, setNewRequirement] = useState("");
+  const [whatYouWillLearn, setWhatYouWillLearn] = useState<string[]>(
+    course?.whatYouWillLearn || []
+  );
+  const [newLearning, setNewLearning] = useState("");
 
-    const [isEditingSlug, setIsEditingSlug] = useState(false);
+  const [isEditingSlug, setIsEditingSlug] = useState(false);
 
-    const router = useRouter();
+  const router = useRouter();
 
   // Auto-generate slug from title
   const generateSlug = (title: string) => {
@@ -115,7 +110,7 @@ export default function CourseForm({
 
   const handleTitleChange = (value: string) => {
     setTitle(value);
-      setSlug(generateSlug(value));
+    setSlug(generateSlug(value));
   };
 
   const addTag = () => {
@@ -157,73 +152,78 @@ export default function CourseForm({
   };
 
   const handleSave = async (saveType: "draft" | "publish" | "preview") => {
-   const courseData = {
-     slug,
-     title,
-     description: content || "No description available",
-     excerpt,
-     platform: platform,
-     instructor: {
-       name: instructorName,
-       title: instructorTitle || "",
-       bio: instructorBio || "",
-       rating: Number.parseFloat(rating) || 0,
-       students: Number.parseInt(students) || 0,
-       courses: 0,
-       avatar: instructorAvatar || "",
-     },
-     rating: Number.parseFloat(rating) || 0,
-     students: Number.parseInt(students) || 0,
-     duration: duration || "N/A",
-     certificate,
-     language,
-     difficulty: level || "all-levels",
-     category: category || "other",
-     tags,
-     price: price || "0",
-     originalPrice: originalPrice || "0",
-     expiryDate: expiryDate || null,
-     image: featuredImage || "",
-     isPopular,
-     isNew,
-     isTrending,
-     outcomes: whatYouWillLearn,
-     requirements,
-    //  curriculum: [],
-    //  reviews: [],
-    //  relatedCourses: [],
-     status:
-       saveType === "publish"
-         ? "published"
-         : saveType === "preview"
-         ? "preview"
-         : "draft",
-     visibility,
-     publishDate: publishDate || null,
-   };
-if (saveType === "preview") { 
+    const courseData = {
+      slug,
+      title,
+      description: content || "No description available",
+      excerpt,
+      platform: platform,
+      instructor: {
+        name: instructorName,
+        title: instructorTitle || "",
+        bio: instructorBio || "",
+        rating: Number.parseFloat(rating) || 0,
+        students: Number.parseInt(students) || 0,
+        courses: 0,
+        avatar: instructorAvatar || "",
+      },
+      rating: Number.parseFloat(rating) || 0,
+      students: Number.parseInt(students) || 0,
+      duration: duration || "N/A",
+      certificate,
+      language,
+      difficulty: level || "all-levels",
+      category: category || "other",
+      tags,
+      price: price || "0",
+      originalPrice: originalPrice || "0",
+      expiryDate: expiryDate || null,
+      image: featuredImage || "",
+      isPopular,
+      isNew,
+      isTrending,
+      outcomes: whatYouWillLearn,
+      requirements,
+      //  curriculum: [],
+      //  reviews: [],
+      //  relatedCourses: [],
+      status:
+        saveType === "publish"
+          ? "published"
+          : saveType === "preview"
+          ? "preview"
+          : "draft",
+      visibility,
+      publishDate: publishDate || null,
+    };
+    if (saveType === "preview") {
       // Open preview in new tab
       console.log("Preview data:", courseData);
-} else {
-    try {
-const res = await fetch(
-  mode === "edit" ? `/api/courses/${course.id}` : "/api/courses",
-  {
-    method: mode === "edit" ? "PUT" : "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(courseData),
-  }
-);
-      if (!res.ok) throw new Error("Failed to save course");
+    } else {
+      try {
+        const res = await fetch(
+          mode === "edit" ? `/api/courses/${course.id}` : "/api/courses",
+          {
+            method: mode === "edit" ? "PUT" : "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(courseData),
+          }
+        );
+        if (!res.ok) throw new Error("Failed to save course");
 
-      toast.success(saveType === 'draft'  ? 'Course save as draft' : mode === 'edit' ? 'Course updated successfully' : 'Course published successfully');
-      router.push("/admin/courses");
-    } catch (error: any) {
-      toast.error("Error saving course: " + error.message);
+        toast.success(
+          saveType === "draft"
+            ? "Course save as draft"
+            : mode === "edit"
+            ? "Course updated successfully"
+            : "Course published successfully"
+        );
+        router.push("/admin/courses");
+      } catch (error: any) {
+        toast.error("Error saving course: " + error.message);
+      }
     }
-  }
   };
-  
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -367,13 +367,13 @@ const res = await fetch(
                         <SelectValue placeholder="Select platform" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="udemy">Udemy</SelectItem>
-                        <SelectItem value="coursera">Coursera</SelectItem>
-                        <SelectItem value="edx">edX</SelectItem>
-                        <SelectItem value="khan-academy">
+                        <SelectItem value="Udemy">Udemy</SelectItem>
+                        <SelectItem value="Coursera">Coursera</SelectItem>
+                        <SelectItem value="edX">edX</SelectItem>
+                        <SelectItem value="Khan Academy">
                           Khan Academy
                         </SelectItem>
-                        <SelectItem value="freecodecamp">
+                        <SelectItem value="freeCodeCamp">
                           freeCodeCamp
                         </SelectItem>
                         <SelectItem value="other">Other</SelectItem>
@@ -456,7 +456,7 @@ const res = await fetch(
                     </Select>
                   </div>
 
-                  {/* ✅ New Language field */}
+                  {/*  New Language field */}
                   <div>
                     <Label htmlFor="language">Language</Label>
                     <Input
@@ -513,12 +513,30 @@ const res = await fetch(
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <Label htmlFor="price">Current Price</Label>
-                    <Input
-                      id="price"
-                      value={price}
-                      onChange={(e) => setPrice(e.target.value)}
-                      placeholder="Free or $99"
-                    />
+                    <div className="flex items-center gap-2 mt-1">
+                      <Select value={currency} onValueChange={setCurrency}>
+                        <SelectTrigger className="w-24">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="NGN">NGN</SelectItem>
+                          <SelectItem value="USD">USD</SelectItem>
+                          <SelectItem value="EUR">EUR</SelectItem>
+                          <SelectItem value="GBP">GBP</SelectItem>
+                          <SelectItem value="INR">INR</SelectItem>
+                          <SelectItem value="AUD">AUD</SelectItem>
+                          <SelectItem value="CAD">CAD</SelectItem>
+                        </SelectContent>
+                      </Select>
+
+                      <Input
+                        id="price"
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                        placeholder="0 or 4999"
+                        className="flex-1"
+                      />
+                    </div>
                   </div>
                   <div>
                     <Label htmlFor="originalPrice">Original Price</Label>
@@ -526,7 +544,7 @@ const res = await fetch(
                       id="originalPrice"
                       value={originalPrice}
                       onChange={(e) => setOriginalPrice(e.target.value)}
-                      placeholder="$199"
+                      placeholder="199"
                     />
                   </div>
                   <div>

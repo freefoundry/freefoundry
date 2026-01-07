@@ -8,7 +8,7 @@ console.log("MONGODB_RESOURCES_URI =", process.env.MONGODB_RESOURCES_URI); // �
 async function main() {
   try {
     const conn = await mongoose.connect(process.env.MONGODB_RESOURCES_URI);
-    console.log("✅ Connected to MongoDB:", conn.connection.name);
+    console.log(" Connected to MongoDB:", conn.connection.name);
     process.exit(0);
   } catch (err) {
     console.error("❌ Connection failed:", err.message);

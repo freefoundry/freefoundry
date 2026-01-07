@@ -3,18 +3,18 @@ import ResourceFormClient from "./ResourceFormClient";
 export default async function EditResourcePage(props: {
   params: Promise<{ id: string }>;
 }) {
-  // ✅ Extract resource ID or slug from dynamic params
+  //  Extract resource ID or slug from dynamic params
   const { id } = await props.params;
 
-  // ✅ Set your base API URL
+  //  Set your base API URL
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-  // ✅ Fetch resource data from API
+  //  Fetch resource data from API
   const resource = await fetch(`${baseUrl}/api/resources/${id}`, {
     cache: "no-store", // always fetch fresh data
   }).then((res) => res.json());
 
-  // ✅ Normalize JSON fields (convert stringified arrays back to arrays)
+  //  Normalize JSON fields (convert stringified arrays back to arrays)
   const normalized = {
     ...resource,
     tags:

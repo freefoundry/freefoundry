@@ -78,6 +78,7 @@ export type Job = {
   featured?: boolean;
   urgent?: boolean;
   applicationUrl?: string;
+  currency: string;
 };
 
 export type Resource = {

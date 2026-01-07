@@ -28,7 +28,6 @@ export async function GET() {
   }
 }
 
-
 // CREATE a new course
 export async function POST(req: Request) {
   try {
@@ -36,7 +35,7 @@ export async function POST(req: Request) {
 
     let imageUrl = body.image || null;
 
-    // ✅ Upload image to Cloudinary if it's base64
+    //  Upload image to Cloudinary if it's base64
     if (body.image && body.image.startsWith("data:")) {
       const uploadRes = await cloudinary.uploader.upload(body.image, {
         folder: "courses",
@@ -47,8 +46,8 @@ export async function POST(req: Request) {
 
     const [result] = await db.query(
       `INSERT INTO courses 
-        (slug, title, instructor, description, content, excerpt, platform, category, difficulty, duration, courseUrl, certificate, language, price, originalPrice, rating, students, image, isPopular, isNew, isTrending, tags, requirements, outcomes, expiryDate, status, visibility, publishDate) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        (slug, title, instructor, description, content, excerpt, platform, category, difficulty, duration, courseUrl, certificate, language, currency, price, originalPrice, rating, students, image, isPopular, isNew, isTrending, tags, requirements, outcomes, expiryDate, status, visibility, publishDate) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         body.slug,
         body.title,
@@ -63,8 +62,9 @@ export async function POST(req: Request) {
         body.level || body.difficulty || null,
         body.duration || null,
         body.courseUrl || null,
-        !!body.certificate, // ✅ Save as boolean
-        body.language || "English", // ✅ Save language
+        !!body.certificate, //  Save as boolean
+        body.language || "English", //  Save language
+        body.currency || "NGN",
         parseFloat(body.price) || 0,
         parseFloat(body.originalPrice) || 0,
         parseFloat(body.rating) || 0,
@@ -115,4 +115,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: message }, { status });
   }
 }
-

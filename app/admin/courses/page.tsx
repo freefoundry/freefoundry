@@ -55,7 +55,7 @@ export default function CoursesAdminPage() {
       const res = await fetch("/api/courses");
       let data = await res.json();
 
-      const normalized = (data || []).map((course: any) => ({
+      const normalized = (data || [])?.map((course: any) => ({
         ...course,
         instructor: course.instructor ? JSON.parse(course.instructor) : {},
         tags: course.tags ? JSON.parse(course.tags) : [],
@@ -352,14 +352,31 @@ export default function CoursesAdminPage() {
                         </TableCell>
                         <TableCell>
                           <div>
+                            {/* Main price */}
                             <div className="font-medium text-green-600">
-                              {course.price}
+                              {Number(course.price) === 0 ? (
+                                "Free"
+                              ) : (
+                                <>
+                                  {course.currency}{" "}
+                                  {Number(course.price).toLocaleString()}
+                                </>
+                              )}
                             </div>
-                            <div className="text-xs text-gray-500 line-through">
-                              {course.originalPrice}
-                            </div>
+
+                            {/* Original price (only if > 0 and price is not free) */}
+                            {Number(course.originalPrice) > 0 &&
+                              Number(course.price) > 0 && (
+                                <div className="text-xs text-gray-500 line-through">
+                                  {course.currency}{" "}
+                                  {Number(
+                                    course.originalPrice
+                                  ).toLocaleString()}
+                                </div>
+                              )}
                           </div>
                         </TableCell>
+
                         <TableCell>
                           <div className="text-sm">
                             <div>

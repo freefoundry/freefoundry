@@ -11,7 +11,7 @@ export default async function EditJobPage(props: {
     cache: "no-store",
   }).then((res) => res.json());
 
-  // ✅ Normalize JSON fields
+  //  Normalize JSON fields
   const normalized = {
     ...job,
     tags: typeof job.tags === "string" ? JSON.parse(job.tags) : job.tags || [],

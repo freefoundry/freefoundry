@@ -15,6 +15,7 @@ import {
 import type { Job } from "@/lib/types";
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import { formatSalary } from "@/lib/currency";
 
 type Variant = "list" | "teaser";
 
@@ -28,12 +29,31 @@ export function JobCard({
   variant?: Variant;
 }) {
   const [bookmarked, setBookmarked] = useState(initiallyBookmarked);
+const parseMySQLDate = (value: string) => {
+  return new Date(value.replace(" ", "T"));
+};
 
-  const daysAgo = useMemo(() => {
-    const d = new Date(job.postedDate);
-    const diff = Math.ceil((Date.now() - d.getTime()) / (1000 * 60 * 60 * 24));
-    return diff === 1 ? "1 day ago" : `${diff} days ago`;
-  }, [job.postedDate]);
+ const daysAgo = useMemo(() => {
+   if (!job.postedDate) return "";
+
+   const d = parseMySQLDate(job.postedDate);
+    const now = new Date();
+
+    const diffMs = now.getTime() - d.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays <= 0) return "Today";
+    if (diffDays === 1) return "1 day ago";
+    if (diffDays < 30) return `${diffDays} days ago`;
+
+    const diffMonths = Math.floor(diffDays / 30);
+    if (diffMonths === 1) return "1 month ago";
+    if (diffMonths < 12) return `${diffMonths} months ago`;
+
+    const diffYears = Math.floor(diffMonths / 12);
+    return diffYears === 1 ? "1 year ago" : `${diffYears} years ago`;
+ }, [job.postedDate]);
+
 
   if (variant === "teaser") {
     // Compact tile for Home grid
@@ -71,10 +91,10 @@ export function JobCard({
             ))}
           </div>
           <div className="text-sm text-gray-600 mb-4">
-            <p>
-              {job.salary}
-              {job.salaryType ? `/${job.salaryType}` : ""}
+            <p className="text-sm">
+              {formatSalary(job.salary, job.currency, job.salaryType)}
             </p>
+
             <p className="text-xs text-gray-500 mt-1">Posted {daysAgo}</p>
           </div>
           <Button className="w-full flex items-center justify-center" asChild>
@@ -128,15 +148,19 @@ export function JobCard({
                 {job.featured === 1 && (
                   <Badge className="bg-blue-600">Featured</Badge>
                 )}
-                {job.urgent === 1 && (<Badge className="bg-red-600">Urgent</Badge>)}
-                <Badge variant="outline">{job.type}</Badge>
-                <Badge variant="outline">{job.workMode}</Badge>
-                <Badge variant="outline">{job.experience}</Badge>
+                {job.urgent === 1 && (
+                  <Badge className="bg-red-600">Urgent</Badge>
+                )}
+                {job.type && <Badge variant="outline">{job.type}</Badge>}
+                {job.workMode && <Badge variant="outline">{job.workMode}</Badge>}
+                {job.experience && <Badge variant="outline">{job.experience}</Badge>} 
                 <Badge
                   variant="secondary"
-                  className="bg-green-50 text-green-700 border-green-200"
+                  className="bg-green-50 text-green-700 border-green-200 flex items-center"
                 >
-                  <DollarSign className="h-3 w-3 mr-1" /> {job.salary}
+                  <span className="mr-1 font-semibold">
+                    {formatSalary(job.salary, job.currency)}
+                  </span>
                 </Badge>
               </div>
               <p className="text-gray-600 mb-4 line-clamp-2">

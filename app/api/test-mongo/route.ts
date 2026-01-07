@@ -7,7 +7,7 @@ export async function GET() {
     const scholarshipsDb = await connectMongo("scholarships");
 
     return NextResponse.json({
-      message: "✅ MongoDB connected successfully",
+      message: " MongoDB connected successfully",
       resourcesDb: resourcesDb.name,
       scholarshipsDb: scholarshipsDb.name,
     });

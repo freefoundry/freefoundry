@@ -50,12 +50,14 @@ export default function AdminScholarshipsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
-  const [selectedScholarships, setSelectedScholarships] = useState<number[]>([]);
+  const [selectedScholarships, setSelectedScholarships] = useState<number[]>(
+    []
+  );
   const [scholarships, setScholarships] = useState<Scholarship[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // ✅ Fetch scholarships from API
+  //  Fetch scholarships from API
   const fetchScholarships = async () => {
     try {
       setLoading(true);
@@ -83,12 +85,28 @@ export default function AdminScholarshipsPage() {
     );
 
     if (daysUntilDeadline < 0)
-      return { status: "expired", text: "Expired", color: "bg-red-100 text-red-800" };
+      return {
+        status: "expired",
+        text: "Expired",
+        color: "bg-red-100 text-red-800",
+      };
     if (daysUntilDeadline <= 7)
-      return { status: "urgent", text: "Urgent", color: "bg-orange-100 text-orange-800" };
+      return {
+        status: "urgent",
+        text: "Urgent",
+        color: "bg-orange-100 text-orange-800",
+      };
     if (daysUntilDeadline <= 30)
-      return { status: "soon", text: "Soon", color: "bg-yellow-100 text-yellow-800" };
-    return { status: "normal", text: "Active", color: "bg-green-100 text-green-800" };
+      return {
+        status: "soon",
+        text: "Soon",
+        color: "bg-yellow-100 text-yellow-800",
+      };
+    return {
+      status: "normal",
+      text: "Active",
+      color: "bg-green-100 text-green-800",
+    };
   };
 
   const filteredScholarships = scholarships.filter((s) => {
@@ -102,7 +120,9 @@ export default function AdminScholarshipsPage() {
   });
 
   const handleSelectAll = (checked: boolean) => {
-    setSelectedScholarships(checked ? filteredScholarships.map((s) => s._id) : []);
+    setSelectedScholarships(
+      checked ? filteredScholarships.map((s) => s._id) : []
+    );
   };
 
   const handleSelectScholarship = (id: number, checked: boolean) => {
@@ -465,9 +485,7 @@ export default function AdminScholarshipsPage() {
                               {deadlineInfo.text}
                             </Badge>
                           </TableCell>
-                          <TableCell>
-                            {s.status}
-                          </TableCell>
+                          <TableCell>{s.status}</TableCell>
                           <TableCell>
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>

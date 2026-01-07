@@ -80,7 +80,7 @@ export default function JobsPage() {
         page: currentPage,
         limit: jobsPerPage,
         search: searchTerm || undefined,
-        types: selectedJobTypes, // ✅ matches backend key
+        types: selectedJobTypes, //  matches backend key
         workModes: selectedWorkModes,
         experienceLevels: selectedExperience,
         locations: selectedLocations,
@@ -179,14 +179,28 @@ export default function JobsPage() {
     selectedWorkModes.length +
     selectedExperience.length +
     selectedLocations.length;
-
+const parseMySQLDate = (value: string) => {
+  return new Date(value.replace(" ", "T"));
+};
   const getDaysAgo = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diff = Math.ceil(
-      (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
-    );
-    return diff === 1 ? "1 day ago" : `${diff} days ago`;
+     if (!dateString) return "";
+
+     const d = parseMySQLDate(dateString);
+     const now = new Date();
+
+     const diffMs = now.getTime() - d.getTime();
+     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+     if (diffDays <= 0) return "Today";
+     if (diffDays === 1) return "1 day ago";
+     if (diffDays < 30) return `${diffDays} days ago`;
+
+     const diffMonths = Math.floor(diffDays / 30);
+     if (diffMonths === 1) return "1 month ago";
+     if (diffMonths < 12) return `${diffMonths} months ago`;
+
+     const diffYears = Math.floor(diffMonths / 12);
+     return diffYears === 1 ? "1 year ago" : `${diffYears} years ago`;
   };
 
   return (
@@ -460,7 +474,7 @@ function JobCard({
             <div>
               <h3 className="text-xl font-semibold">{job.title}</h3>
               <p className="text-gray-600 text-sm mb-2">
-                {job.company} • {job.location}
+                {job.company} {job.location && "•"} {job.location}
               </p>
               <div className="flex flex-wrap gap-2 mb-3">
                 {job.featured === 1 && (
@@ -469,9 +483,9 @@ function JobCard({
                 {job.urgent === 1 && (
                   <Badge className="bg-red-600">Urgent</Badge>
                 )}
-                <Badge variant="outline">{job.type}</Badge>
-                <Badge variant="outline">{job.workMode}</Badge>
-                <Badge variant="outline">{job.experience}</Badge>
+                {job.type && <Badge variant="outline">{job.type}</Badge>}
+                {job.workMode && <Badge variant="outline">{job.workMode}</Badge>}
+                {job.experience && <Badge variant="outline">{job.experience}</Badge>}
               </div>
               <p className="text-gray-600 line-clamp-2 mb-3">
                 {job.description}

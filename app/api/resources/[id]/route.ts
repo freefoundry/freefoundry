@@ -65,7 +65,7 @@ export async function PUT(
       );
     }
 
-    // ✅ Handle Cloudinary upload if Base64 image provided
+    //  Handle Cloudinary upload if Base64 image provided
     let imageUrl = data.featuredImage || existing.featuredImage;
     if (data.featuredImage && data.featuredImage.startsWith("data:")) {
       try {
@@ -83,7 +83,7 @@ export async function PUT(
       }
     }
 
-    // ✅ Auto-update timestamps and merge updates
+    //  Auto-update timestamps and merge updates
     const updatedResource = await Resource.findOneAndUpdate(
       query,
       {
@@ -130,7 +130,7 @@ export async function DELETE(
       );
     }
 
-    // ✅ Optional: delete image from Cloudinary
+    //  Optional: delete image from Cloudinary
     if (
       deleted.featuredImage &&
       deleted.featuredImage.includes("cloudinary.com")

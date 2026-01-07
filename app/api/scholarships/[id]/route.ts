@@ -16,7 +16,7 @@ export async function GET(
     const conn = await connectMongo("scholarships");
     const Scholarship = getScholarshipModel(conn);
 
-    // ✅ Determine if it's an ObjectId or slug
+    //  Determine if it's an ObjectId or slug
     const query = mongoose.Types.ObjectId.isValid(id)
       ? { _id: id }
       : { slug: id };
@@ -54,7 +54,7 @@ export async function PUT(
     const conn = await connectMongo("scholarships");
     const Scholarship = getScholarshipModel(conn);
 
-    // ✅ Determine if ID or slug
+    //  Determine if ID or slug
     const query = mongoose.Types.ObjectId.isValid(id)
       ? { _id: id }
       : { slug: id };
@@ -67,7 +67,7 @@ export async function PUT(
       );
     }
 
-    // ✅ Handle Cloudinary upload if Base64
+    //  Handle Cloudinary upload if Base64
     let imageUrl = data.featuredImage || existing.featuredImage;
 
     if (data.featuredImage && data.featuredImage.startsWith("data:")) {
@@ -86,7 +86,7 @@ export async function PUT(
       }
     }
 
-    // ✅ Update the scholarship
+    //  Update the scholarship
     const updated = await Scholarship.findOneAndUpdate(
       query,
       {
@@ -131,7 +131,7 @@ export async function DELETE(
     const conn = await connectMongo("scholarships");
     const Scholarship = getScholarshipModel(conn);
 
-    // ✅ Determine if ID or slug
+    //  Determine if ID or slug
     const query = mongoose.Types.ObjectId.isValid(id)
       ? { _id: id }
       : { slug: id };
@@ -145,7 +145,7 @@ export async function DELETE(
       );
     }
 
-    // ✅ Optionally delete image from Cloudinary
+    //  Optionally delete image from Cloudinary
     if (
       deleted.featuredImage &&
       deleted.featuredImage.includes("cloudinary.com")

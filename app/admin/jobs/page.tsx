@@ -35,7 +35,6 @@ import {
   Calendar,
   MapPin,
   Building,
-  DollarSign,
   Star,
   TrendingUp,
 } from "lucide-react";
@@ -60,7 +59,7 @@ export default function JobsAdminPage() {
   const [selectedJobs, setSelectedJobs] = useState<number[]>([]);
   const [sortBy, setSortBy] = useState("newest");
 
-  // ✅ Fetch jobs from API
+  //  Fetch jobs from API
   const fetchJobs = async () => {
     try {
       setLoading(true);
@@ -78,7 +77,7 @@ export default function JobsAdminPage() {
   useEffect(() => {
     fetchJobs();
   }, []);
-  // ✅ Filter and sort jobs
+  //  Filter and sort jobs
   const filteredJobs = jobs
     .filter((job) => {
       const matchesSearch =
@@ -162,6 +161,15 @@ export default function JobsAdminPage() {
     urgent: jobs.filter((job) => job.urgent).length,
     remote: jobs.filter((job) => job.workMode === "Remote").length,
   };
+const currencySymbols: Record<string, string> = {
+  NGN: "₦",
+  USD: "$",
+  EUR: "€",
+  GBP: "£",
+  INR: "₹",
+  AUD: "A$",
+  CAD: "C$",
+};
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -438,13 +446,14 @@ export default function JobsAdminPage() {
                               >
                                 {job.title}
                               </Link>
-                              {job.featured && (
+                              {Boolean(job.featured) && (
                                 <Badge variant="secondary" className="text-xs">
                                   <Star className="h-3 w-3 mr-1" />
                                   Featured
                                 </Badge>
                               )}
-                              {job.urgent && (
+
+                              {Boolean(job.urgent) && (
                                 <Badge
                                   variant="destructive"
                                   className="text-xs"
@@ -492,15 +501,19 @@ export default function JobsAdminPage() {
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center text-sm">
-                            <DollarSign className="h-3 w-3 mr-1 text-gray-400" />
+                            <span className="mr-1 text-gray-400">
+                              {currencySymbols[job.currency] || job.currency}
+                            </span>
                             {job.salary}
                           </div>
+
                           {job.salaryType && (
                             <p className="text-xs text-gray-500">
                               per {job.salaryType}
                             </p>
                           )}
                         </TableCell>
+
                         <TableCell>
                           <div className="flex items-center text-sm text-gray-600">
                             <Calendar className="h-3 w-3 mr-1" />

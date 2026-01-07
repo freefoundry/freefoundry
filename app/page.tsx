@@ -10,7 +10,6 @@ import { JobCard } from "@/components/cards/JobCard";
 import { CTASection } from "@/components/sections/CTASection";
 import { Footer } from "@/components/layout/Footer";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   BookOpen,
   Briefcase,
@@ -28,8 +27,8 @@ export default function Home() {
   const [courses, setCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-   const [jobs, setJobs] = useState<any[]>([]);
-   const [loadingJobs, setLoadingJobs] = useState(true);
+  const [jobs, setJobs] = useState<any[]>([]);
+  const [loadingJobs, setLoadingJobs] = useState(true);
 
   useEffect(() => {
     async function fetchCourses() {
@@ -53,7 +52,7 @@ export default function Home() {
 
         const data = await res.json();
 
-        // ✅ Normalize and take only 3
+        //  Normalize and take only 3
         const normalized = (data.data || data || []).map((c: any) => ({
           ...c,
           tags: typeof c.tags === "string" ? JSON.parse(c.tags) : c.tags || [],
@@ -85,7 +84,7 @@ export default function Home() {
     fetchCourses();
   }, []);
 
-  // ✅ Fetch Jobs (similar logic)
+  //  Fetch Jobs (similar logic)
   useEffect(() => {
     async function fetchJobs() {
       try {

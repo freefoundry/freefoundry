@@ -18,25 +18,25 @@ function buildQuery({
   const conditions: string[] = ["visibility = 'public'"];
   const values: any[] = [];
 
-  // ✅ Search by title, company, or tags
+  //  Search by title, company, or tags
   if (search) {
     conditions.push("(title LIKE ? OR company LIKE ? OR tags LIKE ?)");
     values.push(`%${search}%`, `%${search}%`, `%${search}%`);
   }
 
-  // ✅ Filter by job type (Full-time, Contract, etc.)
+  //  Filter by job type (Full-time, Contract, etc.)
   if (types?.length) {
     conditions.push(`type IN (${types.map(() => "?").join(",")})`);
     values.push(...types);
   }
 
-  // ✅ Filter by work mode (Remote, Hybrid, Onsite)
+  //  Filter by work mode (Remote, Hybrid, Onsite)
   if (workModes?.length) {
     conditions.push(`workMode IN (${workModes.map(() => "?").join(",")})`);
     values.push(...workModes);
   }
 
-  // ✅ Filter by experience level (Junior, Mid, Senior)
+  //  Filter by experience level (Junior, Mid, Senior)
   if (experienceLevels?.length) {
     conditions.push(
       `experience IN (${experienceLevels.map(() => "?").join(",")})`
@@ -44,13 +44,13 @@ function buildQuery({
     values.push(...experienceLevels);
   }
 
-  // ✅ Filter by location
+  //  Filter by location
   if (locations?.length) {
     conditions.push(`location IN (${locations.map(() => "?").join(",")})`);
     values.push(...locations);
   }
 
-  // ✅ Sorting options
+  //  Sorting options
   let orderBy = "createdAt DESC"; // newest by default
   if (sort === "popular") orderBy = "views DESC";
   if (sort === "applications") orderBy = "applications DESC";

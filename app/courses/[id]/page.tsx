@@ -38,7 +38,6 @@ export default function CourseDetailPage({
   const [loading, setLoading] = useState(true);
   const [isBookmarked, setIsBookmarked] = useState(false);
 
-
   // fetch course from API
   useEffect(() => {
     const fetchCourse = async () => {
@@ -534,13 +533,13 @@ export default function CourseDetailPage({
                 <div className="text-center mb-6">
                   <div className="flex items-center justify-center space-x-2 mb-2">
                     <span className="text-3xl font-bold text-green-600">
-                      {course.price === "0.00" ? "Free" : "$" + course.price}
+                      {course.price === "0.00" ? "Free" : "#" + course.price}
                     </span>
                     <span className="text-lg text-gray-500 line-through">
-                      {"$" + course.originalPrice}
+                      {"#" + course.originalPrice}
                     </span>
                   </div>
-                  {daysLeft && daysLeft > 0 ? (
+                  {course.expiryDate && daysLeft && daysLeft > 0 ? (
                     <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-4">
                       <div className="flex items-center justify-center space-x-2 text-orange-700">
                         <Calendar className="h-4 w-4" />
@@ -550,16 +549,16 @@ export default function CourseDetailPage({
                         </span>
                       </div>
                     </div>
-                  ) : (
-                      <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
-                        <div className="flex items-center justify-center space-x-2 text-red-700">
-                          <Calendar className="h-4 w-4" />
-                          <span className="text-sm font-medium">
-                            This offer has expired.
-                          </span>
-                        </div>
+                  ) : course.expiryDate && daysLeft && daysLeft <= 0 ? (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
+                      <div className="flex items-center justify-center space-x-2 text-red-700">
+                        <Calendar className="h-4 w-4" />
+                        <span className="text-sm font-medium">
+                          This offer has expired.
+                        </span>
                       </div>
-                  )}
+                    </div>
+                  ) : null}
                 </div>
 
                 <div className="space-y-3 mb-6">

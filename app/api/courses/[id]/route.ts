@@ -16,7 +16,7 @@ export async function GET(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await context.params; // ✅ await params
+    const { id } = await context.params; //  await params
 
     let query = "";
     let values: any[] = [];
@@ -50,7 +50,6 @@ export async function PUT(
     const { id } = await context.params;
     const body = await req.json();
 
-    // ✅ Handle image upload if provided
     let imageUrl = body.image;
     if (body.image && body.image.startsWith("data:")) {
       const uploadRes = await cloudinary.uploader.upload(body.image, {
@@ -60,21 +59,50 @@ export async function PUT(
       imageUrl = uploadRes.secure_url;
     }
 
-    // 🔒 Normalize body (arrays/objects → JSON, skip undefined)
+  const normalizeDate = (date: string | null) => {
+    if (!date) return null;
+
+    // datetime-local → DATETIME
+    if (date.includes("T")) {
+      return date.replace("T", " ") + ":00";
+    }
+
+    return date;
+  };
+
+
     const normalized: Record<string, any> = {};
+
     for (const [key, value] of Object.entries(body)) {
       if (value === undefined) continue;
-      if (key === "image") {
-        if (imageUrl) normalized.image = imageUrl; // only update if new image given
-      } else if (Array.isArray(value) || typeof value === "object") {
-        normalized[key] = JSON.stringify(value);
-      } else {
-        normalized[key] = value;
+
+      //  HANDLE DATETIME FIELDS FIRST
+      if (["expiryDate", "publishDate"].includes(key)) {
+        normalized[key] = normalizeDate(value as string | null);
+        continue;
       }
+
+      //  Image handling
+      if (key === "image") {
+        if (imageUrl) normalized.image = imageUrl;
+        continue;
+      }
+
+      //  JSON fields (but NOT null)
+      if (
+        value !== null &&
+        (Array.isArray(value) || typeof value === "object")
+      ) {
+        normalized[key] = JSON.stringify(value);
+        continue;
+      }
+
+      //  primitives + real null
+      normalized[key] = value;
     }
 
     const keys = Object.keys(normalized);
-    if (keys.length === 0) {
+    if (!keys.length) {
       return NextResponse.json(
         { error: "No valid fields provided" },
         { status: 400 }
@@ -82,7 +110,7 @@ export async function PUT(
     }
 
     const values = Object.values(normalized);
-    const setClause = keys.map((key) => `\`${key}\` = ?`).join(", ");
+    const setClause = keys.map((k) => `\`${k}\` = ?`).join(", ");
 
     await db.query(`UPDATE courses SET ${setClause} WHERE id = ?`, [
       ...values,
@@ -101,14 +129,13 @@ export async function PUT(
 }
 
 
-
 // DELETE course
 export async function DELETE(
   _: Request,
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await context.params; // ✅ await params
+    const { id } = await context.params; //  await params
     await db.query("DELETE FROM courses WHERE id = ?", [id]);
     return NextResponse.json({ message: "Deleted successfully" });
   } catch (err: any) {

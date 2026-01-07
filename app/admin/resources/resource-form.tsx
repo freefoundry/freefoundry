@@ -117,6 +117,14 @@ export default function ResourceForm({
 
   // Save Handler
   const handleSave = async (saveType: "draft" | "publish" | "preview") => {
+    if (!title.trim()) {
+      toast.error("Title is required");
+      return;
+    }
+    if (!content.trim()) {
+      toast.error("Content is required");
+      return;
+    }
     const resourceData = {
       title,
       content,
@@ -261,6 +269,7 @@ export default function ResourceForm({
                   value={content}
                   onChange={setContent}
                   placeholder="Write your resource content here..."
+                
                 />
               </CardContent>
             </Card>

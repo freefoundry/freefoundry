@@ -46,7 +46,7 @@ export function RichTextEditor({
   );
 }
 
-// ✅ Extended Toolbar
+//  Extended Toolbar
 const modules = {
   toolbar: [
     // Font family + size

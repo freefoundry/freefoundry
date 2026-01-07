@@ -2,44 +2,58 @@ import mongoose, { Connection } from "mongoose";
 
 type DbName = "resources" | "scholarships" | "users";
 
-type ConnectionCache = {
-  [key in DbName]?: {
-    conn: Connection | null;
-    promise: Promise<Connection> | null;
-  };
+type CachedConnection = {
+  conn: Connection | null;
+  promise: Promise<Connection> | null;
 };
 
-// store cached connections globally (works across hot reloads in dev)
-let cached: ConnectionCache = (global as any).mongoose || {};
+type ConnectionCache = Record<DbName, CachedConnection>;
+
+// Global cache (safe for hot reloads / serverless)
+const globalCache = (global as any).mongoose as
+  | Partial<ConnectionCache>
+  | undefined;
+
+const cached: Partial<ConnectionCache> = globalCache ?? {};
 if (!(global as any).mongoose) {
   (global as any).mongoose = cached;
 }
 
-export async function connectMongo(name: DbName): Promise<Connection> {
-  let uri: string | undefined;
+// Database name mapping
+const DB_NAME_MAP: Record<DbName, string> = {
+  resources: "freefoundry_resources",
+  scholarships: "freefoundry_scholarships",
+  users: "freefoundry_users",
+};
 
-if (name === "resources") {
-  uri = process.env.MONGODB_RESOURCES_URI;
-} else if (name === "scholarships") {
-  uri = process.env.MONGODB_SCHOLARSHIPS_URI;
-} else if (name === "users") {
-  uri = process.env.MONGODB_USERS_URI;
-}
+// URI mapping
+const URI_MAP: Record<DbName, string | undefined> = {
+  resources: process.env.MONGODB_RESOURCES_URI,
+  scholarships: process.env.MONGODB_SCHOLARSHIPS_URI,
+  users: process.env.MONGODB_USERS_URI,
+};
+
+export async function connectMongo(name: DbName): Promise<Connection> {
+  const uri = URI_MAP[name];
+  console.log("Connecting to MongoDB:", name, uri);
   if (!uri) {
-    throw new Error(`⚠️ Missing MongoDB URI for ${name}`);
+    throw new Error(`Missing MongoDB URI for "${name}"`);
   }
 
   if (!cached[name]) {
     cached[name] = { conn: null, promise: null };
   }
 
-  if (cached[name]?.conn) {
+  if (cached[name]!.conn) {
     return cached[name]!.conn!;
   }
 
-  if (!cached[name]?.promise) {
+  if (!cached[name]!.promise) {
     cached[name]!.promise = mongoose
-      .createConnection(uri, { bufferCommands: false })
+      .createConnection(uri, {
+        dbName: DB_NAME_MAP[name],
+        bufferCommands: false,
+      })
       .asPromise();
   }
 

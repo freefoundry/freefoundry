@@ -36,7 +36,7 @@ export async function POST(req: Request) {
 
     let logoUrl = body.companyLogo || null;
 
-    // ✅ Upload company logo to Cloudinary if base64
+    //  Upload company logo to Cloudinary if base64
     if (body.companyLogo && body.companyLogo.startsWith("data:")) {
       const uploadRes = await cloudinary.uploader.upload(body.companyLogo, {
         folder: "jobs",
@@ -44,11 +44,20 @@ export async function POST(req: Request) {
       });
       logoUrl = uploadRes.secure_url;
     }
+const formatLocalDateTime = (date = new Date()) => {
+  const pad = (n: number) => String(n).padStart(2, "0");
+
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+    date.getDate()
+  )} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(
+    date.getSeconds()
+  )}`;
+};
 
     const [result] = await db.query(
       `INSERT INTO jobs 
-        (slug, title, company, location, type, workMode, experience, salary, salaryType, description, fullDescription, excerpt, requirements, benefits, responsibilities, postedDate, platform, companyLogo, applicationUrl, featured, urgent, tags, status, visibility, publishDate, qualifications, niceToHave, companyInfo, applicationProcess, similarJobs, views, applications, lastUpdated) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (slug, title, company, location, type, workMode, experience, salary, currency, salaryType, description, fullDescription, excerpt, requirements, benefits, responsibilities, postedDate, platform, companyLogo, applicationUrl, featured, urgent, tags, status, visibility, publishDate, qualifications, niceToHave, companyInfo, applicationProcess, similarJobs, views, applications, lastUpdated) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
       [
         body.slug,
@@ -59,6 +68,7 @@ export async function POST(req: Request) {
         body.workMode || null,
         body.experience || null,
         body.salary || null,
+        body.currency || "NGN",
         body.salaryType || null,
         body.description || null,
         body.fullDescription || "",
@@ -66,7 +76,7 @@ export async function POST(req: Request) {
         JSON.stringify(body.requirements || []),
         JSON.stringify(body.benefits || []),
         JSON.stringify(body.responsibilities || []),
-        body.postedDate || new Date().toISOString().split("T")[0],
+        body.postedDate || formatLocalDateTime(),
         body.platform || null,
         logoUrl,
         body.applicationUrl || null,
@@ -83,7 +93,7 @@ export async function POST(req: Request) {
         JSON.stringify(body.similarJobs || []),
         parseInt(body.views) || 0,
         parseInt(body.applications) || 0,
-        body.lastUpdated || new Date().toISOString().split("T")[0],
+        body.lastUpdated || formatLocalDateTime(),
       ]
     );
 
