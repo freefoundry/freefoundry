@@ -12,5 +12,13 @@
     "password": "editor123",
     "name": "Content Editor",
     "role": "editor"
+  },
+  {
+    "id": 3,
+    "email": "support@yopmail.com",
+    "password": "support123",
+    "name": "Support Agent",
+    "role": "support"
   }
+
 ]
