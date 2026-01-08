@@ -66,7 +66,7 @@ export default function AdminScholarshipsPage() {
       const data = await res.json();
       setScholarships(data || []);
     } catch (err: any) {
-      console.error("❌ Failed to fetch scholarships:", err);
+      console.error("  Failed to fetch scholarships:", err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -132,7 +132,6 @@ export default function AdminScholarshipsPage() {
   };
 
   const handleBulkAction = (action: string) => {
-    console.log(`Performing ${action} on scholarships:`, selectedScholarships);
     setSelectedScholarships([]);
   };
 

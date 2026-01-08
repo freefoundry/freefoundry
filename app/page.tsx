@@ -74,7 +74,7 @@ export default function Home() {
 
         setCourses(normalized.slice(0, 3));
       } catch (err: any) {
-        console.error("❌ Error fetching courses:", err);
+        console.error("  Error fetching courses:", err);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -108,7 +108,7 @@ export default function Home() {
         }));
         setJobs(normalized.slice(0, 3));
       } catch (err: any) {
-        console.error("❌ Error fetching jobs:", err);
+        console.error("  Error fetching jobs:", err);
         setError(err.message);
       } finally {
         setLoadingJobs(false);

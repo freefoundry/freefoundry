@@ -18,188 +18,184 @@ export function Header({ showSearch = false, type = "" }: Props) {
   const [isSearching, setIsSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
 
+  async function handleSearch(value: string) {
+    setQuery(value);
 
-async function handleSearch(value: string) {
-  setQuery(value);
+    if (!value.trim()) {
+      setShowDropdown(false);
+      setGlobalResults([]);
+      return;
+    }
 
-  if (!value.trim()) {
-    setShowDropdown(false);
-    setGlobalResults([]);
-    return;
+    setIsSearching(true);
+    setShowDropdown(true);
+
+    const data = await searchAllContent(value);
+
+    setGlobalResults(data);
+    setIsSearching(false);
   }
-
-  setIsSearching(true);
-  setShowDropdown(true);
-
-  const data = await searchAllContent(value);
-
-  setGlobalResults(data);
-  setIsSearching(false);
-}
-
 
   // helper: check if current path starts with the route
   const isActive = (route: string) =>
     pathname === route || pathname.startsWith(`${route}/`);
-async function searchAllContent(searchTerm: string) {
-  if (!searchTerm.trim()) return [];
+  async function searchAllContent(searchTerm: string) {
+    if (!searchTerm.trim()) return [];
 
-  const q = searchTerm.toLowerCase();
-  const body = JSON.stringify({ search: searchTerm });
+    const q = searchTerm.toLowerCase();
+    const body = JSON.stringify({ search: searchTerm });
 
-  try {
-    let responses = [];
+    try {
+      let responses = [];
 
-    // ⭐ TYPE-BASED SEARCH
-    if (type === "courses") {
-      responses = [
-        fetch("/api/courses/public", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body,
-        }),
-      ];
-    } else if (type === "jobs") {
-      responses = [
-        fetch("/api/jobs/public", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body,
-        }),
-      ];
-    } else if (type === "resources") {
-      responses = [
-        fetch("/api/resources/public", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body,
-        }),
-      ];
-    } else if (type === "scholarships") {
-      responses = [
-        fetch("/api/scholarships/public", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body,
-        }),
-      ];
-    } else {
-      // ⭐ Global Search (all)
-      responses = [
-        fetch("/api/courses/public", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body,
-        }),
-        fetch("/api/jobs/public", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body,
-        }),
-        fetch("/api/resources/public", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body,
-        }),
-        fetch("/api/scholarships/public", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body,
-        }),
-      ];
-    }
+      // ⭐ TYPE-BASED SEARCH
+      if (type === "courses") {
+        responses = [
+          fetch("/api/courses/public", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body,
+          }),
+        ];
+      } else if (type === "jobs") {
+        responses = [
+          fetch("/api/jobs/public", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body,
+          }),
+        ];
+      } else if (type === "resources") {
+        responses = [
+          fetch("/api/resources/public", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body,
+          }),
+        ];
+      } else if (type === "scholarships") {
+        responses = [
+          fetch("/api/scholarships/public", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body,
+          }),
+        ];
+      } else {
+        // ⭐ Global Search (all)
+        responses = [
+          fetch("/api/courses/public", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body,
+          }),
+          fetch("/api/jobs/public", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body,
+          }),
+          fetch("/api/resources/public", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body,
+          }),
+          fetch("/api/scholarships/public", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body,
+          }),
+        ];
+      }
 
-    // Wait for all to finish
-    const jsonResponses = await Promise.all(
-      responses.map((r) => r.then((res) => res.json()))
-    );
+      // Wait for all to finish
+      const jsonResponses = await Promise.all(
+        responses.map((r) => r.then((res) => res.json()))
+      );
 
-    // Attach type based on which request we made
-    let combined: any[] = [];
+      // Attach type based on which request we made
+      let combined: any[] = [];
 
-    if (type === "courses") {
-      combined = (jsonResponses[0].data || []).map((c: any) => ({
-        ...c,
-        _type: "course",
-      }));
-    } else if (type === "jobs") {
-      combined = (jsonResponses[0].data || []).map((j: any) => ({
-        ...j,
-        _type: "job",
-      }));
-    } else if (type === "resources") {
-      combined = (jsonResponses[0].data || []).map((r: any) => ({
-        ...r,
-        _type: "resource",
-      }));
-    } else if (type === "scholarships") {
-      combined = (jsonResponses[0].data || []).map((s: any) => ({
-        ...s,
-        _type: "scholarship",
-      }));
-    } else {
-      // Global merge
-      const [courses, jobs, resources, scholarships] = jsonResponses;
-
-      combined = [
-        ...(courses?.data || []).map((c: any) => ({ ...c, _type: "course" })),
-        ...(jobs?.data || []).map((j: any) => ({ ...j, _type: "job" })),
-        ...(resources?.data || []).map((r: any) => ({
+      if (type === "courses") {
+        combined = (jsonResponses[0].data || []).map((c: any) => ({
+          ...c,
+          _type: "course",
+        }));
+      } else if (type === "jobs") {
+        combined = (jsonResponses[0].data || []).map((j: any) => ({
+          ...j,
+          _type: "job",
+        }));
+      } else if (type === "resources") {
+        combined = (jsonResponses[0].data || []).map((r: any) => ({
           ...r,
           _type: "resource",
-        })),
-        ...(scholarships?.data || []).map((s: any) => ({
+        }));
+      } else if (type === "scholarships") {
+        combined = (jsonResponses[0].data || []).map((s: any) => ({
           ...s,
           _type: "scholarship",
-        })),
-      ];
+        }));
+      } else {
+        // Global merge
+        const [courses, jobs, resources, scholarships] = jsonResponses;
+
+        combined = [
+          ...(courses?.data || []).map((c: any) => ({ ...c, _type: "course" })),
+          ...(jobs?.data || []).map((j: any) => ({ ...j, _type: "job" })),
+          ...(resources?.data || []).map((r: any) => ({
+            ...r,
+            _type: "resource",
+          })),
+          ...(scholarships?.data || []).map((s: any) => ({
+            ...s,
+            _type: "scholarship",
+          })),
+        ];
+      }
+
+      // ⭐ Relevance ranking
+      const scored = combined.map((item) => {
+        let score = 0;
+
+        const title = (item.title || "").toLowerCase();
+        const desc = (
+          item.description ||
+          item.excerpt ||
+          item.content ||
+          ""
+        ).toLowerCase();
+        const provider = (
+          item.provider ||
+          item.company ||
+          item.platform ||
+          ""
+        ).toLowerCase();
+
+        let tagsString = "";
+        if (Array.isArray(item.tags)) tagsString = item.tags.join(" ");
+        else if (typeof item.tags === "string") tagsString = item.tags;
+
+        tagsString = tagsString.toLowerCase();
+
+        if (title.startsWith(q)) score += 50;
+        if (title.includes(q)) score += 30;
+        if (desc.includes(q)) score += 10;
+        if (provider.includes(q)) score += 5;
+        if (tagsString.includes(q)) score += 5;
+        if (item.featured || item.isPopular || item.isTrending) score += 3;
+
+        return { ...item, _score: score };
+      });
+
+      // Sort by relevance
+      scored.sort((a, b) => b._score - a._score);
+
+      return scored;
+    } catch (err) {
+      console.error("  Search failed:", err);
+      return [];
     }
-
-    // ⭐ Relevance ranking
-    const scored = combined.map((item) => {
-      let score = 0;
-
-      const title = (item.title || "").toLowerCase();
-      const desc = (
-        item.description ||
-        item.excerpt ||
-        item.content ||
-        ""
-      ).toLowerCase();
-      const provider = (
-        item.provider ||
-        item.company ||
-        item.platform ||
-        ""
-      ).toLowerCase();
-
-      let tagsString = "";
-      if (Array.isArray(item.tags)) tagsString = item.tags.join(" ");
-      else if (typeof item.tags === "string") tagsString = item.tags;
-
-      tagsString = tagsString.toLowerCase();
-
-      if (title.startsWith(q)) score += 50;
-      if (title.includes(q)) score += 30;
-      if (desc.includes(q)) score += 10;
-      if (provider.includes(q)) score += 5;
-      if (tagsString.includes(q)) score += 5;
-      if (item.featured || item.isPopular || item.isTrending) score += 3;
-
-      return { ...item, _score: score };
-    });
-
-    // Sort by relevance
-    scored.sort((a, b) => b._score - a._score);
-
-    return scored;
-  } catch (err) {
-    console.error("❌ Search failed:", err);
-    return [];
   }
-}
-
-
 
   return (
     <header className="border-b bg-white sticky top-0 z-50">

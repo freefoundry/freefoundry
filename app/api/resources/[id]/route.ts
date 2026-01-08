@@ -31,7 +31,7 @@ export async function GET(
 
     return NextResponse.json(resource);
   } catch (err: any) {
-    console.error("❌ Error fetching resource:", err);
+    console.error("  Error fetching resource:", err);
     return NextResponse.json(
       { error: err.message || "Failed to fetch resource." },
       { status: 500 }
@@ -75,7 +75,7 @@ export async function PUT(
         });
         imageUrl = uploadRes.secure_url;
       } catch (err: any) {
-        console.error("❌ Cloudinary upload failed:", err);
+        console.error("  Cloudinary upload failed:", err);
         return NextResponse.json(
           { error: "Image upload failed. Please try again." },
           { status: 500 }
@@ -96,7 +96,7 @@ export async function PUT(
 
     return NextResponse.json(updatedResource);
   } catch (err: any) {
-    console.error("❌ Error updating resource:", err);
+    console.error("  Error updating resource:", err);
     return NextResponse.json(
       { error: err.message || "Failed to update resource." },
       { status: 500 }
@@ -149,7 +149,7 @@ export async function DELETE(
 
     return NextResponse.json({ message: "Resource deleted successfully." });
   } catch (err: any) {
-    console.error("❌ Error deleting resource:", err);
+    console.error("  Error deleting resource:", err);
     return NextResponse.json(
       { error: err.message || "Failed to delete resource." },
       { status: 500 }

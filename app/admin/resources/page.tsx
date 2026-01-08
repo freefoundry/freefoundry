@@ -108,7 +108,7 @@ export default function ResourcesAdminPage() {
       setResources((prev) => prev.filter((r) => r._id !== id));
       alert(" Resource deleted successfully");
     } catch (err: any) {
-      console.error("❌ Delete failed:", err);
+      console.error("  Delete failed:", err);
       alert(`Failed to delete resource: ${err.message}`);
     }
   }

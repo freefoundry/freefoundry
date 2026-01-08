@@ -35,7 +35,6 @@ const URI_MAP: Record<DbName, string | undefined> = {
 
 export async function connectMongo(name: DbName): Promise<Connection> {
   const uri = URI_MAP[name];
-  console.log("Connecting to MongoDB:", name, uri);
   if (!uri) {
     throw new Error(`Missing MongoDB URI for "${name}"`);
   }

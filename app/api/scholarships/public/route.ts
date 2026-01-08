@@ -101,7 +101,7 @@ export async function GET(req: Request) {
     const result = await handleQuery(params);
     return NextResponse.json(result);
   } catch (err: any) {
-    console.error("❌ Error querying scholarships (GET):", err);
+    console.error("  Error querying scholarships (GET):", err);
     return NextResponse.json(
       { error: err.message || "Failed to query scholarships." },
       { status: 500 }
@@ -118,7 +118,7 @@ export async function POST(req: Request) {
     const result = await handleQuery(body);
     return NextResponse.json(result);
   } catch (err: any) {
-    console.error("❌ Error querying scholarships (POST):", err);
+    console.error("  Error querying scholarships (POST):", err);
 
     let message = "Unknown error";
     let status = 500;

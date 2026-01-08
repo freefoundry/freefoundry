@@ -88,7 +88,7 @@ export default function JobDetailPage({
 
         setJob(normalized);
       } catch (err) {
-        console.error("❌ Error fetching job:", err);
+        console.error("  Error fetching job:", err);
       } finally {
         setLoading(false);
       }

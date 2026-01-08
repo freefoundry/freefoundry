@@ -89,7 +89,7 @@ export async function POST(req: Request) {
       image: imageUrl,
     });
   } catch (err: any) {
-    console.error("❌ Course insert error:", err);
+    console.error("  Course insert error:", err);
 
     let message = "Unknown error";
     let status = 500;

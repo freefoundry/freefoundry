@@ -86,7 +86,7 @@ export async function GET(req: Request) {
     const result = await handleQuery(params);
     return NextResponse.json(result);
   } catch (err: any) {
-    console.error("❌ Error querying resources (GET):", err);
+    console.error("  Error querying resources (GET):", err);
     return NextResponse.json(
       { error: err.message || "Failed to query resources." },
       { status: 500 }
@@ -101,7 +101,7 @@ export async function POST(req: Request) {
     const result = await handleQuery(body);
     return NextResponse.json(result);
   } catch (err: any) {
-    console.error("❌ Error querying resources (POST):", err);
+    console.error("  Error querying resources (POST):", err);
     return NextResponse.json(
       { error: err.message || "Failed to query resources." },
       { status: 500 }

@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     },
   });
 
-  // ✅ Set auth cookie
+  //   Set auth cookie
   res.cookies.set("admin-auth", "true", {
     httpOnly: true,
     sameSite: "strict",
