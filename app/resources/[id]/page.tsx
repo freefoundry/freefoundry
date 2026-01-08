@@ -59,7 +59,7 @@ export default function ResourceDetailPage({
         const data = await res.json();
         setResource(data);
       } catch (err: any) {
-        console.error("❌ Failed to load resource:", err);
+        console.error("  Failed to load resource:", err);
         setError(err.message);
       } finally {
         setLoading(false);

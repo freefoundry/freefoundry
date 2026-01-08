@@ -68,7 +68,7 @@ export default function JobsAdminPage() {
       const data = await res.json();
       setJobs(data);
     } catch (err) {
-      console.error("❌ Error loading jobs:", err);
+      console.error("  Error loading jobs:", err);
     } finally {
       setLoading(false);
     }
@@ -128,7 +128,6 @@ export default function JobsAdminPage() {
     );
   };
   const handleBulkAction = (action: string) => {
-    console.log(`Bulk action: ${action} on jobs:`, selectedJobs);
     // Implement bulk actions here
     setSelectedJobs([]);
   };
@@ -142,7 +141,7 @@ export default function JobsAdminPage() {
       setJobs((prev) => prev.filter((job) => job.id !== jobId));
       setSelectedJobs((prev) => prev.filter((id) => id !== jobId));
     } catch (err: any) {
-      console.error("❌ Delete failed:", err);
+      console.error("  Delete failed:", err);
       alert("Error deleting job: " + err.message);
     }
   };
@@ -161,15 +160,15 @@ export default function JobsAdminPage() {
     urgent: jobs.filter((job) => job.urgent).length,
     remote: jobs.filter((job) => job.workMode === "Remote").length,
   };
-const currencySymbols: Record<string, string> = {
-  NGN: "₦",
-  USD: "$",
-  EUR: "€",
-  GBP: "£",
-  INR: "₹",
-  AUD: "A$",
-  CAD: "C$",
-};
+  const currencySymbols: Record<string, string> = {
+    NGN: "₦",
+    USD: "$",
+    EUR: "€",
+    GBP: "£",
+    INR: "₹",
+    AUD: "A$",
+    CAD: "C$",
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">

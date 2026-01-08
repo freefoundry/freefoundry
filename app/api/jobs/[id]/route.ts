@@ -95,7 +95,7 @@ export async function PUT(
     for (const [key, value] of Object.entries(body)) {
       if (value === undefined) continue;
 
-      // Dates ✅ FIXED
+      // Dates   FIXED
       if (["postedDate", "publishDate", "lastUpdated"].includes(key)) {
         normalized[key] = toMySQLDateTime(value as any);
         continue;
@@ -144,7 +144,7 @@ export async function PUT(
       ...normalized,
     });
   } catch (err: any) {
-    console.error("❌ Job update error:", err);
+    console.error("  Job update error:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }

@@ -20,7 +20,7 @@ export async function GET() {
     const scholarships = await Scholarship.find().sort({ createdAt: -1 });
     return NextResponse.json(scholarships);
   } catch (err: any) {
-    console.error("❌ Scholarship fetch error:", err);
+    console.error("  Scholarship fetch error:", err);
     return NextResponse.json(
       { error: err.message || "Failed to fetch scholarships." },
       { status: 500 }
@@ -73,7 +73,7 @@ export async function POST(req: Request) {
         });
         imageUrl = uploadRes.secure_url;
       } catch (uploadErr: any) {
-        console.error("❌ Cloudinary upload failed:", uploadErr);
+        console.error("  Cloudinary upload failed:", uploadErr);
         return NextResponse.json(
           { error: "Image upload failed. Please try again." },
           { status: 500 }
@@ -94,7 +94,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(scholarship, { status: 201 });
   } catch (err: any) {
-    console.error("❌ Error creating scholarship:", err);
+    console.error("  Error creating scholarship:", err);
 
     let message = "Unknown error occurred.";
     let status = 500;

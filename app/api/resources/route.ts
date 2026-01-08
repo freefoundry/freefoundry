@@ -11,9 +11,6 @@ export async function GET() {
   try {
     const conn = await connectMongo("resources");
 
-    console.log("EXPECTED DB:", conn.name);
-    console.log("DEFAULT DB:", mongoose.connection.name);
-    console.log("DEFAULT READY:", mongoose.connection.readyState);
 
     const Resource = getResourceModel(conn);
 

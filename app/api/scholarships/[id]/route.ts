@@ -32,7 +32,7 @@ export async function GET(
 
     return NextResponse.json(scholarship);
   } catch (err: any) {
-    console.error("❌ Error fetching scholarship:", err);
+    console.error("  Error fetching scholarship:", err);
     return NextResponse.json(
       { error: err.message || "Failed to fetch scholarship." },
       { status: 500 }
@@ -78,7 +78,7 @@ export async function PUT(
         });
         imageUrl = uploadRes.secure_url;
       } catch (uploadErr: any) {
-        console.error("❌ Cloudinary upload failed:", uploadErr);
+        console.error("  Cloudinary upload failed:", uploadErr);
         return NextResponse.json(
           { error: "Image upload failed. Please try again." },
           { status: 500 }
@@ -99,7 +99,7 @@ export async function PUT(
 
     return NextResponse.json(updated);
   } catch (err: any) {
-    console.error("❌ Error updating scholarship:", err);
+    console.error("  Error updating scholarship:", err);
     let message = "Failed to update scholarship.";
     let status = 500;
 
@@ -164,7 +164,7 @@ export async function DELETE(
 
     return NextResponse.json({ message: "Scholarship deleted successfully." });
   } catch (err: any) {
-    console.error("❌ Error deleting scholarship:", err);
+    console.error("  Error deleting scholarship:", err);
     return NextResponse.json(
       { error: err.message || "Failed to delete scholarship." },
       { status: 500 }

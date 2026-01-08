@@ -70,7 +70,7 @@ export default function CourseDetailPage({
 
         setCourse(normalized);
       } catch (err) {
-        console.error("❌ Failed to fetch course:", err);
+        console.error("  Failed to fetch course:", err);
       } finally {
         setLoading(false);
       }

@@ -198,7 +198,6 @@ const [currency, setCurrency] = useState(course?.currency || "NGN");
     };
     if (saveType === "preview") {
       // Open preview in new tab
-      console.log("Preview data:", courseData);
     } else {
       try {
         const res = await fetch(

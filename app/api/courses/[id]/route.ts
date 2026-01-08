@@ -59,17 +59,16 @@ export async function PUT(
       imageUrl = uploadRes.secure_url;
     }
 
-  const normalizeDate = (date: string | null) => {
-    if (!date) return null;
+    const normalizeDate = (date: string | null) => {
+      if (!date) return null;
 
-    // datetime-local → DATETIME
-    if (date.includes("T")) {
-      return date.replace("T", " ") + ":00";
-    }
+      // datetime-local → DATETIME
+      if (date.includes("T")) {
+        return date.replace("T", " ") + ":00";
+      }
 
-    return date;
-  };
-
+      return date;
+    };
 
     const normalized: Record<string, any> = {};
 
@@ -123,11 +122,10 @@ export async function PUT(
       ...normalized,
     });
   } catch (err: any) {
-    console.error("❌ Course update error:", err);
+    console.error("  Course update error:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
-
 
 // DELETE course
 export async function DELETE(

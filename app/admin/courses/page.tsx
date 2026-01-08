@@ -67,7 +67,7 @@ export default function CoursesAdminPage() {
 
       setCourses(normalized);
     } catch (error) {
-      console.error("❌ Failed to fetch courses:", error);
+      console.error("  Failed to fetch courses:", error);
     } finally {
       setLoading(false);
     }
@@ -90,7 +90,7 @@ export default function CoursesAdminPage() {
       // Update state without refetching everything
       setCourses((prev) => prev.filter((course) => course.id !== id));
     } catch (err: any) {
-      console.error("❌ Delete failed:", err);
+      console.error("  Delete failed:", err);
       alert("Error deleting course: " + err.message);
     }
   };

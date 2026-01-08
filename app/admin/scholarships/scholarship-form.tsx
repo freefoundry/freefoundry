@@ -44,7 +44,9 @@ export default function ScholarshipForm({
   // === STATE SETUP ===
   const [title, setTitle] = useState(scholarship?.title || "");
   const [provider, setProvider] = useState(scholarship?.provider || "");
-  const [description, setDescription] = useState(scholarship?.description || "");
+  const [description, setDescription] = useState(
+    scholarship?.description || ""
+  );
   const [amount, setAmount] = useState(scholarship?.amount || "");
   const [currency, setCurrency] = useState(scholarship?.currency || "USD");
   const [type, setType] = useState(scholarship?.type || "");
@@ -84,17 +86,16 @@ export default function ScholarshipForm({
   );
   const [uploading, setUploading] = useState(false);
 
-// Auto-sync location and country if one is filled
-const handleLocationChange = (value: string) => {
-  setLocation(value);
-  if (!country) setCountry(value);
-};
+  // Auto-sync location and country if one is filled
+  const handleLocationChange = (value: string) => {
+    setLocation(value);
+    if (!country) setCountry(value);
+  };
 
-const handleCountryChange = (value: string) => {
-  setCountry(value);
-  if (!location) setLocation(value);
-};
-
+  const handleCountryChange = (value: string) => {
+    setCountry(value);
+    if (!location) setLocation(value);
+  };
 
   // === TAG HANDLERS ===
   const addTag = () => {
@@ -107,7 +108,7 @@ const handleCountryChange = (value: string) => {
     setTags(tags.filter((tag) => tag !== tagToRemove));
 
   // === FILE UPLOAD ===
-  
+
   // === GENERIC ARRAY HANDLERS ===
   const handleArrayUpdate = (
     setter: React.Dispatch<React.SetStateAction<string[]>>,
@@ -176,7 +177,7 @@ const handleCountryChange = (value: string) => {
       );
       router.push("/admin/scholarships");
     } catch (err: any) {
-      console.error("❌ Save failed:", err);
+      console.error("  Save failed:", err);
       toast.error(err.message || "Failed to save scholarship");
     }
   };

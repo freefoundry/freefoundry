@@ -153,7 +153,6 @@ export default function ResourceForm({
     };
 
     if (saveType === "preview") {
-      console.log("Preview:", resourceData);
       toast.info("Preview mode not yet implemented.");
       return;
     }

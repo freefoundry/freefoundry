@@ -206,7 +206,6 @@ export default function JobForm({
       if (!salary && jobData.salary) setSalary(jobData.salary);
       if (!platform && jobData.platform) setPlatform(jobData.platform);
 
-
       setTags(jobData.tags || []);
       setRequirements(jobData.requirements || []);
       setBenefits(jobData.benefits || []);
@@ -221,103 +220,111 @@ export default function JobForm({
       setContactRecruiter(jobData.applicationProcess?.contact?.recruiter || "");
     }
   }, []);
-const handleSave = async (saveType: "draft" | "publish" | "preview") => {
-const todayDate = () => {
-   const d = new Date();
+  const handleSave = async (saveType: "draft" | "publish" | "preview") => {
+    const todayDate = () => {
+      const d = new Date();
 
-   const yyyy = d.getFullYear();
-   const mm = String(d.getMonth() + 1).padStart(2, "0");
-   const dd = String(d.getDate()).padStart(2, "0");
-   const hh = String(d.getHours()).padStart(2, "0");
-   const mi = String(d.getMinutes()).padStart(2, "0");
-   const ss = String(d.getSeconds()).padStart(2, "0");
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      const hh = String(d.getHours()).padStart(2, "0");
+      const mi = String(d.getMinutes()).padStart(2, "0");
+      const ss = String(d.getSeconds()).padStart(2, "0");
 
-   return `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
-};
-const normalizeDateForClient = (date: any) => {
-  if (!date) return null;
-  return new Date(date).toISOString().split("T")[0];
-};
+      return `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
+    };
+    const normalizeDateForClient = (date: any) => {
+      if (!date) return null;
+      return new Date(date).toISOString().split("T")[0];
+    };
 
-  const jobData = {
-    slug,
-    title,
-    company,
-    location,
-    type,
-    workMode,
-    experience,
-    salary,
-    currency,
-    salaryType,
-    description: excerpt,
-    fullDescription: content,
-    excerpt,
-    requirements,
-    benefits,
-    responsibilities,
-    postedDate: job?.postedDate || todayDate(),
-    platform,
-    companyLogo, // can be URL or base64
-    applicationUrl,
-    featured,
-    urgent,
-    tags,
-    status:
-      saveType === "publish"
-        ? "published"
-        : saveType === "preview"
-        ? "preview"
-        : "draft",
-    visibility,
-    publishDate: publishDate || null,
-    qualifications,
-    niceToHave,
-    companyInfo: {
-      name: company,
-      description: companyDescription,
-      industry,
-      size: companySize,
-      founded,
-      website,
-      logo: companyLogo,
-      culture,
-    },
-    applicationProcess: {
-      steps: applicationSteps,
-      timeline,
-      contact: {
-        email: contactEmail,
-        phone: contactPhone,
-        recruiter: contactRecruiter,
+    const jobData = {
+      slug,
+      title,
+      company,
+      location,
+      type,
+      workMode,
+      experience,
+      salary,
+      currency,
+      salaryType,
+      description: excerpt,
+      fullDescription: content,
+      excerpt,
+      requirements,
+      benefits,
+      responsibilities,
+      postedDate: job?.postedDate || todayDate(),
+      platform,
+      companyLogo, // can be URL or base64
+      applicationUrl,
+      featured,
+      urgent,
+      tags,
+      status:
+        saveType === "publish"
+          ? "published"
+          : saveType === "preview"
+          ? "preview"
+          : "draft",
+      visibility,
+      publishDate: publishDate || null,
+      qualifications,
+      niceToHave,
+      companyInfo: {
+        name: company,
+        description: companyDescription,
+        industry,
+        size: companySize,
+        founded,
+        website,
+        logo: companyLogo,
+        culture,
       },
-    },
-    similarJobs: [],
-    views: 0,
-    applications: 0,
-    lastUpdated: todayDate(),
+      applicationProcess: {
+        steps: applicationSteps,
+        timeline,
+        contact: {
+          email: contactEmail,
+          phone: contactPhone,
+          recruiter: contactRecruiter,
+        },
+      },
+      similarJobs: [],
+      views: 0,
+      applications: 0,
+      lastUpdated: todayDate(),
+    };
+
+    if (saveType === "preview") {
+      localStorage.setItem("previewJob", JSON.stringify(jobData));
+      router.push("/admin/jobs/preview");
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `/api/jobs${mode === "edit" ? `/${job.id}` : ""}`,
+        {
+          method: mode === "edit" ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(jobData),
+        }
+      );
+      if (!res.ok) throw new Error("Failed to save job");
+      toast.success(
+        saveType === "draft"
+          ? "Job saved as draft"
+          : mode === "edit"
+          ? "Job updated successfully"
+          : "Job published successfully"
+      );
+      router.push("/admin/jobs");
+    } catch (e) {
+      console.error("  Save failed:", e);
+    }
   };
-
-  if (saveType === "preview") {
-    localStorage.setItem("previewJob", JSON.stringify(jobData));
-    router.push("/admin/jobs/preview");
-    return;
-  }
-
-  try {
-    const res = await fetch(`/api/jobs${mode === "edit" ? `/${job.id}` : ""}`, {
-      method: mode === "edit" ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(jobData),
-    });
-    if (!res.ok) throw new Error("Failed to save job");
-    toast.success(saveType === "draft" ? "Job saved as draft" : mode === "edit" ? "Job updated successfully" : "Job published successfully");
-    router.push("/admin/jobs");
-  } catch (e) {
-    console.error("❌ Save failed:", e);
-  }
-};
-
 
   return (
     <div className="min-h-screen bg-gray-50">

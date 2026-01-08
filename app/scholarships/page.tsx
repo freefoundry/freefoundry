@@ -137,7 +137,7 @@ export default function ScholarshipsPage() {
       setScholarships(data.data || []);
       setTotalScholarships(data.pagination?.total || 0);
     } catch (err) {
-      console.error("❌ Failed to fetch scholarships:", err);
+      console.error("  Failed to fetch scholarships:", err);
     }
     setLoading(false);
   };

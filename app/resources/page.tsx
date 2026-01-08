@@ -88,7 +88,7 @@ export default function ResourcesPage() {
         setResources(normalized);
         setTotalResources(data.pagination?.total || 0);
       } catch (err: any) {
-        console.error("❌ Failed to fetch resources:", err);
+        console.error("  Failed to fetch resources:", err);
         setError(err.message);
       } finally {
         setLoading(false);

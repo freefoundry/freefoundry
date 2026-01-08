@@ -13,7 +13,7 @@ export async function GET() {
     });
   } catch (err: any) {
     return NextResponse.json(
-      { message: "❌ MongoDB connection failed", error: err.message },
+      { message: "  MongoDB connection failed", error: err.message },
       { status: 500 }
     );
   }

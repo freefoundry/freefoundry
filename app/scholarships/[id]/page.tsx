@@ -49,7 +49,7 @@ export default function ScholarshipDetailPage() {
         const data = await res.json();
         setScholarship(data);
       } catch (error) {
-        console.error("❌ Error fetching scholarship:", error);
+        console.error("  Error fetching scholarship:", error);
         setScholarship(null);
       } finally {
         setLoading(false);

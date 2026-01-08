@@ -152,7 +152,7 @@ export default function CoursesPage() {
       setCourses(normalized);
       setTotalCourses(data.pagination?.total || 0);
     } catch (err) {
-      console.error("❌ Failed to fetch courses:", err);
+      console.error("  Failed to fetch courses:", err);
     }
 
     setLoading(false);

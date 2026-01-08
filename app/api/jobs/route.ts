@@ -44,15 +44,15 @@ export async function POST(req: Request) {
       });
       logoUrl = uploadRes.secure_url;
     }
-const formatLocalDateTime = (date = new Date()) => {
-  const pad = (n: number) => String(n).padStart(2, "0");
+    const formatLocalDateTime = (date = new Date()) => {
+      const pad = (n: number) => String(n).padStart(2, "0");
 
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
-    date.getDate()
-  )} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(
-    date.getSeconds()
-  )}`;
-};
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+        date.getDate()
+      )} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(
+        date.getSeconds()
+      )}`;
+    };
 
     const [result] = await db.query(
       `INSERT INTO jobs 
@@ -103,7 +103,7 @@ const formatLocalDateTime = (date = new Date()) => {
       companyLogo: logoUrl,
     });
   } catch (err: any) {
-    console.error("❌ Job insert error:", err);
+    console.error("  Job insert error:", err);
 
     let message = "Unknown error";
     let status = 500;
