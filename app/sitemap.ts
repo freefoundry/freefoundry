@@ -1,23 +1,24 @@
 import type { MetadataRoute } from "next";
 
-const baseUrl = "https://freefoundry.com";
+const baseUrl = "https://www.freefoundryhub.com";
 
-async function fetchResources(type: string) {
-  const res = await fetch(`${baseUrl}/api/${type}`, {
-    cache: "no-store",
-  });
-
-  if (!res.ok) return [];
-
-  return res.json();
+async function safeFetch(url: string) {
+  try {
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) return [];
+    return await res.json();
+  } catch (err) {
+    console.error("Sitemap fetch failed:", url);
+    return [];
+  }
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [resources, courses, scholarships, jobs] = await Promise.all([
-    fetchResources("resources"),
-    fetchResources("courses"),
-    fetchResources("scholarships"),
-    fetchResources("jobs"),
+    safeFetch(`${baseUrl}/api/resources`),
+    safeFetch(`${baseUrl}/api/courses`),
+    safeFetch(`${baseUrl}/api/scholarships`),
+    safeFetch(`${baseUrl}/api/jobs`),
   ]);
 
   const staticPages = [
@@ -28,24 +29,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/jobs`, lastModified: new Date() },
   ];
 
-  const resourcePages = resources.map((item: any) => ({
-    url: `${baseUrl}/resources/${item.id}`,
-    lastModified: new Date(item.updatedAt ?? Date.now()),
+  const resourcePages = resources.map((r: any) => ({
+    url: `${baseUrl}/resources/${r.id}`,
+    lastModified: new Date(r.updatedAt ?? Date.now()),
   }));
 
-  const coursePages = courses.map((item: any) => ({
-    url: `${baseUrl}/courses/${item.id}`,
-    lastModified: new Date(item.updatedAt ?? Date.now()),
+  const coursePages = courses.map((c: any) => ({
+    url: `${baseUrl}/courses/${c.id}`,
+    lastModified: new Date(c.updatedAt ?? Date.now()),
   }));
 
-  const scholarshipPages = scholarships.map((item: any) => ({
-    url: `${baseUrl}/scholarships/${item.id}`,
-    lastModified: new Date(item.updatedAt ?? Date.now()),
+  const scholarshipPages = scholarships.map((s: any) => ({
+    url: `${baseUrl}/scholarships/${s.id}`,
+    lastModified: new Date(s.updatedAt ?? Date.now()),
   }));
 
-  const jobPages = jobs.map((item: any) => ({
-    url: `${baseUrl}/jobs/${item.id}`,
-    lastModified: new Date(item.updatedAt ?? Date.now()),
+  const jobPages = jobs.map((j: any) => ({
+    url: `${baseUrl}/jobs/${j.id}`,
+    lastModified: new Date(j.updatedAt ?? Date.now()),
   }));
 
   return [
