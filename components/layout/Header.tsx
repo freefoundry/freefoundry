@@ -383,9 +383,9 @@ export function Header({ showSearch = false, type = "" }: Props) {
             >
               Scholarships
             </Link>
-            <Button variant="outline" size="sm" className="w-full">
+            {/* <Button variant="outline" size="sm" className="w-full">
               Sign In
-            </Button>
+            </Button> */}
           </nav>
         </div>
       )}
