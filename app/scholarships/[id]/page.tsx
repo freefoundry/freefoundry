@@ -14,7 +14,7 @@ import {
   Users,
   Clock,
   CheckCircle,
-  AlertCircle,
+  ClipboardList,
   Bookmark,
   BookmarkCheck,
   Share2,
@@ -308,13 +308,13 @@ export default function ScholarshipDetailPage() {
                       )}
                       <Badge variant="outline">{scholarship?.type}</Badge>
                     </div>
-                    <h1 className="text-3xl font-bold mb-1">
+                    <h1 className="text-xl sm:text-3xl font-bold mb-1">
                       {scholarship?.title}
                     </h1>
                     <p className="text-gray-600">by {scholarship?.provider}</p>
                   </div>
 
-                  <div className="flex gap-2">
+                  {/* <div className="flex gap-2">
                     <Button
                       variant="outline"
                       size="sm"
@@ -329,7 +329,7 @@ export default function ScholarshipDetailPage() {
                     <Button variant="outline" size="sm">
                       <Share2 className="h-4 w-4" />
                     </Button>
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4 mb-6">
@@ -361,7 +361,7 @@ export default function ScholarshipDetailPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  {/* <div className="flex items-center gap-2">
                     <Users className="h-5 w-5 text-orange-600" />
                     <div>
                       <p className="font-semibold">
@@ -369,7 +369,7 @@ export default function ScholarshipDetailPage() {
                       </p>
                       <p className="text-xs text-gray-500">Awards Available</p>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
 
                 {(scholarship?.tags?.length ?? 0) > 0 && (
@@ -408,9 +408,9 @@ export default function ScholarshipDetailPage() {
                 <CardContent>
                   <div className="grid md:grid-cols-2 gap-4">
                     {(scholarship?.benefits ?? []).map((b, i) => (
-                      <div key={i} className="flex items-center gap-2">
-                        <CheckCircle className="h-5 w-5 text-green-600" />
-                        <span>{b}</span>
+                      <div key={i} className="flex items-center gap-3 text-sm leading-relaxed">
+                        <CheckCircle className="h-5 w-5 text-green-600 shrink-0" />
+                        <span className="flex-1">{b}</span>
                       </div>
                     ))}
                   </div>
@@ -425,11 +425,14 @@ export default function ScholarshipDetailPage() {
                   <CardTitle>Eligibility Criteria</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className="space-y-2">
+                  <ul className="space-y-3">
                     {(scholarship?.eligibility ?? []).map((e, i) => (
-                      <li key={i} className="flex items-start gap-2">
-                        <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5" />
-                        <span>{e}</span>
+                      <li
+                        key={i}
+                        className="flex items-start gap-3 text-sm leading-relaxed"
+                      >
+                        <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5 shrink-0" />
+                        <span className="flex-1">{e}</span>
                       </li>
                     ))}
                   </ul>
@@ -444,11 +447,14 @@ export default function ScholarshipDetailPage() {
                   <CardTitle>Application Requirements</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className="space-y-2">
+                  <ul className="space-y-3">
                     {scholarship?.requirements?.map((r, i) => (
-                      <li key={i} className="flex items-start gap-2">
-                        <AlertCircle className="h-5 w-5 text-orange-600 mt-0.5" />
-                        <span>{r}</span>
+                      <li
+                        key={i}
+                        className="flex items-start gap-3 text-sm leading-relaxed"
+                      >
+                        <ClipboardList className="h-5 w-5 text-orange-600 mt-0.5 shrink-0" />
+                        <span className="flex-1">{r}</span>
                       </li>
                     ))}
                   </ul>
