@@ -432,7 +432,7 @@ function ScholarshipCard({
           )}
           <Badge variant="secondary">{deadlineText}</Badge>
         </div>
-        <Button
+        {/* <Button
           variant="ghost"
           size="sm"
           className="absolute top-3 right-3"
@@ -443,7 +443,7 @@ function ScholarshipCard({
           ) : (
             <Bookmark className="h-5 w-5 text-gray-400" />
           )}
-        </Button>
+        </Button> */}
       </div>
       <CardContent className="p-5">
         <h3 className="text-lg font-semibold mb-1">{scholarship.title}</h3>
