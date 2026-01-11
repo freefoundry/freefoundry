@@ -314,15 +314,111 @@ const parseMultilineInput = (
                     <Label>Currency</Label>
                     <Select value={currency} onValueChange={setCurrency}>
                       <SelectTrigger>
-                        <SelectValue />
+                        <SelectValue placeholder="Select currency" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="USD">USD ($)</SelectItem>
-                        <SelectItem value="EUR">EUR (€)</SelectItem>
-                        <SelectItem value="GBP">GBP (£)</SelectItem>
+                        {/* Major Global Currencies */}
+                        <SelectItem value="USD">USD – US Dollar ($)</SelectItem>
+                        <SelectItem value="EUR">EUR – Euro (€)</SelectItem>
+                        <SelectItem value="GBP">
+                          GBP – British Pound (£)
+                        </SelectItem>
+                        <SelectItem value="CAD">
+                          CAD – Canadian Dollar ($)
+                        </SelectItem>
+                        <SelectItem value="AUD">
+                          AUD – Australian Dollar ($)
+                        </SelectItem>
+                        <SelectItem value="NZD">
+                          NZD – New Zealand Dollar ($)
+                        </SelectItem>
+                        <SelectItem value="CHF">CHF – Swiss Franc</SelectItem>
+                        <SelectItem value="JPY">
+                          JPY – Japanese Yen (¥)
+                        </SelectItem>
+                        <SelectItem value="CNY">
+                          CNY – Chinese Yuan (¥)
+                        </SelectItem>
+                        <SelectItem value="INR">
+                          INR – Indian Rupee (₹)
+                        </SelectItem>
+
+                        {/* Africa */}
+                        <SelectItem value="NGN">
+                          NGN – Nigerian Naira (₦)
+                        </SelectItem>
+                        <SelectItem value="GHS">
+                          GHS – Ghanaian Cedi (₵)
+                        </SelectItem>
+                        <SelectItem value="ZAR">
+                          ZAR – South African Rand (R)
+                        </SelectItem>
+                        <SelectItem value="KES">
+                          KES – Kenyan Shilling
+                        </SelectItem>
+                        <SelectItem value="EGP">
+                          EGP – Egyptian Pound (£)
+                        </SelectItem>
+
+                        {/* Asia & Middle East */}
+                        <SelectItem value="PKR">
+                          PKR – Pakistani Rupee
+                        </SelectItem>
+                        <SelectItem value="BDT">
+                          BDT – Bangladeshi Taka
+                        </SelectItem>
+                        <SelectItem value="LKR">
+                          LKR – Sri Lankan Rupee
+                        </SelectItem>
+                        <SelectItem value="IDR">
+                          IDR – Indonesian Rupiah
+                        </SelectItem>
+                        <SelectItem value="MYR">
+                          MYR – Malaysian Ringgit
+                        </SelectItem>
+                        <SelectItem value="SGD">
+                          SGD – Singapore Dollar ($)
+                        </SelectItem>
+                        <SelectItem value="THB">THB – Thai Baht (฿)</SelectItem>
+                        <SelectItem value="PHP">
+                          PHP – Philippine Peso (₱)
+                        </SelectItem>
+                        <SelectItem value="AED">AED – UAE Dirham</SelectItem>
+                        <SelectItem value="SAR">SAR – Saudi Riyal</SelectItem>
+                        <SelectItem value="QAR">QAR – Qatari Riyal</SelectItem>
+                        <SelectItem value="KWD">KWD – Kuwaiti Dinar</SelectItem>
+
+                        {/* Europe (Non-Euro) */}
+                        <SelectItem value="SEK">SEK – Swedish Krona</SelectItem>
+                        <SelectItem value="NOK">
+                          NOK – Norwegian Krone
+                        </SelectItem>
+                        <SelectItem value="DKK">DKK – Danish Krone</SelectItem>
+                        <SelectItem value="PLN">PLN – Polish Zloty</SelectItem>
+                        <SelectItem value="CZK">CZK – Czech Koruna</SelectItem>
+                        <SelectItem value="HUF">
+                          HUF – Hungarian Forint
+                        </SelectItem>
+                        <SelectItem value="RON">RON – Romanian Leu</SelectItem>
+
+                        {/* Americas */}
+                        <SelectItem value="MXN">
+                          MXN – Mexican Peso ($)
+                        </SelectItem>
+                        <SelectItem value="BRL">
+                          BRL – Brazilian Real (R$)
+                        </SelectItem>
+                        <SelectItem value="ARS">
+                          ARS – Argentine Peso
+                        </SelectItem>
+                        <SelectItem value="CLP">CLP – Chilean Peso</SelectItem>
+                        <SelectItem value="COP">
+                          COP – Colombian Peso
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
+
                   <div>
                     <Label>Funding Type *</Label>
                     <Select value={type} onValueChange={setType}>
@@ -530,61 +626,60 @@ Valid ID or passport`}
 
             {/* Benefits */}
             <Card>
-  <CardHeader>
-    <CardTitle>Benefits & Coverage</CardTitle>
-  </CardHeader>
+              <CardHeader>
+                <CardTitle>Benefits & Coverage</CardTitle>
+              </CardHeader>
 
-  <CardContent className="space-y-4">
-    {/* SMART PASTE */}
-    <div>
-      <Label>Paste Multiple Benefits</Label>
-      <textarea
-        className="w-full min-h-[120px] rounded-md border p-2 text-sm"
-        placeholder={`Paste multiple lines here, e.g.
+              <CardContent className="space-y-4">
+                {/* SMART PASTE */}
+                <div>
+                  <Label>Paste Multiple Benefits</Label>
+                  <textarea
+                    className="w-full min-h-[120px] rounded-md border p-2 text-sm"
+                    placeholder={`Paste multiple lines here, e.g.
 $5,000 seed funding
 12 weeks business training
 Access to mentorship network`}
-        onBlur={(e) =>
-          parseMultilineInput(e.target.value, setBenefits)
-        }
-      />
-      <p className="text-xs text-muted-foreground mt-1">
-        Each line will become a separate benefit item
-      </p>
-    </div>
+                    onBlur={(e) =>
+                      parseMultilineInput(e.target.value, setBenefits)
+                    }
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Each line will become a separate benefit item
+                  </p>
+                </div>
 
-    <Separator />
+                <Separator />
 
-    {/* EDITABLE LIST */}
-    {benefits.map((item, index) => (
-      <div key={index} className="flex gap-2">
-        <Input
-          value={item}
-          onChange={(e) =>
-            handleArrayUpdate(setBenefits, index, e.target.value)
-          }
-          placeholder="Enter benefit"
-        />
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => handleArrayRemove(setBenefits, index)}
-          disabled={benefits.length === 1}
-        >
-          <X className="h-4 w-4" />
-        </Button>
-      </div>
-    ))}
+                {/* EDITABLE LIST */}
+                {benefits.map((item, index) => (
+                  <div key={index} className="flex gap-2">
+                    <Input
+                      value={item}
+                      onChange={(e) =>
+                        handleArrayUpdate(setBenefits, index, e.target.value)
+                      }
+                      placeholder="Enter benefit"
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleArrayRemove(setBenefits, index)}
+                      disabled={benefits.length === 1}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
 
-    <Button
-      variant="outline"
-      onClick={() => handleArrayAdd(setBenefits)}
-    >
-      <Plus className="h-4 w-4 mr-2" /> Add Benefit
-    </Button>
-  </CardContent>
-</Card>
-
+                <Button
+                  variant="outline"
+                  onClick={() => handleArrayAdd(setBenefits)}
+                >
+                  <Plus className="h-4 w-4 mr-2" /> Add Benefit
+                </Button>
+              </CardContent>
+            </Card>
           </div>
 
           {/* SIDEBAR */}
