@@ -757,7 +757,7 @@ export default function JobForm({
             </Card>
 
             {/* Qualification */}
-            <Card>
+            {/* <Card>
               <CardHeader>
                 <CardTitle>Qualifications</CardTitle>
               </CardHeader>
@@ -808,7 +808,7 @@ export default function JobForm({
                   ))}
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
 
             {/* Nice To Have */}
             <Card>
