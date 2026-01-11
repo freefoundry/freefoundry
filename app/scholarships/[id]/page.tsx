@@ -23,6 +23,8 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import type { Scholarship } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { buildShareMessage } from "@/lib/shareMessage";
+import { ShareModal } from "@/components/share/ShareModal";
 
 export default function ScholarshipDetailPage() {
   const params = useParams();
@@ -30,6 +32,33 @@ export default function ScholarshipDetailPage() {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [timeUntilDeadline, setTimeUntilDeadline] = useState("");
   const [loading, setLoading] = useState(true);
+  const [shareData, setShareData] = useState<{
+    title: string;
+    url: string;
+    message: string;
+  } | null>(null);
+
+const handleShare = () => {
+  if (!scholarship) return;
+
+  const url = `${baseUrl}/scholarships/${scholarship.slug}`;
+
+  setShareData({
+    title: scholarship.title,
+    url,
+    message: buildShareMessage({
+      title: scholarship.title,
+      country: scholarship.country,
+      level: scholarship.level,
+      deadline: scholarship.applicationDeadline
+        ? new Date(scholarship.applicationDeadline).toLocaleDateString()
+        : undefined,
+      benefits: scholarship.benefits,
+      url,
+      source: "Free Foundry",
+    }),
+  });
+};
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
@@ -40,9 +69,10 @@ export default function ScholarshipDetailPage() {
         setLoading(true);
         const id = params.id as string;
 
-        const res = await fetch(`${baseUrl}/api/scholarships/${id}`, {
-          cache: "no-store",
-        });
+       const res = await fetch(`/api/scholarships/${id}`, {
+         cache: "no-store",
+       });
+
 
         if (!res.ok) throw new Error("Failed to fetch scholarship");
 
@@ -314,8 +344,8 @@ export default function ScholarshipDetailPage() {
                     <p className="text-gray-600">by {scholarship?.provider}</p>
                   </div>
 
-                  {/* <div className="flex gap-2">
-                    <Button
+                  <div className="flex gap-2">
+                    {/* <Button
                       variant="outline"
                       size="sm"
                       onClick={() => setIsBookmarked(!isBookmarked)}
@@ -325,11 +355,11 @@ export default function ScholarshipDetailPage() {
                       ) : (
                         <Bookmark className="h-4 w-4" />
                       )}
-                    </Button>
-                    <Button variant="outline" size="sm">
+                    </Button> */}
+                    <Button variant="outline" size="sm" onClick={handleShare}>
                       <Share2 className="h-4 w-4" />
                     </Button>
-                  </div> */}
+                  </div>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4 mb-6">
@@ -408,7 +438,10 @@ export default function ScholarshipDetailPage() {
                 <CardContent>
                   <div className="grid md:grid-cols-2 gap-4">
                     {(scholarship?.benefits ?? []).map((b, i) => (
-                      <div key={i} className="flex items-center gap-3 text-sm leading-relaxed">
+                      <div
+                        key={i}
+                        className="flex items-center gap-3 text-sm leading-relaxed"
+                      >
                         <CheckCircle className="h-5 w-5 text-green-600 shrink-0" />
                         <span className="flex-1">{b}</span>
                       </div>
@@ -507,6 +540,17 @@ export default function ScholarshipDetailPage() {
           </div>
         </div>
       </div>
+
+      {shareData && (
+        <ShareModal
+          open
+          onClose={() => setShareData(null)}
+          title={shareData.title}
+          url={shareData.url}
+          message={shareData.message}
+          from="Scholarship"
+        />
+      )}
     </div>
   );
 }

@@ -19,7 +19,7 @@ import {
   Search,
   MapPin,
   DollarSign,
-  ExternalLink,
+  Share2,
   Calendar,
   Bookmark,
   BookmarkCheck,
@@ -32,10 +32,13 @@ import Link from "next/link";
 import { Header } from "@/components/layout/Header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Pagination } from "@/components/pagination/Pagination";
+import { ShareModal } from "@/components/share/ShareModal";
+import { buildShareMessage } from "@/lib/shareMessage";
 
 type Scholarship = {
   _id: string;
   title: string;
+  slug: string;
   provider: string;
   amount?: string;
   type?: string;
@@ -50,6 +53,7 @@ type Scholarship = {
   image?: string;
   featuredImage?: string;
   visibility?: string;
+  benefits?: string[];
 };
 
 export default function ScholarshipsPage() {
@@ -68,6 +72,12 @@ export default function ScholarshipsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage] = useState(9);
   const [bookmarked, setBookmarked] = useState<string[]>([]);
+  const [shareData, setShareData] = useState<{
+    title: string;
+    url: string;
+    message: any;
+  } | null>(null);
+
 
   // Static filter options (these can later be dynamic)
   const types = ["Full", "Partial"];
@@ -82,6 +92,25 @@ export default function ScholarshipsPage() {
     "France",
     "Japan",
   ];
+  const handleShare = (s: Scholarship) => {
+    const url = `${window.location.origin}/scholarships/${s.slug}`;
+
+    setShareData({
+      title: s.title,
+      url,
+      message: buildShareMessage({
+        title: s.title,
+        country: s.country,
+        level: s.level,
+        deadline: s.applicationDeadline
+          ? new Date(s.applicationDeadline).toLocaleDateString()
+          : undefined,
+        benefits: s.benefits,
+        url,
+      }),
+    });
+  };
+
 
   const toggleBookmark = (id: string) => {
     setBookmarked((prev) =>
@@ -163,6 +192,8 @@ export default function ScholarshipsPage() {
     if (diff <= 7) return "Closing soon";
     return `${Math.ceil(diff)} days left`;
   };
+
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -313,6 +344,7 @@ export default function ScholarshipsPage() {
                       toggleBookmark={toggleBookmark}
                       bookmarked={bookmarked.includes(s._id)}
                       getDeadlineStatus={getDeadlineStatus}
+                      handleShare={handleShare}
                     />
                   ))}
                 </div>
@@ -333,6 +365,17 @@ export default function ScholarshipsPage() {
           </div>
         </div>
       </div>
+
+      {shareData && (
+        <ShareModal
+          open={!!shareData}
+          onClose={() => setShareData(null)}
+          title={shareData.title}
+          url={shareData.url}
+          message={shareData.message}
+          from="Scholarship"
+        />
+      )}
     </div>
   );
 }
@@ -410,11 +453,13 @@ function ScholarshipCard({
   toggleBookmark,
   bookmarked,
   getDeadlineStatus,
+  handleShare,
 }: {
   scholarship: Scholarship;
   toggleBookmark: (id: string) => void;
   bookmarked: boolean;
   getDeadlineStatus: (date?: string) => string;
+  handleShare: (scholarship: Scholarship) => void;
 }) {
   const deadlineText = getDeadlineStatus(scholarship.applicationDeadline);
 
@@ -462,10 +507,10 @@ function ScholarshipCard({
             <GraduationCap className="h-4 w-4" />
             {scholarship.level || "Any level"}
           </div>
-          <div className="flex items-center gap-2">
+         {scholarship?.country && <div className="flex items-center gap-2">
             <MapPin className="h-4 w-4" />
-            {scholarship.country || "Global"}
-          </div>
+            {scholarship.country }
+          </div>}
           {scholarship.applicationDeadline && (
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
@@ -477,19 +522,17 @@ function ScholarshipCard({
 
         <div className="flex gap-2">
           <Button asChild size="sm" className="flex-1">
-            <Link href={`/scholarships/${scholarship._id}`}>View Details</Link>
+            <Link href={`/scholarships/${scholarship.slug}`}>View Details</Link>
           </Button>
-          {/* {scholarship.applicationUrl && (
-            <Button asChild size="sm" variant="outline">
-              <a
-                href={scholarship.applicationUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <ExternalLink className="h-4 w-4" />
-              </a>
-            </Button>
-          )} */}
+
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => handleShare(scholarship)}
+            title="Share scholarship"
+          >
+            <Share2 className="h-4 w-4" />
+          </Button>
         </div>
       </CardContent>
     </Card>
