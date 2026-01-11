@@ -143,6 +143,33 @@ export default function AdminScholarshipsPage() {
       </div>
     );
   }
+//  Delete single scholarship
+const handleDeleteScholarship = async (id: number, title?: string) => {
+  const confirmed = confirm(
+    `Are you sure you want to delete "${title || "this scholarship"}"?`
+  );
+  if (!confirmed) return;
+
+  try {
+    const res = await fetch(`/api/scholarships/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.error || "Failed to delete scholarship");
+    }
+
+    // ✅ Instantly update UI
+    setScholarships((prev) => prev.filter((s) => s._id !== id));
+    setSelectedScholarships((prev) => prev.filter((x) => x !== id));
+
+    alert("Scholarship deleted successfully");
+  } catch (err: any) {
+    console.error("Delete failed:", err);
+    alert(err.message);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -505,7 +532,12 @@ export default function AdminScholarshipsPage() {
                                     <Edit className="h-4 w-4 mr-2" /> Edit
                                   </Link>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem className="text-red-600">
+                                <DropdownMenuItem
+                                  className="text-red-600"
+                                  onClick={() =>
+                                    handleDeleteScholarship(s._id, s.title)
+                                  }
+                                >
                                   <Trash2 className="h-4 w-4 mr-2" /> Delete
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
