@@ -91,6 +91,23 @@ export default function ScholarshipForm({
     setLocation(value);
     if (!country) setCountry(value);
   };
+const parseMultilineInput = (
+  text: string,
+  setter: React.Dispatch<React.SetStateAction<string[]>>
+) => {
+  const items = text
+    .split(/\n+/) // split by empty lines
+    .map((line) =>
+      line
+        .replace(/^[-•*]\s*/, "") // remove bullets like -, •, *
+        .trim()
+    )
+    .filter(Boolean);
+
+  if (items.length) {
+    setter(items);
+  }
+};
 
   const handleCountryChange = (value: string) => {
     setCountry(value);
@@ -310,12 +327,27 @@ export default function ScholarshipForm({
                     <Label>Funding Type *</Label>
                     <Select value={type} onValueChange={setType}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select type" />
+                        <SelectValue placeholder="Select funding type" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Full">Full Funding</SelectItem>
-                        <SelectItem value="Partial">Partial Funding</SelectItem>
-                        <SelectItem value="Merit-based">Merit-based</SelectItem>
+                        <SelectItem value="Fully-funded">
+                          Fully Funded
+                        </SelectItem>
+                        <SelectItem value="Partially-funded">
+                          Partially Funded
+                        </SelectItem>
+                        <SelectItem value="Grant">Grant</SelectItem>
+                        <SelectItem value="Seed-funding">
+                          Seed Funding
+                        </SelectItem>
+                        <SelectItem value="Merit-based">Merit-Based</SelectItem>
+                        <SelectItem value="Need-based">Need-Based</SelectItem>
+                        <SelectItem value="Training-funded">
+                          Training + Funding
+                        </SelectItem>
+                        <SelectItem value="Fellowship">Fellowship</SelectItem>
+                        <SelectItem value="Stipend">Stipend</SelectItem>
+                        <SelectItem value="Scholarship">Scholarship</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -339,14 +371,33 @@ export default function ScholarshipForm({
                         <SelectValue placeholder="Select level" />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="Secondary">
+                          Secondary / High School
+                        </SelectItem>
                         <SelectItem value="Undergraduate">
                           Undergraduate
                         </SelectItem>
-                        <SelectItem value="Graduate">Graduate</SelectItem>
-                        <SelectItem value="PhD">PhD</SelectItem>
+                        <SelectItem value="Postgraduate">
+                          Postgraduate (Master’s)
+                        </SelectItem>
+                        <SelectItem value="PhD">PhD / Doctoral</SelectItem>
+                        <SelectItem value="Postdoctoral">
+                          Postdoctoral
+                        </SelectItem>
+                        <SelectItem value="Diploma">
+                          Diploma / Certificate
+                        </SelectItem>
+                        <SelectItem value="Professional">
+                          Professional / Executive
+                        </SelectItem>
+                        <SelectItem value="Non-degree">
+                          Non-Degree / Entrepreneurship
+                        </SelectItem>
+                        <SelectItem value="All-levels">All Levels</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
+
                   <div>
                     <Label>Field *</Label>
                     <Input
@@ -364,7 +415,29 @@ export default function ScholarshipForm({
               <CardHeader>
                 <CardTitle>Eligibility Criteria</CardTitle>
               </CardHeader>
+
               <CardContent className="space-y-4">
+                {/* SMART PASTE BOX */}
+                <div>
+                  <Label>Paste Multiple Eligibility Criteria</Label>
+                  <textarea
+                    className="w-full min-h-[120px] rounded-md border p-2 text-sm"
+                    placeholder={`Paste multiple lines here, e.g.
+Must be a citizen of an African country
+Must be at least 18 years old
+Must have a business idea`}
+                    onBlur={(e) =>
+                      parseMultilineInput(e.target.value, setEligibility)
+                    }
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Tip: Each line becomes a separate eligibility item
+                  </p>
+                </div>
+
+                <Separator />
+
+                {/* INDIVIDUAL EDITABLE ITEMS */}
                 {eligibility.map((item, index) => (
                   <div key={index} className="flex gap-2">
                     <Input
@@ -384,6 +457,7 @@ export default function ScholarshipForm({
                     </Button>
                   </div>
                 ))}
+
                 <Button
                   variant="outline"
                   onClick={() => handleArrayAdd(setEligibility)}
@@ -398,7 +472,29 @@ export default function ScholarshipForm({
               <CardHeader>
                 <CardTitle>Application Requirements</CardTitle>
               </CardHeader>
+
               <CardContent className="space-y-4">
+                {/* SMART PASTE */}
+                <div>
+                  <Label>Paste Multiple Requirements</Label>
+                  <textarea
+                    className="w-full min-h-[120px] rounded-md border p-2 text-sm"
+                    placeholder={`Paste multiple lines here, e.g.
+Completed application form
+Business proposal
+Valid ID or passport`}
+                    onBlur={(e) =>
+                      parseMultilineInput(e.target.value, setRequirements)
+                    }
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Each line will be converted into a separate requirement
+                  </p>
+                </div>
+
+                <Separator />
+
+                {/* EDITABLE LIST */}
                 {requirements.map((item, index) => (
                   <div key={index} className="flex gap-2">
                     <Input
@@ -422,6 +518,7 @@ export default function ScholarshipForm({
                     </Button>
                   </div>
                 ))}
+
                 <Button
                   variant="outline"
                   onClick={() => handleArrayAdd(setRequirements)}
@@ -433,37 +530,61 @@ export default function ScholarshipForm({
 
             {/* Benefits */}
             <Card>
-              <CardHeader>
-                <CardTitle>Benefits & Coverage</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {benefits.map((item, index) => (
-                  <div key={index} className="flex gap-2">
-                    <Input
-                      value={item}
-                      onChange={(e) =>
-                        handleArrayUpdate(setBenefits, index, e.target.value)
-                      }
-                      placeholder="Enter benefit"
-                    />
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleArrayRemove(setBenefits, index)}
-                      disabled={benefits.length === 1}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-                <Button
-                  variant="outline"
-                  onClick={() => handleArrayAdd(setBenefits)}
-                >
-                  <Plus className="h-4 w-4 mr-2" /> Add Benefit
-                </Button>
-              </CardContent>
-            </Card>
+  <CardHeader>
+    <CardTitle>Benefits & Coverage</CardTitle>
+  </CardHeader>
+
+  <CardContent className="space-y-4">
+    {/* SMART PASTE */}
+    <div>
+      <Label>Paste Multiple Benefits</Label>
+      <textarea
+        className="w-full min-h-[120px] rounded-md border p-2 text-sm"
+        placeholder={`Paste multiple lines here, e.g.
+$5,000 seed funding
+12 weeks business training
+Access to mentorship network`}
+        onBlur={(e) =>
+          parseMultilineInput(e.target.value, setBenefits)
+        }
+      />
+      <p className="text-xs text-muted-foreground mt-1">
+        Each line will become a separate benefit item
+      </p>
+    </div>
+
+    <Separator />
+
+    {/* EDITABLE LIST */}
+    {benefits.map((item, index) => (
+      <div key={index} className="flex gap-2">
+        <Input
+          value={item}
+          onChange={(e) =>
+            handleArrayUpdate(setBenefits, index, e.target.value)
+          }
+          placeholder="Enter benefit"
+        />
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => handleArrayRemove(setBenefits, index)}
+          disabled={benefits.length === 1}
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      </div>
+    ))}
+
+    <Button
+      variant="outline"
+      onClick={() => handleArrayAdd(setBenefits)}
+    >
+      <Plus className="h-4 w-4 mr-2" /> Add Benefit
+    </Button>
+  </CardContent>
+</Card>
+
           </div>
 
           {/* SIDEBAR */}
@@ -473,7 +594,7 @@ export default function ScholarshipForm({
                 <CardTitle>Publish</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <Label>Status</Label>
+                {/* <Label>Status</Label>
                 <Select value={status} onValueChange={setStatus}>
                   <SelectTrigger>
                     <SelectValue />
@@ -483,7 +604,7 @@ export default function ScholarshipForm({
                     <SelectItem value="published">Published</SelectItem>
                     <SelectItem value="archived">Archived</SelectItem>
                   </SelectContent>
-                </Select>
+                </Select> */}
 
                 <Label>Application Deadline *</Label>
                 <Input
