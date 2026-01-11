@@ -31,14 +31,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://freefoundry.com"),
+  metadataBase: new URL("https://freefoundryhub.com"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://freefoundry.com",
+    url: "https://freefoundryhub.com",
     title: "FreeFoundry - Free Learning Resources",
     description:
       "Discover curated free learning resources, courses, and tools all in one place.",

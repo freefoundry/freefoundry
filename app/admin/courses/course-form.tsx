@@ -301,7 +301,7 @@ const [currency, setCurrency] = useState(course?.currency || "NGN");
                         onChange={(e) => setSlug(generateSlug(e.target.value))}
                       />
                     ) : (
-                      <span>freefoundry.com/courses/{slug}</span>
+                      <span>freefoundryh.com/courses/{slug}</span>
                     )}
                     <Button
                       variant="ghost"

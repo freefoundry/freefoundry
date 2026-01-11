@@ -249,7 +249,7 @@ export default function ResourceForm({
                 <p className="text-sm text-gray-500 mt-2">
                   Permalink:{" "}
                   <span className="text-blue-600">
-                    freefoundry.com/resources/{slug}
+                    freefoundryh.com/resources/{slug}
                   </span>
                 </p>
               </CardContent>
