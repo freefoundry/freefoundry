@@ -424,7 +424,7 @@ function ScholarshipCard({
         <img
           src={scholarship.featuredImage || "/placeholder.svg"}
           alt={scholarship.title}
-          className="w-full h-48 object-cover"
+          className="w-full h-48 object-cover lazyload"
         />
         <div className="absolute top-3 left-3 flex gap-2">
           {scholarship.featured && (
