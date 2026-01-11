@@ -143,33 +143,33 @@ export default function AdminScholarshipsPage() {
       </div>
     );
   }
-//  Delete single scholarship
-const handleDeleteScholarship = async (id: number, title?: string) => {
-  const confirmed = confirm(
-    `Are you sure you want to delete "${title || "this scholarship"}"?`
-  );
-  if (!confirmed) return;
+  //  Delete single scholarship
+  const handleDeleteScholarship = async (id: number, title?: string) => {
+    const confirmed = confirm(
+      `Are you sure you want to delete "${title || "this scholarship"}"?`
+    );
+    if (!confirmed) return;
 
-  try {
-    const res = await fetch(`/api/scholarships/${id}`, {
-      method: "DELETE",
-    });
+    try {
+      const res = await fetch(`/api/scholarships/${id}`, {
+        method: "DELETE",
+      });
 
-    if (!res.ok) {
-      const data = await res.json();
-      throw new Error(data.error || "Failed to delete scholarship");
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to delete scholarship");
+      }
+
+      //   Instantly update UI
+      setScholarships((prev) => prev.filter((s) => s._id !== id));
+      setSelectedScholarships((prev) => prev.filter((x) => x !== id));
+
+      alert("Scholarship deleted successfully");
+    } catch (err: any) {
+      console.error("Delete failed:", err);
+      alert(err.message);
     }
-
-    // ✅ Instantly update UI
-    setScholarships((prev) => prev.filter((s) => s._id !== id));
-    setSelectedScholarships((prev) => prev.filter((x) => x !== id));
-
-    alert("Scholarship deleted successfully");
-  } catch (err: any) {
-    console.error("Delete failed:", err);
-    alert(err.message);
-  }
-};
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -454,7 +454,7 @@ const handleDeleteScholarship = async (id: number, title?: string) => {
                           <TableCell>
                             <div className="flex items-center gap-3">
                               <img
-                                src={s.image || "/placeholder.svg"}
+                                src={s.featuredImage || "/placeholder.svg"}
                                 alt={s.title}
                                 className="w-10 h-10 rounded object-cover"
                               />

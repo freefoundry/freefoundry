@@ -48,6 +48,7 @@ type Scholarship = {
   featured?: boolean;
   tags?: string[];
   image?: string;
+  featuredImage?: string;
   visibility?: string;
 };
 
@@ -421,7 +422,7 @@ function ScholarshipCard({
     <Card className="hover:shadow-lg transition-shadow overflow-hidden">
       <div className="relative">
         <img
-          src={scholarship.image || "/placeholder.svg"}
+          src={scholarship.featuredImage || "/placeholder.svg"}
           alt={scholarship.title}
           className="w-full h-48 object-cover"
         />
@@ -478,7 +479,7 @@ function ScholarshipCard({
           <Button asChild size="sm" className="flex-1">
             <Link href={`/scholarships/${scholarship._id}`}>View Details</Link>
           </Button>
-          {scholarship.applicationUrl && (
+          {/* {scholarship.applicationUrl && (
             <Button asChild size="sm" variant="outline">
               <a
                 href={scholarship.applicationUrl}
@@ -488,7 +489,7 @@ function ScholarshipCard({
                 <ExternalLink className="h-4 w-4" />
               </a>
             </Button>
-          )}
+          )} */}
         </div>
       </CardContent>
     </Card>

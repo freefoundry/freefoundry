@@ -144,4 +144,5 @@ export interface Scholarship {
   image: string;
   dateAdded: string;
   status: "draft" | "published" | "archived";
+  featuredImage?: string;
 }
