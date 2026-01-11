@@ -424,7 +424,7 @@ function ScholarshipCard({
         <img
           src={scholarship.featuredImage || "/placeholder.svg"}
           alt={scholarship.title}
-          className="w-full h-48 object-cover"
+          className="w-full h-48 object-cover lazyload"
         />
         <div className="absolute top-3 left-3 flex gap-2">
           {scholarship.featured && (
@@ -432,7 +432,7 @@ function ScholarshipCard({
           )}
           <Badge variant="secondary">{deadlineText}</Badge>
         </div>
-        <Button
+        {/* <Button
           variant="ghost"
           size="sm"
           className="absolute top-3 right-3"
@@ -443,7 +443,7 @@ function ScholarshipCard({
           ) : (
             <Bookmark className="h-5 w-5 text-gray-400" />
           )}
-        </Button>
+        </Button> */}
       </div>
       <CardContent className="p-5">
         <h3 className="text-lg font-semibold mb-1">{scholarship.title}</h3>
