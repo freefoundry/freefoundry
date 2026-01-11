@@ -175,14 +175,14 @@ export default function AdminScholarshipsPage() {
     <div className="min-h-screen bg-gray-50">
       <div className=" px-4 py-8">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-8 flex-wrap">
           <div>
             <h1 className="text-3xl font-bold mb-2">Scholarships Management</h1>
             <p className="text-gray-600">
               Manage scholarship opportunities and applications
             </p>
           </div>
-          <Button asChild>
+          <Button asChild className="sm:mt-0 mt-2">
             <Link href="/admin/scholarships/new">
               <Plus className="h-4 w-4 mr-2" /> Add Scholarship
             </Link>

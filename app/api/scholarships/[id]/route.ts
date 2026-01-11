@@ -9,19 +9,19 @@ import cloudinary from "@/lib/cloudinary";
 // ==========================
 export async function GET(
   _req: Request,
-  props: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await props.params;
+    const { id } = await context.params;
+
     const conn = await connectMongo("scholarships");
     const Scholarship = getScholarshipModel(conn);
 
-    //  Determine if it's an ObjectId or slug
-    const query = mongoose.Types.ObjectId.isValid(id)
-      ? { _id: id }
-      : { slug: id };
+    const isObjectId = mongoose.Types.ObjectId.isValid(id);
 
-    const scholarship = await Scholarship.findOne(query);
+    const scholarship = await Scholarship.findOne(
+      isObjectId ? { $or: [{ _id: id }, { slug: id }] } : { slug: id }
+    );
 
     if (!scholarship) {
       return NextResponse.json(
@@ -32,13 +32,15 @@ export async function GET(
 
     return NextResponse.json(scholarship);
   } catch (err: any) {
-    console.error("  Error fetching scholarship:", err);
+    console.error("Error fetching scholarship:", err);
     return NextResponse.json(
-      { error: err.message || "Failed to fetch scholarship." },
+      { error: "Failed to fetch scholarship." },
       { status: 500 }
     );
   }
 }
+
+
 
 // ==========================
 // UPDATE a scholarship (PUT)

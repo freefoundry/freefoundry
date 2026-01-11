@@ -121,6 +121,7 @@ export type Resource = {
 export interface Scholarship {
   _id: number;
   title: string;
+  slug: string;
   provider: string;
   amount: string;
   currency: string;
