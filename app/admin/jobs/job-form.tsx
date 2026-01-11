@@ -402,7 +402,7 @@ export default function JobForm({
                       />
                     ) : (
                       <span className="text-blue-600">
-                        freefoundry.com/jobs/{slug}
+                        freefoundryhub.com/jobs/{slug}
                       </span>
                     )}
                     <Button
