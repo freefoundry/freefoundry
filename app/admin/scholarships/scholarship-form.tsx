@@ -476,7 +476,16 @@ const parseMultilineInput = (
                         <SelectItem value="Postgraduate">
                           Postgraduate (Master’s)
                         </SelectItem>
+                        <SelectItem value="Undergraduate & Postgraduate">
+                          Undergraduate & Postgraduate
+                        </SelectItem>
                         <SelectItem value="PhD">PhD / Doctoral</SelectItem>
+                        <SelectItem value="Postgraduate & PhD">
+                          Postgraduate (Master’s) & PhD
+                        </SelectItem>
+                        <SelectItem value="Undergraduate & Postgraduate & PhD">
+                          Undergraduate & Postgraduate & PhD
+                        </SelectItem>
                         <SelectItem value="Postdoctoral">
                           Postdoctoral
                         </SelectItem>
