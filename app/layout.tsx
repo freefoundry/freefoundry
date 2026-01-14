@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   },
   metadataBase: new URL("https://freefoundryhub.com"),
   alternates: {
-    canonical: "/",
+    canonical: "https://freefoundryhub.com/", // Absolute URL for the canonical link
   },
   openGraph: {
     type: "website",
@@ -88,7 +88,7 @@ export const metadata: Metadata = {
       },
     ],
   },
-  manifest: "/site.webmanifest",
+  manifest: "/site.webmanifest", // Web app manifest
 };
 
 export default function RootLayout({
@@ -103,9 +103,8 @@ export default function RootLayout({
         <meta name="msapplication-TileColor" content="#3B82F6" />
       </head>
       <body className={inter.className}>
-        {children}{" "}
-
-         {/* Google Analytics */}
+        {children} {/* Render child components */}
+        {/* Google Analytics */}
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
           strategy="afterInteractive"
@@ -118,6 +117,19 @@ export default function RootLayout({
             gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
           `}
         </Script>
+        {/* Structured Data (JSON-LD) */}
+        <script type="application/ld+json">
+          {`
+          {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "FreeFoundry",
+            "url": "https://freefoundryhub.com/",
+            "description": "Discover curated free learning resources, courses, and tools all in one place."
+          }
+          `}
+        </script>
+        {/* Toast Notification Container */}
         <ToastContainer
           autoClose={3000}
           closeButton={false}
