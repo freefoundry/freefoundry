@@ -41,7 +41,7 @@ export default function CourseForm({
   course?: any;
 }) {
   const [title, setTitle] = useState(course?.title || "");
-  const [content, setContent] = useState(course?.content || "");
+  const [content, setContent] = useState(course?.description || "");
   const [excerpt, setExcerpt] = useState(course?.excerpt || "");
   const [slug, setSlug] = useState(course?.slug || "");
   const [status, setStatus] = useState(course?.status || "draft");
@@ -123,6 +123,23 @@ const [currency, setCurrency] = useState(course?.currency || "NGN");
   const removeTag = (tagToRemove: string) => {
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
+const parseMultilineInput = (
+  text: string,
+  setter: React.Dispatch<React.SetStateAction<string[]>>
+) => {
+  const items = text
+    .split(/\n+/) // split by empty lines
+    .map((line) =>
+      line
+        .replace(/^[-•*]\s*/, "") // remove bullets like -, •, *
+        .trim()
+    )
+    .filter(Boolean);
+
+  if (items.length) {
+    setter(items);
+  }
+};
 
   const addRequirement = () => {
     if (
@@ -632,9 +649,15 @@ const [currency, setCurrency] = useState(course?.currency || "NGN");
                   <div className="flex space-x-2">
                     <Input
                       value={newRequirement}
-                      onChange={(e) => setNewRequirement(e.target.value)}
-                      placeholder="Add a requirement..."
-                      onKeyPress={(e) => e.key === "Enter" && addRequirement()}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setNewRequirement(value);
+                        parseMultilineInput(value, setRequirements);
+                      }}
+                      placeholder="Paste multiple requirements here"
+                      onBlur={(e) =>
+                        parseMultilineInput(e.target.value, setRequirements)
+                      } // Handle blur
                     />
                     <Button onClick={addRequirement}>
                       <Plus className="h-4 w-4" />
@@ -671,9 +694,15 @@ const [currency, setCurrency] = useState(course?.currency || "NGN");
                   <div className="flex space-x-2">
                     <Input
                       value={newLearning}
-                      onChange={(e) => setNewLearning(e.target.value)}
-                      placeholder="Add a learning outcome..."
-                      onKeyPress={(e) => e.key === "Enter" && addLearning()}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setNewLearning(value);
+                        parseMultilineInput(value, setWhatYouWillLearn);
+                      }}
+                      placeholder="Paste multiple learning outcomes here"
+                      onBlur={(e) =>
+                        parseMultilineInput(e.target.value, setWhatYouWillLearn)
+                      } // Handle blur
                     />
                     <Button onClick={addLearning}>
                       <Plus className="h-4 w-4" />
