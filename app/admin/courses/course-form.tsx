@@ -73,7 +73,7 @@ const [currency, setCurrency] = useState(course?.currency || "NGN");
   const [duration, setDuration] = useState(course?.duration || "");
   const [level, setLevel] = useState(course?.difficulty || "");
   const [category, setCategory] = useState(course?.category || "");
-  const [price, setPrice] = useState(Number(course?.price) || "");
+  const [price, setPrice] = useState(course?.price || "");
   const [originalPrice, setOriginalPrice] = useState(
     Number(course?.originalPrice) || ""
   );

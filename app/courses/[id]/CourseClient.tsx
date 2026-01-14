@@ -197,7 +197,7 @@ const handleShare = () => {
               Courses
             </Link>
             <ChevronRight className="h-4 w-4" />
-            <span className="text-gray-900 truncate max-w-[140px] sm:max-w-none">
+            <span className="text-gray-900 text-md sm:text-3xl truncate max-w-[140px] sm:max-w-none ">
               {course.title}
             </span>
           </nav>
@@ -230,7 +230,7 @@ const handleShare = () => {
 
               <h1 className="text-3xl font-bold mb-4">{course.title}</h1>
               <div
-                className="prose text-lg text-gray-600 mb-6"
+                className="prose text-sm sm:text-lg text-gray-600 mb-6"
                 dangerouslySetInnerHTML={{ __html: course.excerpt }}
               />
               <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600 mb-6">
