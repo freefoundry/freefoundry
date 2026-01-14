@@ -42,7 +42,15 @@ export async function POST(req: Request) {
         resource_type: "image",
       });
       imageUrl = uploadRes.secure_url;
-    }
+    }   const formatLocalDateTime = (date = new Date()) => {
+      const pad = (n: number) => String(n).padStart(2, "0");
+
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+        date.getDate()
+      )} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(
+        date.getSeconds()
+      )}`;
+    };
 
     const [result] = await db.query(
       `INSERT INTO courses 
@@ -79,7 +87,9 @@ export async function POST(req: Request) {
         body.expiryDate ? body.expiryDate.replace("T", " ") : null,
         body.status || "draft",
         body.visibility || "public",
-        body.publishDate ? body.publishDate.replace("T", " ") : null,
+        body.publishDate
+          ? body.publishDate.replace("T", " ")
+          : formatLocalDateTime(),
       ]
     );
 
