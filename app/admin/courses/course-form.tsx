@@ -32,6 +32,7 @@ import Link from "next/link";
 import { RichTextEditor } from "@/components/rich-text-editor";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { Separator } from "@radix-ui/react-separator";
 
 export default function CourseForm({
   mode = "create",
@@ -46,7 +47,7 @@ export default function CourseForm({
   const [slug, setSlug] = useState(course?.slug || "");
   const [status, setStatus] = useState(course?.status || "draft");
   const [visibility, setVisibility] = useState(course?.visibility || "public");
-  const [publishDate, setPublishDate] = useState(course?.publishDate || "");
+  const [publishDate, setPublishDate] = useState(course?.publishDate ? new Date(course?.publishDate).toISOString().split("T")[0] : "");
   const [featuredImage, setFeaturedImage] = useState(course?.image || "");
   const [tags, setTags] = useState<string[]>(course?.tags || []);
   const [newTag, setNewTag] = useState("");
@@ -67,16 +68,21 @@ const [currency, setCurrency] = useState(course?.currency || "NGN");
   );
   const [platform, setPlatform] = useState(course?.platform || "");
 
-  const [certificate, setCertificate] = useState(course?.certificate || false);
+  const [certificate, setCertificate] = useState(course?.certificate === 1 ? "yes" : "no");
   const [language, setLanguage] = useState(course?.language || "English");
   const [duration, setDuration] = useState(course?.duration || "");
-  const [level, setLevel] = useState(course?.level || "");
+  const [level, setLevel] = useState(course?.difficulty || "");
   const [category, setCategory] = useState(course?.category || "");
-  const [price, setPrice] = useState(course?.price || "");
+  const [price, setPrice] = useState(Number(course?.price) || "");
   const [originalPrice, setOriginalPrice] = useState(
-    course?.originalPrice || ""
+    Number(course?.originalPrice) || ""
   );
-  const [expiryDate, setExpiryDate] = useState(course?.expiryDate || "");
+const [expiryDate, setExpiryDate] = useState(
+  course?.expiryDate
+    ? new Date(course?.expiryDate).toISOString().split("T")[0]
+    : ""
+);
+
   const [courseUrl, setCourseUrl] = useState(course?.courseUrl || "");
   const [rating, setRating] = useState(course?.rating?.toString() || "");
   const [students, setStudents] = useState(course?.students?.toString() || "");
@@ -90,7 +96,7 @@ const [currency, setCurrency] = useState(course?.currency || "NGN");
   );
   const [newRequirement, setNewRequirement] = useState("");
   const [whatYouWillLearn, setWhatYouWillLearn] = useState<string[]>(
-    course?.whatYouWillLearn || []
+    course?.outcomes || []
   );
   const [newLearning, setNewLearning] = useState("");
 
@@ -187,7 +193,8 @@ const parseMultilineInput = (
       rating: Number.parseFloat(rating) || 0,
       students: Number.parseInt(students) || 0,
       duration: duration || "N/A",
-      certificate,
+      courseUrl,
+      certificate: certificate === "yes" ? 1 : 0,
       language,
       difficulty: level || "all-levels",
       category: category || "other",
@@ -459,8 +466,8 @@ const parseMultilineInput = (
                   <div>
                     <Label htmlFor="certificate">Certificate</Label>
                     <Select
-                      onValueChange={(val) => setCertificate(val === "yes")}
-                      defaultValue="no"
+                      onValueChange={(val) => setCertificate(val)}
+                      value={certificate}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select option" />
@@ -646,18 +653,27 @@ const parseMultilineInput = (
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
+                  <div>
+                    <Label>Paste Multiple Criteria</Label>
+                    <textarea
+                      className="w-full min-h-[120px] rounded-md border p-2 text-sm"
+                      placeholder={`Paste multiple lines here, `}
+                      onBlur={(e) =>
+                        parseMultilineInput(e.target.value, setRequirements)
+                      }
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Tip: Each line becomes a separate item
+                    </p>
+                  </div>
+
+                  <Separator />
                   <div className="flex space-x-2">
                     <Input
                       value={newRequirement}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setNewRequirement(value);
-                        parseMultilineInput(value, setRequirements);
-                      }}
-                      placeholder="Paste multiple requirements here"
-                      onBlur={(e) =>
-                        parseMultilineInput(e.target.value, setRequirements)
-                      } // Handle blur
+                      onChange={(e) => setNewRequirement(e.target.value)}
+                      placeholder="Add a requirement..."
+                      onKeyPress={(e) => e.key === "Enter" && addRequirement()}
                     />
                     <Button onClick={addRequirement}>
                       <Plus className="h-4 w-4" />
@@ -691,18 +707,25 @@ const parseMultilineInput = (
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
+                  <div>
+                    <Label>Paste Multiple  Criteria</Label>
+                    <textarea
+                      className="w-full min-h-[120px] rounded-md border p-2 text-sm"
+                      placeholder={`Paste multiple lines here, `}
+                      onBlur={(e) =>
+                        parseMultilineInput(e.target.value, setWhatYouWillLearn)
+                      }
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Tip: Each line becomes a separate  item
+                    </p>
+                  </div>
                   <div className="flex space-x-2">
                     <Input
                       value={newLearning}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setNewLearning(value);
-                        parseMultilineInput(value, setWhatYouWillLearn);
-                      }}
-                      placeholder="Paste multiple learning outcomes here"
-                      onBlur={(e) =>
-                        parseMultilineInput(e.target.value, setWhatYouWillLearn)
-                      } // Handle blur
+                      onChange={(e) => setNewLearning(e.target.value)}
+                      placeholder="Add a learning outcome..."
+                      onKeyPress={(e) => e.key === "Enter" && addLearning()}
                     />
                     <Button onClick={addLearning}>
                       <Plus className="h-4 w-4" />
