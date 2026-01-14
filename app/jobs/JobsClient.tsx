@@ -235,7 +235,7 @@ const handleShare = (job: Job) => {
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Tech Job Opportunities</h1>
           <p className="text-gray-600">
-            Discover {totalJobs} job openings for developers, designers, and
+            Discover job openings for developers, designers, and
             tech professionals.
           </p>
         </div>

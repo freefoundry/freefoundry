@@ -150,7 +150,7 @@ export default function CoursesPage() {
           platformNames[c.platform?.toLowerCase()] || platformNames.default,
       }));
       setCourses(normalized);
-      setTotalCourses(data.pagination?.total || 0);
+      setTotalCourses(data.pagination?.total || normalized.length);
     } catch (err) {
       console.error("  Failed to fetch courses:", err);
     }
@@ -230,7 +230,7 @@ export default function CoursesPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Free Courses</h1>
           <p className="text-gray-600">
-            Discover {totalCourses} curated free courses from top platforms like
+            Discover free courses from top platforms like
             Udemy and Coursera
           </p>
         </div>
