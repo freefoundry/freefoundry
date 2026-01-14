@@ -197,7 +197,7 @@ const handleShare = () => {
               Courses
             </Link>
             <ChevronRight className="h-4 w-4" />
-            <span className="text-gray-900 text-md sm:text-3xl truncate max-w-[140px] sm:max-w-none ">
+            <span className="text-gray-900  truncate max-w-[140px] sm:max-w-none">
               {course.title}
             </span>
           </nav>
@@ -228,7 +228,9 @@ const handleShare = () => {
                 )}
               </div>
 
-              <h1 className="text-3xl font-bold mb-4">{course.title}</h1>
+              <h1 className="text-sm sm:text-2xl font-bold mb-4">
+                {course.title}
+              </h1>
               <div
                 className="prose text-sm sm:text-lg text-gray-600 mb-6"
                 dangerouslySetInnerHTML={{ __html: course.excerpt }}
@@ -324,7 +326,7 @@ const handleShare = () => {
                   <CardContent>
                     <div className="prose max-w-none">
                       <div
-                        className="whitespace-pre-line text-gray-700"
+                        className="whitespace-pre-line text-gray-700 text-justify"
                         dangerouslySetInnerHTML={{ __html: course.description }}
                       />
                     </div>
@@ -422,11 +424,11 @@ const handleShare = () => {
               <TabsContent value="instructor" className="space-y-6">
                 <Card>
                   <CardContent className="p-6">
-                    <div className="flex items-start space-x-4">
+                    <div className="flex flex-col md:flex-row items-start space-x-4">
                       <img
                         src={course.instructor.avatar || "/placeholder.svg"}
                         alt={course.instructor.name}
-                        className="w-20 h-20 rounded-full object-cover"
+                        className="w-24 h-24 rounded-full object-cover mb-4 md:mb-0"
                       />
                       <div className="flex-1">
                         <h3 className="text-xl font-semibold mb-1">
@@ -436,7 +438,7 @@ const handleShare = () => {
                           {course.instructor.title}
                         </p>
 
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
                           <div className="text-center">
                             <div className="flex items-center justify-center mb-1">
                               <Star className="h-4 w-4 text-yellow-400 mr-1 fill-current" />
@@ -454,19 +456,13 @@ const handleShare = () => {
                             </p>
                             <p className="text-xs text-gray-600">Students</p>
                           </div>
-                          {/* <div className="text-center">
-                            <p className="font-medium">
-                              {course.instructor.courses}
-                            </p>
-                            <p className="text-xs text-gray-600">Courses</p>
-                          </div> */}
                           <div className="text-center">
                             <Award className="h-5 w-5 mx-auto mb-1 text-blue-600" />
                             <p className="text-xs text-gray-600">Certified</p>
                           </div>
                         </div>
 
-                        <p className="text-gray-700 text-sm leading-relaxed">
+                        <p className="text-gray-700 text-sm leading-relaxed text-justify">
                           {course.instructor.bio}
                         </p>
                       </div>

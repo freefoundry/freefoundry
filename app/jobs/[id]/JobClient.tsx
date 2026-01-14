@@ -236,7 +236,7 @@ const handleShare = () => {
                 </div>
               </div>
 
-              <p className="text-gray-700 mb-6">{job.description}</p>
+              <p className="text-gray-700 mb-6 ">{job.description}</p>
 
               <div className="flex items-center gap-3">
                 {/* <Button
@@ -278,7 +278,7 @@ const handleShare = () => {
                     </CardHeader>
                     <CardContent>
                       <p
-                        className="whitespace-pre-line text-gray-700"
+                        className="whitespace-pre-line text-gray-700 text-justify"
                         dangerouslySetInnerHTML={{
                           __html: job.fullDescription,
                         }}

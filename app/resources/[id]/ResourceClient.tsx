@@ -325,7 +325,7 @@ export default function ResourceClient() {
               </CardHeader>
               <CardContent>
                 <p
-                  className="text-gray-700 whitespace-pre-line"
+                  className="text-gray-700 whitespace-pre-line text-justify"
                   dangerouslySetInnerHTML={{
                     __html: resource.content ?? "",
                   }}
