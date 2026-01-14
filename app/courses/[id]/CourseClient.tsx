@@ -596,7 +596,7 @@ const handleShare = () => {
                     asChild
                   >
                     <Link
-                      href={`https://${course.platform?.toLowerCase()}.com`}
+                      href={`${course.courseUrl}`}
                       target="_blank"
                     >
                       <ExternalLink className="h-4 w-4 mr-2" />
