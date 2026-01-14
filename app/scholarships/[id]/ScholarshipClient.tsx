@@ -421,7 +421,7 @@ const handleShare = () => {
               </CardHeader>
               <CardContent>
                 <div
-                  className="text-gray-700 leading-relaxed"
+                  className="text-gray-700 leading-relaxed text-justify"
                   dangerouslySetInnerHTML={{
                     __html: scholarship?.description ?? "",
                   }}
