@@ -292,9 +292,9 @@ export default function JobDetailPage() {
                     </CardHeader>
                     <CardContent className="space-y-2">
                       {job.responsibilities.map((item: string, i: number) => (
-                        <div key={i} className="flex items-start gap-2">
-                          <CheckCircle className="h-4 w-4 text-green-600 mt-1" />
-                          <span className="text-sm">{item}</span>
+                        <div key={i} className="flex items-start gap-3 text-sm leading-relaxed">
+                          <CheckCircle className="h-5 w-5 text-green-600 mt-1 shrink-0" />
+                          <span className="flex-1">{item}</span>
                         </div>
                       ))}
                     </CardContent>
@@ -310,10 +310,10 @@ export default function JobDetailPage() {
                       {job.benefits.map((b: string, i: number) => (
                         <div
                           key={i}
-                          className="flex items-center gap-2 text-sm"
+                          className="flex items-center gap-3 text-sm leading-relaxed"
                         >
-                          <CheckCircle className="h-4 w-4 text-blue-600" />
-                          {b}
+                          <CheckCircle className="h-5 w-5 text-blue-600 shrink-0" />
+                          <span className="flex-1">{b}</span>
                         </div>
                       ))}
                     </CardContent>
@@ -330,20 +330,26 @@ export default function JobDetailPage() {
                     </CardHeader>
                     <CardContent className="space-y-2">
                       {job.qualifications.map((q: string, i: number) => (
-                        <div key={i} className="flex items-start gap-2">
-                          <AlertCircle className="h-4 w-4 text-red-600 mt-1" />
-                          <span className="text-sm">{q}</span>
+                        <div
+                          key={i}
+                          className="flex items-start gap-3 text-sm leading-relaxed"
+                        >
+                          <AlertCircle className="h-5 w-5 text-red-600 mt-1 shrink-0" />
+                          <span className="flex-1">{q}</span>
                         </div>
                       ))}
                     </CardContent>
                   </Card>
-                ) : ( <Card>
+                ) : (
+                  <Card>
                     <CardHeader>
                       <CardTitle>Qualifications</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2">
                       <p>No qualifications specified.</p>
-                      </CardContent></Card>)}
+                    </CardContent>
+                  </Card>
+                )}
 
                 {job.requirements?.length > 0 ? (
                   <Card>
@@ -354,22 +360,25 @@ export default function JobDetailPage() {
                       {job.requirements.map((s: string, i: number) => (
                         <div
                           key={i}
-                          className="flex items-center gap-2 text-sm"
+                          className="flex items-center gap-3 text-sm leading-relaxed"
                         >
-                          <CheckCircle className="h-4 w-4 text-blue-600" />
-                          {s}
+                                                  <CheckCircle className="h-5 w-5 text-green-600 shrink-0" />
+                          
+                          <span className="flex-1">{s}</span>
                         </div>
                       ))}
                     </CardContent>
-                    
                   </Card>
-                ) : ( <Card>
+                ) : (
+                  <Card>
                     <CardHeader>
                       <CardTitle>Technical Skills</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2">
                       <p>No technical skills specified.</p>
-                      </CardContent></Card>)}
+                    </CardContent>
+                  </Card>
+                )}
               </TabsContent>
 
               {/* Company */}
@@ -434,17 +443,21 @@ export default function JobDetailPage() {
                     <CardContent className="space-y-3">
                       {job.applicationProcess.steps.map(
                         (step: string, i: number) => (
-                          <div key={i} className="flex gap-3">
-                            <div className="w-6 h-6 bg-blue-600 text-white flex items-center justify-center rounded-full text-xs">
+                          <div key={i} className="flex gap-3 text-sm leading-relaxed">
+                            <div className="w-6 h-6 bg-blue-600 text-white flex items-center shrink-0 justify-center rounded-full text-xs">
                               {i + 1}
                             </div>
-                            <span className="text-sm">{step}</span>
+                            <span className="flex-1">{step}</span>
                           </div>
                         )
                       )}
                     </CardContent>
                   </Card>
-                ) : (<p className="text-center my-2">No application process details provided.</p>)}
+                ) : (
+                  <p className="text-center my-2">
+                    No application process details provided.
+                  </p>
+                )}
               </TabsContent>
             </Tabs>
           </div>
