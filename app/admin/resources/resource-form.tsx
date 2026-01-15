@@ -33,6 +33,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RichTextEditor } from "@/components/rich-text-editor";
+import { Separator } from "@radix-ui/react-separator";
 
 export default function ResourceForm({
   mode = "create",
@@ -181,6 +182,19 @@ export default function ResourceForm({
       toast.error("Error saving resource: " + error.message);
     }
   };
+const parseMultilineInput = (
+  text: string,
+  setter: React.Dispatch<React.SetStateAction<string[]>>
+) => {
+  const items = text
+    .split(/\n+/)
+    .map((line) => line.replace(/^[-•*]\s*/, "").trim())
+    .filter(Boolean);
+
+  if (items.length) {
+    setter(items);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -268,7 +282,6 @@ export default function ResourceForm({
                   value={content}
                   onChange={setContent}
                   placeholder="Write your resource content here..."
-                
                 />
               </CardContent>
             </Card>
@@ -404,6 +417,7 @@ export default function ResourceForm({
             </Card>
 
             {/* Requirements / Features / What You’ll Get */}
+            {/* Requirements / Features / What You’ll Get */}
             {[
               {
                 label: "Requirements",
@@ -431,41 +445,63 @@ export default function ResourceForm({
                 <CardHeader>
                   <CardTitle>{label}</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex space-x-2">
-                      <Input
-                        value={newVal}
-                        onChange={(e) => newSetter(e.target.value)}
-                        placeholder={`Add ${label.toLowerCase()}...`}
-                        onKeyDown={(e) =>
-                          e.key === "Enter" &&
-                          addItem(newVal, list, setter, newSetter)
-                        }
-                      />
-                      <Button
-                        onClick={() => addItem(newVal, list, setter, newSetter)}
+
+                <CardContent className="space-y-4">
+                  {/* SMART PASTE */}
+                  <div>
+                    <Label>Paste Multiple {label}</Label>
+                    <textarea
+                      className="w-full min-h-[120px] rounded-md border p-2 text-sm"
+                      placeholder={`Paste multiple lines here, e.g.
+Item one
+Item two
+Item three`}
+                      onBlur={(e) =>
+                        parseMultilineInput(e.target.value, setter)
+                      }
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Each line becomes a separate {label.toLowerCase()}
+                    </p>
+                  </div>
+
+                  <Separator />
+
+                  {/* SINGLE ADD */}
+                  <div className="flex space-x-2">
+                    <Input
+                      value={newVal}
+                      onChange={(e) => newSetter(e.target.value)}
+                      placeholder={`Add ${label.toLowerCase()}...`}
+                      onKeyDown={(e) =>
+                        e.key === "Enter" &&
+                        addItem(newVal, list, setter, newSetter)
+                      }
+                    />
+                    <Button
+                      onClick={() => addItem(newVal, list, setter, newSetter)}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  {/* LIST */}
+                  <div className="space-y-2">
+                    {list.map((item, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center justify-between bg-gray-50 rounded p-2"
                       >
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    <div className="space-y-2">
-                      {list.map((item, i) => (
-                        <div
-                          key={i}
-                          className="flex items-center justify-between bg-gray-50 rounded p-2"
+                        <span className="text-sm">{item}</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeItem(item, list, setter)}
                         >
-                          <span className="text-sm">{item}</span>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeItem(item, list, setter)}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
@@ -579,6 +615,21 @@ export default function ResourceForm({
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div>
+                <Label>Paste Multiple Tags</Label>
+                <textarea
+                  className="w-full min-h-[80px] rounded-md border p-2 text-sm"
+                  placeholder={`Paste one tag per line
+react
+design
+productivity`}
+                  onBlur={(e) => parseMultilineInput(e.target.value, setTags)}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Each line becomes a tag
+                </p>
+              </div>
+
               <div className="flex space-x-2">
                 <Input
                   value={newTag}
