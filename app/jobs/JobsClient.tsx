@@ -505,7 +505,7 @@ function JobCard({
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 gap-4">
           <div className="flex flex-col sm:flex-row sm:items-start gap-4">
             <img
-              src={job.companyLogo || "/placeholder.svg"}
+              src={job.companyLogo || "/bluelogo.svg"}
               alt={job.company}
               className="w-12 h-12 rounded object-cover"
             />
@@ -540,11 +540,13 @@ function JobCard({
                   <span className="text-blue-600">{job.platform}</span>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-2">
-                  <Link href={`/jobs/${job.slug}`}>
-                    <Button variant="outline" size="sm">
+                 
+                    <Button variant="outline" size="sm" asChild>
+                       <Link href={`/jobs/${job.slug}`}>
                       View Details
-                    </Button>
                   </Link>
+
+                    </Button>
                   <Button
                     size="sm"
                     variant="outline"

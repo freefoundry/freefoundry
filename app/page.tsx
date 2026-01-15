@@ -300,10 +300,12 @@ export default function Home() {
       <section id="courses" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-bold">Featured Free Courses</h2>
+            <h2 className="text-lg md:text-2xl font-bold">
+              Featured Free Courses
+            </h2>
             <Link
               href="/courses"
-              className="text-blue-600 hover:text-blue-700 flex items-center"
+              className="text-blue-600 hover:text-blue-700 flex items-center whitespace-nowrap"
             >
               View All Courses <ChevronRight className="h-4 w-4 ml-1" />
             </Link>
@@ -342,10 +344,12 @@ export default function Home() {
       <section id="jobs" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-bold">Latest Job Opportunities</h2>
+            <h2 className="text-lg md:text-2xl font-bold">
+              Latest Job Opportunities
+            </h2>
             <Link
               href="/jobs"
-              className="text-blue-600 hover:text-blue-700 flex items-center"
+              className="text-blue-600 hover:text-blue-700 flex items-center whitespace-nowrap"
             >
               View All Jobs
               <ChevronRight className="h-4 w-4 ml-1" />

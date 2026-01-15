@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     siteName: "Free Foundry",
     images: [
       {
-        url: `${BASE_URL}/freelogo.svg.png`,
+        url: `${BASE_URL}/favicon.icon`,
         width: 1200,
         height: 630,
         alt: "Free Foundry Learning Resources",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     title: "Learning Resources | Free Foundry",
     description:
       "Discover curated learning resources, tools, and guides on Free Foundry.",
-    images: [`${BASE_URL}/freelogo.svg.png`],
+    images: [`${BASE_URL}/favicon.icon`],
   },
 };
 

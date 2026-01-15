@@ -102,8 +102,18 @@ export async function PUT(
       }
 
       // Numbers
-      if (["salary", "views", "applications"].includes(key)) {
-        normalized[key] = value === "" || value === null ? null : Number(value);
+      // Numeric counters only
+      if (["views", "applications"].includes(key)) {
+        normalized[key] =
+          value === "" || value === null || isNaN(Number(value))
+            ? null
+            : Number(value);
+        continue;
+      }
+
+      // Salary is TEXT
+      if (key === "salary") {
+        normalized[key] = value === "" ? null : String(value);
         continue;
       }
 
