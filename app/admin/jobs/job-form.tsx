@@ -32,6 +32,7 @@ import {
 import { RichTextEditor } from "@/components/rich-text-editor";
 import Link from "next/link";
 import { toast } from "react-toastify";
+import { Separator } from "@radix-ui/react-separator";
 
 export default function JobForm({
   mode,
@@ -145,6 +146,23 @@ export default function JobForm({
   const removeTag = (tagToRemove: string) => {
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
+const parseMultilineInput = (
+  text: string,
+  setter: React.Dispatch<React.SetStateAction<string[]>>
+) => {
+  const items = text
+    .split(/\n+/)
+    .map((line) =>
+      line
+        .replace(/^[-•*]\s*/, "") // remove bullets
+        .trim()
+    )
+    .filter(Boolean);
+
+  if (items.length) {
+    setter(items);
+  }
+};
 
   const addRequirement = () => {
     if (
@@ -642,36 +660,60 @@ export default function JobForm({
               <CardHeader>
                 <CardTitle>Requirements</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex space-x-2">
-                    <Input
-                      value={newRequirement}
-                      onChange={(e) => setNewRequirement(e.target.value)}
-                      placeholder="Add a requirement..."
-                      onKeyPress={(e) => e.key === "Enter" && addRequirement()}
-                    />
-                    <Button onClick={addRequirement}>
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  <div className="space-y-2">
-                    {requirements.map((req, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between p-2 bg-gray-50 rounded"
+              <CardContent className="space-y-4">
+                {/* SMART PASTE */}
+                <div>
+                  <Label>Paste Multiple Requirements</Label>
+                  <textarea
+                    className="w-full min-h-[120px] rounded-md border p-2 text-sm"
+                    placeholder={`Paste multiple lines, e.g.
+Bachelor’s degree in Computer Science
+3+ years experience with React
+Strong communication skills`}
+                    onBlur={(e) =>
+                      parseMultilineInput(e.target.value, setRequirements)
+                    }
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Each line becomes a separate requirement
+                  </p>
+                </div>
+
+                <Separator />
+
+                {/* EXISTING SINGLE-ADD UI (keep this) */}
+                <div className="flex space-x-2">
+                  <Input
+                    value={newRequirement}
+                    onChange={(e) => setNewRequirement(e.target.value)}
+                    placeholder="Add a requirement..."
+                    onKeyPress={(e) => e.key === "Enter" && addRequirement()}
+                  />
+                  <Button onClick={addRequirement}>
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                <div className="space-y-2">
+                  {requirements.map((req, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-2 bg-gray-50 rounded"
+                    >
+                      <span className="text-sm">{req}</span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                          setRequirements(
+                            requirements.filter((_, i) => i !== index)
+                          )
+                        }
                       >
-                        <span className="text-sm">{req}</span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeRequirement(req)}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -681,38 +723,62 @@ export default function JobForm({
               <CardHeader>
                 <CardTitle>Responsibilities</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex space-x-2">
-                    <Input
-                      value={newResponsibility}
-                      onChange={(e) => setNewResponsibility(e.target.value)}
-                      placeholder="Add a responsibility..."
-                      onKeyPress={(e) =>
-                        e.key === "Enter" && addResponsibility()
-                      }
-                    />
-                    <Button onClick={addResponsibility}>
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  <div className="space-y-2">
-                    {responsibilities.map((resp, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between p-2 bg-gray-50 rounded"
+
+              <CardContent className="space-y-4">
+                {/* SMART PASTE */}
+                <div>
+                  <Label>Paste Multiple Responsibilities</Label>
+                  <textarea
+                    className="w-full min-h-[120px] rounded-md border p-2 text-sm"
+                    placeholder={`Paste multiple lines here, e.g.
+Develop and maintain frontend features
+Collaborate with designers and backend engineers
+Write clean, maintainable code`}
+                    onBlur={(e) =>
+                      parseMultilineInput(e.target.value, setResponsibilities)
+                    }
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Each line will be converted into a responsibility
+                  </p>
+                </div>
+
+                <Separator />
+
+                {/* SINGLE ADD */}
+                <div className="flex space-x-2">
+                  <Input
+                    value={newResponsibility}
+                    onChange={(e) => setNewResponsibility(e.target.value)}
+                    placeholder="Add a responsibility..."
+                    onKeyPress={(e) => e.key === "Enter" && addResponsibility()}
+                  />
+                  <Button onClick={addResponsibility}>
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                {/* LIST */}
+                <div className="space-y-2">
+                  {responsibilities.map((resp, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-2 bg-gray-50 rounded"
+                    >
+                      <span className="text-sm">{resp}</span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                          setResponsibilities(
+                            responsibilities.filter((_, i) => i !== index)
+                          )
+                        }
                       >
-                        <span className="text-sm">{resp}</span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeResponsibility(resp)}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -722,36 +788,61 @@ export default function JobForm({
               <CardHeader>
                 <CardTitle>Benefits</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex space-x-2">
-                    <Input
-                      value={newBenefit}
-                      onChange={(e) => setNewBenefit(e.target.value)}
-                      placeholder="Add a benefit..."
-                      onKeyPress={(e) => e.key === "Enter" && addBenefit()}
-                    />
-                    <Button onClick={addBenefit}>
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  <div className="space-y-2">
-                    {benefits.map((benefit, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between p-2 bg-gray-50 rounded"
+
+              <CardContent className="space-y-4">
+                {/* SMART PASTE */}
+                <div>
+                  <Label>Paste Multiple Benefits</Label>
+                  <textarea
+                    className="w-full min-h-[120px] rounded-md border p-2 text-sm"
+                    placeholder={`Paste multiple lines here, e.g.
+Competitive salary package
+Health insurance coverage
+Flexible working hours
+Remote-friendly work environment`}
+                    onBlur={(e) =>
+                      parseMultilineInput(e.target.value, setBenefits)
+                    }
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Each line will be converted into a benefit
+                  </p>
+                </div>
+
+                <Separator />
+
+                {/* SINGLE ADD */}
+                <div className="flex space-x-2">
+                  <Input
+                    value={newBenefit}
+                    onChange={(e) => setNewBenefit(e.target.value)}
+                    placeholder="Add a benefit..."
+                    onKeyPress={(e) => e.key === "Enter" && addBenefit()}
+                  />
+                  <Button onClick={addBenefit}>
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                {/* LIST */}
+                <div className="space-y-2">
+                  {benefits.map((benefit, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-2 bg-gray-50 rounded"
+                    >
+                      <span className="text-sm">{benefit}</span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                          setBenefits(benefits.filter((_, i) => i !== index))
+                        }
                       >
-                        <span className="text-sm">{benefit}</span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeBenefit(benefit)}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -811,53 +902,79 @@ export default function JobForm({
             </Card> */}
 
             {/* Nice To Have */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Nice To Have</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex space-x-2 mb-4">
-                  <Input
-                    value={newNiceToHave}
-                    onChange={(e) => setNewNiceToHave(e.target.value)}
-                    placeholder="Add a nice-to-have skill..."
-                    onKeyPress={(e) =>
-                      e.key === "Enter" &&
-                      setNiceToHave([...niceToHave, newNiceToHave])
-                    }
-                  />
-                  <Button
-                    onClick={() => {
-                      if (newNiceToHave.trim()) {
-                        setNiceToHave([...niceToHave, newNiceToHave]);
-                        setNewNiceToHave("");
-                      }
-                    }}
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-                <div className="space-y-2">
-                  {niceToHave.map((n, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center justify-between p-2 bg-gray-50 rounded"
-                    >
-                      <span className="text-sm">{n}</span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() =>
-                          setNiceToHave(niceToHave.filter((item) => item !== n))
-                        }
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+           <Card>
+  <CardHeader>
+    <CardTitle>Nice To Have</CardTitle>
+  </CardHeader>
+
+  <CardContent className="space-y-4">
+    {/* SMART PASTE */}
+    <div>
+      <Label>Paste Multiple Nice-to-Have Skills</Label>
+      <textarea
+        className="w-full min-h-[120px] rounded-md border p-2 text-sm"
+        placeholder={`Paste multiple lines here, e.g.
+Experience with Next.js
+Familiarity with cloud platforms
+Open-source contributions`}
+        onBlur={(e) =>
+          parseMultilineInput(e.target.value, setNiceToHave)
+        }
+      />
+      <p className="text-xs text-muted-foreground mt-1">
+        Each line will be converted into a nice-to-have skill
+      </p>
+    </div>
+
+    <Separator />
+
+    {/* SINGLE ADD */}
+    <div className="flex space-x-2">
+      <Input
+        value={newNiceToHave}
+        onChange={(e) => setNewNiceToHave(e.target.value)}
+        placeholder="Add a nice-to-have skill..."
+        onKeyPress={(e) =>
+          e.key === "Enter" &&
+          newNiceToHave.trim() &&
+          setNiceToHave([...niceToHave, newNiceToHave.trim()])
+        }
+      />
+      <Button
+        onClick={() => {
+          if (newNiceToHave.trim()) {
+            setNiceToHave([...niceToHave, newNiceToHave.trim()]);
+            setNewNiceToHave("");
+          }
+        }}
+      >
+        <Plus className="h-4 w-4" />
+      </Button>
+    </div>
+
+    {/* LIST */}
+    <div className="space-y-2">
+      {niceToHave.map((n, i) => (
+        <div
+          key={i}
+          className="flex items-center justify-between p-2 bg-gray-50 rounded"
+        >
+          <span className="text-sm">{n}</span>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() =>
+              setNiceToHave(niceToHave.filter((_, idx) => idx !== i))
+            }
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      ))}
+    </div>
+  </CardContent>
+</Card>
+
 
             {/* Company Info */}
             <Card>
@@ -1138,6 +1255,21 @@ export default function JobForm({
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div>
+                <Label>Paste Multiple Tags</Label>
+                <textarea
+                  className="w-full min-h-[80px] rounded-md border p-2 text-sm"
+                  placeholder={`Paste tags, one per line
+remote
+react
+senior-role`}
+                  onBlur={(e) => parseMultilineInput(e.target.value, setTags)}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Each line becomes a tag
+                </p>
+              </div>
+
               <div className="flex space-x-2">
                 <Input
                   value={newTag}
