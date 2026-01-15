@@ -28,39 +28,37 @@ import { ShareModal } from "@/components/share/ShareModal";
 import { buildJobShareMessage } from "@/lib/shareMessage";
 
 export default function JobDetailPage() {
-    const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>();
   const [job, setJob] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isBookmarked, setIsBookmarked] = useState(false);
-const [shareData, setShareData] = useState<{
-  title: string;
-  url: string;
-  message: any;
-} | null>(null);
+  const [shareData, setShareData] = useState<{
+    title: string;
+    url: string;
+    message: any;
+  } | null>(null);
 
+  const handleShare = () => {
+    if (!job) return;
 
-const handleShare = () => {
-  if (!job) return;
+    const url = `${window.location.origin}/jobs/${job.id}`;
 
-  const url = `${window.location.origin}/jobs/${job.id}`;
-
-  setShareData({
-    title: job.title,
-    url,
-    message: buildJobShareMessage({
+    setShareData({
       title: job.title,
-      company: job.company,
-      location: job.location,
-      type: job.type,
-      workMode: job.workMode,
-      experience: job.experience,
-      salary: job.salary,
       url,
-      source: "Free Foundry",
-    }),
-  });
-};
-
+      message: buildJobShareMessage({
+        title: job.title,
+        company: job.company,
+        location: job.location,
+        type: job.type,
+        workMode: job.workMode,
+        experience: job.experience,
+        salary: job.salary,
+        url,
+        source: "Free Foundry",
+      }),
+    });
+  };
 
   useEffect(() => {
     async function fetchJob() {
@@ -262,7 +260,7 @@ const handleShare = () => {
 
             {/* Tabs */}
             <Tabs defaultValue="overview" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 sm:grid-cols-4">
+              <TabsList className="flex w-full justify-between items-center gap-x-4">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="requirements">Requirements</TabsTrigger>
                 <TabsTrigger value="company">Company</TabsTrigger>
@@ -325,7 +323,7 @@ const handleShare = () => {
 
               {/* Requirements */}
               <TabsContent value="requirements" className="space-y-6">
-                {job.qualifications?.length > 0 && (
+                {job.qualifications?.length > 0 ? (
                   <Card>
                     <CardHeader>
                       <CardTitle>Qualifications</CardTitle>
@@ -339,22 +337,39 @@ const handleShare = () => {
                       ))}
                     </CardContent>
                   </Card>
-                )}
+                ) : ( <Card>
+                    <CardHeader>
+                      <CardTitle>Qualifications</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p>No qualifications specified.</p>
+                      </CardContent></Card>)}
 
-                {job.requirements?.length > 0 && (
+                {job.requirements?.length > 0 ? (
                   <Card>
                     <CardHeader>
                       <CardTitle>Technical Skills</CardTitle>
                     </CardHeader>
-                    <CardContent className="flex flex-wrap gap-2">
-                      {job.requirements.map((s: string) => (
-                        <Badge key={s} variant="secondary">
+                    <CardContent className="grid md:grid-cols-2 gap-2">
+                      {job.requirements.map((s: string, i: number) => (
+                        <div
+                          key={i}
+                          className="flex items-center gap-2 text-sm"
+                        >
+                          <CheckCircle className="h-4 w-4 text-blue-600" />
                           {s}
-                        </Badge>
+                        </div>
                       ))}
                     </CardContent>
+                    
                   </Card>
-                )}
+                ) : ( <Card>
+                    <CardHeader>
+                      <CardTitle>Technical Skills</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p>No technical skills specified.</p>
+                      </CardContent></Card>)}
               </TabsContent>
 
               {/* Company */}
@@ -411,7 +426,7 @@ const handleShare = () => {
 
               {/* Process */}
               <TabsContent value="process" className="space-y-6">
-                {job.applicationProcess?.steps && (
+                {job.applicationProcess?.steps?.length > 0 ? (
                   <Card>
                     <CardHeader>
                       <CardTitle>Application Process</CardTitle>
@@ -429,7 +444,7 @@ const handleShare = () => {
                       )}
                     </CardContent>
                   </Card>
-                )}
+                ) : (<p className="text-center my-2">No application process details provided.</p>)}
               </TabsContent>
             </Tabs>
           </div>
