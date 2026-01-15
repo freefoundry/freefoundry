@@ -467,7 +467,7 @@ function ScholarshipCard({
     <Card className="hover:shadow-lg transition-shadow overflow-hidden">
       <div className="relative">
         <img
-          src={scholarship.featuredImage || "/placeholder.svg"}
+          src={scholarship.featuredImage || "/empty.svg"}
           alt={scholarship.title}
           className="w-full h-48 object-cover lazyload"
         />

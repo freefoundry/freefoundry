@@ -64,7 +64,7 @@ const parseMySQLDate = (value: string) => {
             <div className="flex items-center">
               <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
                 <img
-                  src={job.companyLogo || "/placeholder.svg?height=32&width=32"}
+                  src={job.companyLogo || "/bluelogo.svg?height=32&width=32"}
                   alt={`${job.company} logo`}
                   className="h-8 w-8 rounded object-cover"
                 />
@@ -98,8 +98,8 @@ const parseMySQLDate = (value: string) => {
             <p className="text-xs text-gray-500 mt-1">Posted {daysAgo}</p>
           </div>
           <Button className="w-full flex items-center justify-center" asChild>
-            <Link href="/jobs">
-              View on {job.platform} <ExternalLink className="h-4 w-4 ml-2" />
+            <Link href={`/jobs/${job.slug}`}>
+              View Details
             </Link>
           </Button>
         </CardContent>
