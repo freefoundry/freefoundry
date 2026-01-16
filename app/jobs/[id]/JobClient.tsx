@@ -224,14 +224,14 @@ export default function JobDetailPage() {
                   <Calendar className="h-4 w-4 mr-1" />
                   <span>Posted {daysAgo} days ago</span>
                 </div>
-                <div className="flex items-center">
+                {/* <div className="flex items-center">
                   <Eye className="h-4 w-4 mr-1" />
                   <span>{job.views?.toLocaleString() || 0} views</span>
                 </div>
                 <div className="flex items-center">
                   <Users className="h-4 w-4 mr-1" />
                   <span>{job.applications || 0} applications</span>
-                </div>
+                </div> */}
               </div>
 
               <p className="text-gray-700 mb-6 ">{job.description}</p>

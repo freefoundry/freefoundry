@@ -96,25 +96,31 @@ export default function JobForm({
 
   // Company Info
   const [companyDescription, setCompanyDescription] = useState(
-    job?.companyDescription || ""
+    job?.companyInfo?.description || ""
   );
-  const [industry, setIndustry] = useState(job?.industry || "");
-  const [companySize, setCompanySize] = useState(job?.companySize || "");
-  const [founded, setFounded] = useState(job?.founded || "");
-  const [website, setWebsite] = useState(job?.website || "");
-  const [culture, setCulture] = useState<string[]>(job?.culture || []);
+  const [industry, setIndustry] = useState(job?.companyInfo?.industry || "");
+  const [companySize, setCompanySize] = useState(job?.companyInfo?.size || "");
+  const [founded, setFounded] = useState(job?.companyInfo?.founded || "");
+  const [website, setWebsite] = useState(job?.companyInfo?.website || "");
+  const [culture, setCulture] = useState<string[]>(job?.companyInfo?.culture || []);
   const [newCulture, setNewCulture] = useState("");
 
   // Application Process
   const [applicationSteps, setApplicationSteps] = useState<string[]>(
-    job?.applicationSteps || []
+    job?.applicationProcess?.steps || []
   );
   const [newStep, setNewStep] = useState("");
-  const [timeline, setTimeline] = useState(job?.timeline || "");
-  const [contactEmail, setContactEmail] = useState(job?.contactEmail || "");
-  const [contactPhone, setContactPhone] = useState(job?.contactPhone || "");
+  const [timeline, setTimeline] = useState(
+    job?.applicationProcess?.timeline || ""
+  );
+  const [contactEmail, setContactEmail] = useState(
+    job?.applicationProcess?.contactEmail || ""
+  );
+  const [contactPhone, setContactPhone] = useState(
+    job?.applicationProcess?.contactPhone || ""
+  );
   const [contactRecruiter, setContactRecruiter] = useState(
-    job?.contactRecruiter || ""
+    job?.applicationProcess?.contactRecruiter || ""
   );
   const [currency, setCurrency] = useState(job?.currency || "NGN");
 
@@ -658,7 +664,7 @@ const parseMultilineInput = (
             {/* Requirements */}
             <Card>
               <CardHeader>
-                <CardTitle>Requirements</CardTitle>
+                <CardTitle>Requirements/Technical Skills</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* SMART PASTE */}
@@ -848,11 +854,27 @@ Remote-friendly work environment`}
             </Card>
 
             {/* Qualification */}
-            {/* <Card>
+            <Card>
               <CardHeader>
                 <CardTitle>Qualifications</CardTitle>
               </CardHeader>
               <CardContent>
+                <div>
+                  <Label>Paste Multiple Benefits</Label>
+                  <textarea
+                    className="w-full min-h-[120px] rounded-md border p-2 text-sm"
+                    placeholder={`Paste multiple lines here, e.g.
+Bachelor’s degree in relevant field`}
+                    onBlur={(e) =>
+                      parseMultilineInput(e.target.value, setQualifications)
+                    }
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Each line will be converted into a benefit
+                  </p>
+                </div>
+
+                <Separator />
                 <div className="flex space-x-2 mb-4">
                   <Input
                     value={newQualification}
@@ -899,82 +921,83 @@ Remote-friendly work environment`}
                   ))}
                 </div>
               </CardContent>
-            </Card> */}
+            </Card>
 
             {/* Nice To Have */}
-           <Card>
-  <CardHeader>
-    <CardTitle>Nice To Have</CardTitle>
-  </CardHeader>
+            <Card>
+              <CardHeader>
+                <CardTitle>Nice To Have</CardTitle>
+              </CardHeader>
 
-  <CardContent className="space-y-4">
-    {/* SMART PASTE */}
-    <div>
-      <Label>Paste Multiple Nice-to-Have Skills</Label>
-      <textarea
-        className="w-full min-h-[120px] rounded-md border p-2 text-sm"
-        placeholder={`Paste multiple lines here, e.g.
+              <CardContent className="space-y-4">
+                {/* SMART PASTE */}
+                <div>
+                  <Label>Paste Multiple Nice-to-Have Skills</Label>
+                  <textarea
+                    className="w-full min-h-[120px] rounded-md border p-2 text-sm"
+                    placeholder={`Paste multiple lines here, e.g.
 Experience with Next.js
 Familiarity with cloud platforms
 Open-source contributions`}
-        onBlur={(e) =>
-          parseMultilineInput(e.target.value, setNiceToHave)
-        }
-      />
-      <p className="text-xs text-muted-foreground mt-1">
-        Each line will be converted into a nice-to-have skill
-      </p>
-    </div>
+                    onBlur={(e) =>
+                      parseMultilineInput(e.target.value, setNiceToHave)
+                    }
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Each line will be converted into a nice-to-have skill
+                  </p>
+                </div>
 
-    <Separator />
+                <Separator />
 
-    {/* SINGLE ADD */}
-    <div className="flex space-x-2">
-      <Input
-        value={newNiceToHave}
-        onChange={(e) => setNewNiceToHave(e.target.value)}
-        placeholder="Add a nice-to-have skill..."
-        onKeyPress={(e) =>
-          e.key === "Enter" &&
-          newNiceToHave.trim() &&
-          setNiceToHave([...niceToHave, newNiceToHave.trim()])
-        }
-      />
-      <Button
-        onClick={() => {
-          if (newNiceToHave.trim()) {
-            setNiceToHave([...niceToHave, newNiceToHave.trim()]);
-            setNewNiceToHave("");
-          }
-        }}
-      >
-        <Plus className="h-4 w-4" />
-      </Button>
-    </div>
+                {/* SINGLE ADD */}
+                <div className="flex space-x-2">
+                  <Input
+                    value={newNiceToHave}
+                    onChange={(e) => setNewNiceToHave(e.target.value)}
+                    placeholder="Add a nice-to-have skill..."
+                    onKeyPress={(e) =>
+                      e.key === "Enter" &&
+                      newNiceToHave.trim() &&
+                      setNiceToHave([...niceToHave, newNiceToHave.trim()])
+                    }
+                  />
+                  <Button
+                    onClick={() => {
+                      if (newNiceToHave.trim()) {
+                        setNiceToHave([...niceToHave, newNiceToHave.trim()]);
+                        setNewNiceToHave("");
+                      }
+                    }}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
 
-    {/* LIST */}
-    <div className="space-y-2">
-      {niceToHave.map((n, i) => (
-        <div
-          key={i}
-          className="flex items-center justify-between p-2 bg-gray-50 rounded"
-        >
-          <span className="text-sm">{n}</span>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() =>
-              setNiceToHave(niceToHave.filter((_, idx) => idx !== i))
-            }
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-      ))}
-    </div>
-  </CardContent>
-</Card>
-
+                {/* LIST */}
+                <div className="space-y-2">
+                  {niceToHave.map((n, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center justify-between p-2 bg-gray-50 rounded"
+                    >
+                      <span className="text-sm">{n}</span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                          setNiceToHave(
+                            niceToHave.filter((_, idx) => idx !== i)
+                          )
+                        }
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Company Info */}
             <Card>
