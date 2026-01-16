@@ -91,8 +91,10 @@ const parseMySQLDate = (value: string) => {
           </div>
           <div className="text-sm text-gray-600 mb-4">
             <p className="text-sm">
-              {job.salary}
-              {job.currency}
+              {job.salary ? job.salary + " " : ""}{" "}
+              {job.salary && job.salary !== "Not Disclosed" && job.currency
+                ? job.currency
+                : ""}
             </p>
 
             <p className="text-xs text-gray-500 mt-1">Posted {daysAgo}</p>
@@ -161,7 +163,12 @@ const parseMySQLDate = (value: string) => {
                   className="bg-green-50 text-green-700 border-green-200 flex items-center"
                 >
                   <span className="mr-1 font-semibold">
-                    {job.salary + " "} {job.currency}
+                    {job.salary ? job.salary + " " : ""}{" "}
+                    {job.salary &&
+                    job.salary !== "Not Disclosed" &&
+                    job.currency
+                      ? job.currency
+                      : ""}
                   </span>
                 </Badge>
               </div>

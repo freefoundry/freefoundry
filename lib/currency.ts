@@ -10,30 +10,15 @@ export const currencySymbols: Record<string, string> = {
 };
 
 
-// lib/currency.ts
-
 export const formatSalary = (
-  salary?: string | number,
-  currency: string = "USD",
+  salary?: string,
+  currency?: string,
   salaryType?: string
 ) => {
   if (!salary) return "Salary not disclosed";
 
-  const numericSalary =
-    typeof salary === "string"
-      ? Number(salary.replace(/,/g, ""))
-      : salary;
-
-  // if (isNaN(numericSalary)) return "Salary not disclosed";
-
-  const formatted = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-    maximumFractionDigits: 0,
-  }).format(numericSalary);
-
+  const symbol = currencySymbols[currency || ""] || "";
   const suffix = salaryType ? ` / ${salaryType}` : "";
 
-  return `${formatted}${suffix}`;
+  return `${symbol}${salary}${suffix}`;
 };
-
