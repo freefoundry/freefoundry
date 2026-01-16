@@ -493,7 +493,7 @@ export default function JobDetailPage() {
                   </p>
                   {job.salary && job.salaryType && (
                     <p className="text-sm text-gray-500">
-                      {job.salary}/{job.salaryType}
+                   /{job.salaryType}
                     </p>
                   )}
                 </div>
