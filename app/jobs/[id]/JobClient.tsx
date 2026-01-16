@@ -154,12 +154,30 @@ export default function JobDetailPage() {
       </div>
     );
   }
+ const parseMySQLDate = (value: string) => {
+   return new Date(value.replace(" ", "T"));
+ };
+ const getDaysAgo = (dateString: string) => {
+   if (!dateString) return "";
 
-  const postedDate = new Date(job.postedDate);
-  const daysAgo = Math.ceil(
-    (Date.now() - postedDate.getTime()) / (1000 * 60 * 60 * 24)
-  );
+   const d = parseMySQLDate(dateString);
+   const now = new Date();
 
+   const diffMs = now.getTime() - d.getTime();
+   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+   if (diffDays <= 0) return "Today";
+   if (diffDays === 1) return "1 day ago";
+   if (diffDays < 30) return `${diffDays} days ago`;
+
+   const diffMonths = Math.floor(diffDays / 30);
+   if (diffMonths === 1) return "1 month ago";
+   if (diffMonths < 12) return `${diffMonths} months ago`;
+
+   const diffYears = Math.floor(diffMonths / 12);
+   return diffYears === 1 ? "1 year ago" : `${diffYears} years ago`;
+ };
+ const daysAgo = getDaysAgo(job.postedDate);
   return (
     <div className="min-h-screen bg-gray-50">
       <Header showSearch type="jobs" />
@@ -222,7 +240,7 @@ export default function JobDetailPage() {
               <div className="flex flex-wrap gap-6 text-sm text-gray-600 mb-6">
                 <div className="flex items-center">
                   <Calendar className="h-4 w-4 mr-1" />
-                  <span>Posted {daysAgo} days ago</span>
+                  <span>Posted {daysAgo}</span>
                 </div>
                 {/* <div className="flex items-center">
                   <Eye className="h-4 w-4 mr-1" />
@@ -260,7 +278,7 @@ export default function JobDetailPage() {
 
             {/* Tabs */}
             <Tabs defaultValue="overview" className="w-full">
-              <TabsList className="flex w-full justify-between items-center gap-x-4">
+              <TabsList className="">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="requirements">Requirements</TabsTrigger>
                 <TabsTrigger value="company">Company</TabsTrigger>
