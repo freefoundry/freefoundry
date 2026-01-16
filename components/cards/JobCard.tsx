@@ -150,15 +150,18 @@ const parseMySQLDate = (value: string) => {
                   <Badge className="bg-red-600">Urgent</Badge>
                 )}
                 {job.type && <Badge variant="outline">{job.type}</Badge>}
-                {job.workMode && <Badge variant="outline">{job.workMode}</Badge>}
-                {job.experience && <Badge variant="outline">{job.experience}</Badge>} 
+                {job.workMode && (
+                  <Badge variant="outline">{job.workMode}</Badge>
+                )}
+                {job.experience && (
+                  <Badge variant="outline">{job.experience}</Badge>
+                )}
                 <Badge
                   variant="secondary"
                   className="bg-green-50 text-green-700 border-green-200 flex items-center"
                 >
                   <span className="mr-1 font-semibold">
-                    {job.salary}
-                    {job.currency}
+                    {job.salary + " "} {job.currency}
                   </span>
                 </Badge>
               </div>

@@ -229,8 +229,7 @@ export default function JobDetailPage() {
                 <div className="flex items-center">
                   <Banknote className="h-5 w-5 mr-2" />
                   <span className="text-green-600 font-medium">
-                    {job.salary}
-                    {job.currency}
+                    {job.salary + " "} {job.currency}
                   </span>
                 </div>
               </div>
@@ -490,8 +489,7 @@ export default function JobDetailPage() {
               <CardContent className="p-6">
                 <div className="text-center mb-6">
                   <p className="text-2xl font-bold text-green-600 mb-1">
-                    {job.salary}
-                    {job.currency}
+                    {job.salary + " "} {job.currency}
                   </p>
                   {job.salary && job.salaryType && (
                     <p className="text-sm text-gray-500">
