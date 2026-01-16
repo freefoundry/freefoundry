@@ -5,17 +5,14 @@ import Link from "next/link";
 import {
   ExternalLink,
   Share2,
-  Bookmark,
-  BookmarkCheck,
   ChevronRight,
   CheckCircle,
   Building,
   MapPin,
   DollarSign,
   Calendar,
-  Users,
-  Eye,
   AlertCircle,
+  Banknote,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -154,30 +151,30 @@ export default function JobDetailPage() {
       </div>
     );
   }
- const parseMySQLDate = (value: string) => {
-   return new Date(value.replace(" ", "T"));
- };
- const getDaysAgo = (dateString: string) => {
-   if (!dateString) return "";
+  const parseMySQLDate = (value: string) => {
+    return new Date(value.replace(" ", "T"));
+  };
+  const getDaysAgo = (dateString: string) => {
+    if (!dateString) return "";
 
-   const d = parseMySQLDate(dateString);
-   const now = new Date();
+    const d = parseMySQLDate(dateString);
+    const now = new Date();
 
-   const diffMs = now.getTime() - d.getTime();
-   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const diffMs = now.getTime() - d.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-   if (diffDays <= 0) return "Today";
-   if (diffDays === 1) return "1 day ago";
-   if (diffDays < 30) return `${diffDays} days ago`;
+    if (diffDays <= 0) return "Today";
+    if (diffDays === 1) return "1 day ago";
+    if (diffDays < 30) return `${diffDays} days ago`;
 
-   const diffMonths = Math.floor(diffDays / 30);
-   if (diffMonths === 1) return "1 month ago";
-   if (diffMonths < 12) return `${diffMonths} months ago`;
+    const diffMonths = Math.floor(diffDays / 30);
+    if (diffMonths === 1) return "1 month ago";
+    if (diffMonths < 12) return `${diffMonths} months ago`;
 
-   const diffYears = Math.floor(diffMonths / 12);
-   return diffYears === 1 ? "1 year ago" : `${diffYears} years ago`;
- };
- const daysAgo = getDaysAgo(job.postedDate);
+    const diffYears = Math.floor(diffMonths / 12);
+    return diffYears === 1 ? "1 year ago" : `${diffYears} years ago`;
+  };
+  const daysAgo = getDaysAgo(job.postedDate);
   return (
     <div className="min-h-screen bg-gray-50">
       <Header showSearch type="jobs" />
@@ -230,9 +227,10 @@ export default function JobDetailPage() {
                   <span>{job.location}</span>
                 </div>
                 <div className="flex items-center">
-                  <DollarSign className="h-5 w-5 mr-2" />
+                  <Banknote className="h-5 w-5 mr-2" />
                   <span className="text-green-600 font-medium">
                     {job.salary}
+                    {job.currency}
                   </span>
                 </div>
               </div>
@@ -310,7 +308,10 @@ export default function JobDetailPage() {
                     </CardHeader>
                     <CardContent className="space-y-2">
                       {job.responsibilities.map((item: string, i: number) => (
-                        <div key={i} className="flex items-start gap-3 text-sm leading-relaxed">
+                        <div
+                          key={i}
+                          className="flex items-start gap-3 text-sm leading-relaxed"
+                        >
                           <CheckCircle className="h-5 w-5 text-green-600 mt-1 shrink-0" />
                           <span className="flex-1">{item}</span>
                         </div>
@@ -380,8 +381,8 @@ export default function JobDetailPage() {
                           key={i}
                           className="flex items-center gap-3 text-sm leading-relaxed"
                         >
-                                                  <CheckCircle className="h-5 w-5 text-green-600 shrink-0" />
-                          
+                          <CheckCircle className="h-5 w-5 text-green-600 shrink-0" />
+
                           <span className="flex-1">{s}</span>
                         </div>
                       ))}
@@ -461,7 +462,10 @@ export default function JobDetailPage() {
                     <CardContent className="space-y-3">
                       {job.applicationProcess.steps.map(
                         (step: string, i: number) => (
-                          <div key={i} className="flex gap-3 text-sm leading-relaxed">
+                          <div
+                            key={i}
+                            className="flex gap-3 text-sm leading-relaxed"
+                          >
                             <div className="w-6 h-6 bg-blue-600 text-white flex items-center shrink-0 justify-center rounded-full text-xs">
                               {i + 1}
                             </div>
@@ -487,8 +491,13 @@ export default function JobDetailPage() {
                 <div className="text-center mb-6">
                   <p className="text-2xl font-bold text-green-600 mb-1">
                     {job.salary}
+                    {job.currency}
                   </p>
-                  <p className="text-sm text-gray-500">/{job.salaryType}</p>
+                  {job.salary && job.salaryType && (
+                    <p className="text-sm text-gray-500">
+                      {job.salary}/{job.salaryType}
+                    </p>
+                  )}
                 </div>
                 <Button
                   className="w-full bg-blue-600 hover:bg-blue-700 mb-3"

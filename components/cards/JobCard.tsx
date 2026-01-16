@@ -15,7 +15,6 @@ import {
 import type { Job } from "@/lib/types";
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { formatSalary } from "@/lib/currency";
 
 type Variant = "list" | "teaser";
 
@@ -92,15 +91,14 @@ const parseMySQLDate = (value: string) => {
           </div>
           <div className="text-sm text-gray-600 mb-4">
             <p className="text-sm">
-              {formatSalary(job.salary, job.currency, job.salaryType)}
+              {job.salary}
+              {job.currency}
             </p>
 
             <p className="text-xs text-gray-500 mt-1">Posted {daysAgo}</p>
           </div>
           <Button className="w-full flex items-center justify-center" asChild>
-            <Link href={`/jobs/${job.slug}`}>
-              View Details
-            </Link>
+            <Link href={`/jobs/${job.slug}`}>View Details</Link>
           </Button>
         </CardContent>
       </Card>
@@ -159,7 +157,8 @@ const parseMySQLDate = (value: string) => {
                   className="bg-green-50 text-green-700 border-green-200 flex items-center"
                 >
                   <span className="mr-1 font-semibold">
-                    {formatSalary(job.salary, job.currency)}
+                    {job.salary}
+                    {job.currency}
                   </span>
                 </Badge>
               </div>
