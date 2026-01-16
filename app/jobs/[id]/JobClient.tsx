@@ -501,9 +501,11 @@ export default function JobDetailPage() {
                       ? job.currency
                       : ""}
                   </p>
-                  {job.salary && job.salaryType && (
-                    <p className="text-sm text-gray-500">/{job.salaryType}</p>
-                  )}
+                  {job.salary &&
+                    job.salary !== "Not Disclosed" &&
+                    job.salaryType && (
+                      <p className="text-sm text-gray-500">/{job.salaryType}</p>
+                    )}
                 </div>
                 <Button
                   className="w-full bg-blue-600 hover:bg-blue-700 mb-3"
