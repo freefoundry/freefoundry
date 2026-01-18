@@ -202,17 +202,19 @@ export default function Home() {
               </h2>
 
               <p className="text-gray-600 mb-6 leading-relaxed">
-                <strong>FreeFoundry</strong> is a curated learning platform
-                built to remove financial barriers from education. We bring
-                together free courses, study materials, job opportunities, and
-                career tools from trusted sources; all in one place.
+                <strong>FreeFoundry</strong> helps students,
+                self-learners, and professionals grow their skills with
+                carefully curated, high-quality free resources. We bring you
+                updated courses, jobs, scholarships, and learning materials; all
+                in one place, with no paywalls or hidden fees. Learn smarter,
+                grow faster, and pay nothing.
               </p>
 
-              <p className="text-gray-600 mb-8 leading-relaxed">
+              {/* <p className="text-gray-600 mb-8 leading-relaxed">
                 Whether you’re a student, self-learner, or professional looking
                 to upskill, FreeFoundry helps you learn smarter without paying a
                 dime.
-              </p>
+              </p> */}
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="flex items-start gap-3">
