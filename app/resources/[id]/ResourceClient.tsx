@@ -362,7 +362,7 @@ export default function ResourceClient() {
             <Card>
               <div className="relative">
                 <img
-                  src={resource.featuredImage || "/placeholder.svg"}
+                  src={resource.featuredImage || "/emptyblue.svg"}
                   alt={resource.title}
                   className="w-full h-48 object-cover rounded-t-lg"
                 />

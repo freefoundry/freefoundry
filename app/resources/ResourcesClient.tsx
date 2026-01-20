@@ -319,7 +319,7 @@ export default function ResourcesPage() {
                       {/* Resource content here */}
                       <div className="relative">
                         <img
-                          src={r.featuredImage || "/placeholder.svg"}
+                          src={r.featuredImage || "/emptyblue.svg"}
                           alt={r.title}
                           className="w-full h-48 object-cover"
                         />
