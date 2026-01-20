@@ -1,6 +1,13 @@
 import { Button } from "@/components/ui/button";
+import { CommunityModal } from "../modal/CommunityModal";
+import { useState } from "react";
 
 export function CTASection() {
+  const [openCommunity, setOpenCommunity] = useState(false);
+  
+  const joinCommunity = () => {
+    setOpenCommunity(true);
+  };
   return (
     <section className="py-16 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
       <div className="container mx-auto px-4 text-center">
@@ -22,12 +29,17 @@ export function CTASection() {
           <Button
             size="lg"
             variant="outline"
-            className="text-white border-white hover:bg-blue-700 bg-transparent"
+            className="text-white border-white hover:bg-blue-700 bg-transparent hover:border-white hover:text-white"
+            onClick={joinCommunity}
           >
             Join Community
           </Button>
         </div>
       </div>
+       <CommunityModal
+              open={openCommunity}
+              onClose={() => setOpenCommunity(false)}
+            />
     </section>
   );
 }

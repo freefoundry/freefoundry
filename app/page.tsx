@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
+import { CommunityModal } from "@/components/modal/CommunityModal";
 
 export default function Home() {
   const [courses, setCourses] = useState<any[]>([]);
@@ -29,6 +30,8 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [jobs, setJobs] = useState<any[]>([]);
   const [loadingJobs, setLoadingJobs] = useState(true);
+const [openCommunity, setOpenCommunity] = useState(false);
+
 
   useEffect(() => {
     async function fetchCourses() {
@@ -117,6 +120,10 @@ export default function Home() {
 
     fetchJobs();
   }, []);
+
+const joinCommunity = () => {
+  setOpenCommunity(true);
+};
   return (
     <div className="min-h-screen bg-white">
       <Header showSearch />
@@ -134,6 +141,7 @@ export default function Home() {
         secondaryText="Join Community"
         imageSrc="https://alterainstitute.com/blog/content/images/2024/12/data-src-image-11293e72-5d3a-47f1-ad99-d1c394682d22.jpeg"
         badgeText="100% Free Resources"
+        secondaryOnClick={joinCommunity}
       />
 
       {/* Features */}
@@ -202,12 +210,12 @@ export default function Home() {
               </h2>
 
               <p className="text-gray-600 mb-6 leading-relaxed">
-                <strong>FreeFoundry</strong> helps students,
-                self-learners, and professionals grow their skills with
-                carefully curated, high-quality free resources. We bring you
-                updated courses, jobs, scholarships, and learning materials; all
-                in one place, with no paywalls or hidden fees. Learn smarter,
-                grow faster, and pay nothing.
+                <strong>FreeFoundry</strong> helps students, self-learners, and
+                professionals grow their skills with carefully curated,
+                high-quality free resources. We bring you updated courses, jobs,
+                scholarships, and learning materials; all in one place, with no
+                paywalls or hidden fees. Learn smarter, grow faster, and pay
+                nothing.
               </p>
 
               {/* <p className="text-gray-600 mb-8 leading-relaxed">
@@ -385,6 +393,10 @@ export default function Home() {
       {/* CTA + Footer */}
       <CTASection />
       <Footer />
+      <CommunityModal
+        open={openCommunity}
+        onClose={() => setOpenCommunity(false)}
+      />
     </div>
   );
 }

@@ -1,3 +1,4 @@
+'use client';
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,6 +13,7 @@ import {
   Compass,
   HelpCircle,
 } from "lucide-react";
+import { Footer } from "@/components/layout/Footer";
 
 export default function NotFound() {
   const popularLinks = [
@@ -197,117 +199,15 @@ export default function NotFound() {
                 Contact Support
               </Link>
             </Button>
-            <Button asChild variant="ghost">
+            {/* <Button asChild variant="ghost">
               <Link href="/sitemap">View Sitemap</Link>
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="md:col-span-2">
-              <Link href="/" className="flex items-center space-x-2 mb-4">
-                <img
-                  src="/freefoundry-logo-white.png"
-                  alt="FreeFoundry"
-                  className="h-8 w-auto"
-                />
-              </Link>
-              <p className="text-gray-400 mb-4 max-w-md">
-                Your gateway to free learning resources, courses, and
-                opportunities. No paywalls, no barriers - just pure knowledge at
-                your fingertips.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link
-                    href="/courses"
-                    className="hover:text-white transition-colors"
-                  >
-                    Courses
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/jobs"
-                    className="hover:text-white transition-colors"
-                  >
-                    Jobs
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/resources"
-                    className="hover:text-white transition-colors"
-                  >
-                    Resources
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/scholarships"
-                    className="hover:text-white transition-colors"
-                  >
-                    Scholarships
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Support</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link
-                    href="/help"
-                    className="hover:text-white transition-colors"
-                  >
-                    Help Center
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/contact"
-                    className="hover:text-white transition-colors"
-                  >
-                    Contact Us
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/about"
-                    className="hover:text-white transition-colors"
-                  >
-                    About
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/privacy"
-                    className="hover:text-white transition-colors"
-                  >
-                    Privacy Policy
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>
-              &copy; {new Date().getFullYear()} FreeFoundry. All rights
-              reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

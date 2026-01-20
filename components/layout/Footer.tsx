@@ -6,6 +6,8 @@ import {
   FaWhatsapp,
   FaEnvelope,
   FaPhoneAlt,
+  FaFacebookF,
+  FaTelegram,
 } from "react-icons/fa";
 
 export function Footer() {
@@ -83,22 +85,41 @@ export function Footer() {
               </a> */}
 
               <a
-                href="https://www.linkedin.com/company/freefoundry/about/?viewAsMember=true"
+                href="https://www.linkedin.com/company/freefoundry/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white text-lg"
+                aria-label="Follow Free Foundry on LinkedIn"
               >
                 <FaLinkedin />
               </a>
 
               <a
-                href="https://wa.me/2348145197342"
+                href="https://chat.whatsapp.com/GF819wc0KFf3ytAL910KKX"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-green-400 text-lg"
-                aria-label="Chat on WhatsApp"
+                aria-label="Join Free Foundry WhatsApp Group"
               >
                 <FaWhatsapp />
+              </a>
+              <a
+                href="https://www.facebook.com/profile.php?id=100083560747021"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-blue-700 text-lg"
+                aria-label="Join Free Foundry Facebook Page"
+              >
+                <FaFacebookF />
+              </a>
+              <a
+                href="https://t.me/boost/freefoundryhub"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-sky-500 text-lg"
+                aria-label="Join Free Foundry Telegram Channel"
+              >
+                <FaTelegram />
               </a>
             </div>
           </div>
