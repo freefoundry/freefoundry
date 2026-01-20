@@ -42,7 +42,7 @@ export function CommunityModal({ open, onClose }: CommunityModalProps) {
 
         <div className="grid gap-4">
           <CommunityLink
-            href="https://t.me/boost/freefoundryhub"
+            href="https://t.me/freefoundryhub"
             icon={<FaTelegram />}
             label="Join Telegram"
             color="bg-sky-500"
