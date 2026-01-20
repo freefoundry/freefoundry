@@ -113,7 +113,7 @@ export function Footer() {
                 <FaFacebookF />
               </a>
               <a
-                href="https://t.me/boost/freefoundryhub"
+                href="https://t.me/freefoundryhub"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-sky-500 text-lg"
