@@ -6,19 +6,54 @@ import { Button } from "@/components/ui/button";
 import { Course } from "@/lib/types";
 import { currencySymbols } from "@/lib/currency";
 
-const platformColors: Record<string, string> = {
-  Udemy: "text-purple-600",
-  Coursera: "text-blue-600",
-  edX: "text-red-600",
-  Pluralsight: "text-orange-600",
-  Skillshare: "text-green-600",
-  "LinkedIn Learning": "text-sky-600",
-  Codecademy: "text-indigo-600",
-  freeCodeCamp: "text-emerald-600",
-  "Khan Academy": "text-teal-600",
-  YouTube: "text-rose-600",
-  Other: "text-gray-600",
-};
+ const platformColors: Record<string, string> = {
+   // Major MOOC Platforms
+   Udemy: "text-purple-600",
+   Coursera: "text-blue-600",
+   edX: "text-red-600",
+   FutureLearn: "text-pink-600",
+   Udacity: "text-indigo-600",
+   Pluralsight: "text-orange-600",
+
+   // Free / Non-profit
+   "Khan Academy": "text-teal-600",
+   freeCodeCamp: "text-emerald-600",
+   "MIT OpenCourseWare": "text-gray-700",
+   OpenLearn: "text-cyan-600",
+
+   // Programming / Tech
+   Codecademy: "text-indigo-500",
+   DataCamp: "text-green-700",
+   "Frontend Masters": "text-red-700",
+   Scrimba: "text-yellow-600",
+   Treehouse: "text-green-600",
+
+   // Design / Creative
+   Skillshare: "text-green-500",
+   Domestika: "text-rose-600",
+
+   // University / Academic
+   "Harvard Online": "text-crimson-600", // custom vibe
+   "Stanford Online": "text-red-800",
+
+   // Language Learning
+   Duolingo: "text-lime-600",
+   Babbel: "text-orange-500",
+   Memrise: "text-sky-500",
+
+   // Business / Marketing
+   "LinkedIn Learning": "text-sky-600",
+   "HubSpot Academy": "text-orange-600",
+   "Google Digital Garage": "text-blue-500",
+   Alison: "text-purple-500",
+   "Microsoft Learn": "text-blue-700",
+
+   // Misc
+   YouTube: "text-rose-600",
+   Blog: "text-gray-500",
+   Book: "text-amber-700",
+   Other: "text-gray-600", // fallback
+ };
 
 export function CourseCard({ course }: { course: any }) {
   const isExpired =
