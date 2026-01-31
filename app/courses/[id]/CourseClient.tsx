@@ -179,6 +179,7 @@ const handleShare = () => {
       acc + section.lectures.length,
     0
   );
+const normalizePlatform = (platform?: string) => platform?.trim();
 
   return (
     <div className="min-h-screen bg-gray-50">

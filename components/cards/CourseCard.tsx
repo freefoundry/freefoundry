@@ -54,6 +54,8 @@ import { currencySymbols } from "@/lib/currency";
    Book: "text-amber-700",
    Other: "text-gray-600", // fallback
  };
+ const normalizePlatform = (platform?: string) => platform?.trim();
+
 
 export function CourseCard({ course }: { course: any }) {
   const isExpired =
@@ -100,7 +102,7 @@ export function CourseCard({ course }: { course: any }) {
                 platformColors[course.platform] || platformColors.Other
               }`}
             >
-              {course.platform}
+              {normalizePlatform(course.platform)}
             </span>
           </div>
         )}

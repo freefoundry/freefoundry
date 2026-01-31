@@ -71,7 +71,19 @@ export default function CoursesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [coursesPerPage, setCoursesPerPage] = useState(9);
   // Define all filter options statically (full list you want in UI)
-  const allPlatforms = ["Udemy", "Coursera", "edX", "Pluralsight"];
+  const allPlatforms = [
+    "Udemy",
+    "Coursera",
+    "edX",
+    "Pluralsight",
+    "Skillshare",
+    "LinkedIn Learning",
+    "Codecademy",
+    "freeCodeCamp",
+    "Khan Academy",
+    "YouTube",
+    "Other",
+  ];
   const allCategories = [
     "Programming",
     "Web Development",
@@ -178,19 +190,19 @@ export default function CoursesPage() {
 
   const handlePlatformChange = (platform: string, checked: boolean) => {
     setSelectedPlatforms((prev) =>
-      checked ? [...prev, platform] : prev.filter((p) => p !== platform)
+      checked ? [...prev, platform] : prev.filter((p) => p !== platform),
     );
   };
 
   const handleCategoryChange = (category: string, checked: boolean) => {
     setSelectedCategories((prev) =>
-      checked ? [...prev, category] : prev.filter((c) => c !== category)
+      checked ? [...prev, category] : prev.filter((c) => c !== category),
     );
   };
 
   const handleLevelChange = (level: string, checked: boolean) => {
     setSelectedLevels((prev) =>
-      checked ? [...prev, level] : prev.filter((l) => l !== level)
+      checked ? [...prev, level] : prev.filter((l) => l !== level),
     );
   };
 
@@ -207,54 +219,56 @@ export default function CoursesPage() {
     selectedCategories.length +
     selectedLevels.length +
     (selectedDuration ? 1 : 0);
- const platformColors: Record<string, string> = {
-   // Major MOOC Platforms
-   Udemy: "text-purple-600",
-   Coursera: "text-blue-600",
-   edX: "text-red-600",
-   FutureLearn: "text-pink-600",
-   Udacity: "text-indigo-600",
-   Pluralsight: "text-orange-600",
+  const platformColors: Record<string, string> = {
+    // Major MOOC Platforms
+    Udemy: "text-purple-600",
+    Coursera: "text-blue-600",
+    edX: "text-red-600",
+    FutureLearn: "text-pink-600",
+    Udacity: "text-indigo-600",
+    Pluralsight: "text-orange-600",
 
-   // Free / Non-profit
-   "Khan Academy": "text-teal-600",
-   freeCodeCamp: "text-emerald-600",
-   "MIT OpenCourseWare": "text-gray-700",
-   OpenLearn: "text-cyan-600",
+    // Free / Non-profit
+    "Khan Academy": "text-teal-600",
+    freeCodeCamp: "text-emerald-600",
+    "MIT OpenCourseWare": "text-gray-700",
+    OpenLearn: "text-cyan-600",
 
-   // Programming / Tech
-   Codecademy: "text-indigo-500",
-   DataCamp: "text-green-700",
-   "Frontend Masters": "text-red-700",
-   Scrimba: "text-yellow-600",
-   Treehouse: "text-green-600",
+    // Programming / Tech
+    Codecademy: "text-indigo-500",
+    DataCamp: "text-green-700",
+    "Frontend Masters": "text-red-700",
+    Scrimba: "text-yellow-600",
+    Treehouse: "text-green-600",
 
-   // Design / Creative
-   Skillshare: "text-green-500",
-   Domestika: "text-rose-600",
+    // Design / Creative
+    Skillshare: "text-green-500",
+    Domestika: "text-rose-600",
 
-   // University / Academic
-   "Harvard Online": "text-crimson-600", // custom vibe
-   "Stanford Online": "text-red-800",
+    // University / Academic
+    "Harvard Online": "text-crimson-600", // custom vibe
+    "Stanford Online": "text-red-800",
 
-   // Language Learning
-   Duolingo: "text-lime-600",
-   Babbel: "text-orange-500",
-   Memrise: "text-sky-500",
+    // Language Learning
+    Duolingo: "text-lime-600",
+    Babbel: "text-orange-500",
+    Memrise: "text-sky-500",
 
-   // Business / Marketing
-   "LinkedIn Learning": "text-sky-600",
-   "HubSpot Academy": "text-orange-600",
-   "Google Digital Garage": "text-blue-500",
-   Alison: "text-purple-500",
-   "Microsoft Learn": "text-blue-700",
+    // Business / Marketing
+    "LinkedIn Learning": "text-sky-600",
+    "HubSpot Academy": "text-orange-600",
+    "Google Digital Garage": "text-blue-500",
+    Alison: "text-purple-500",
+    "Microsoft Learn": "text-blue-700",
 
-   // Misc
-   YouTube: "text-rose-600",
-   Blog: "text-gray-500",
-   Book: "text-amber-700",
-   Other: "text-gray-600", // fallback
- };
+    // Misc
+    YouTube: "text-rose-600",
+    Blog: "text-gray-500",
+    Book: "text-amber-700",
+    Other: "text-gray-600", // fallback
+  };
+
+  const normalizePlatform = (platform?: string) => platform?.trim();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -265,8 +279,7 @@ export default function CoursesPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Free Courses</h1>
           <p className="text-gray-600">
-            Discover free courses from top platforms like
-            Udemy and Coursera
+            Discover free courses from top platforms like Udemy and Coursera
           </p>
         </div>
 
@@ -546,7 +559,7 @@ export default function CoursesPage() {
                                   platformColors.default
                                 }`}
                               >
-                                {course.platform}
+                               {normalizePlatform(course.platform)}
                               </span>
                             </div>
                           )}
@@ -616,7 +629,7 @@ export default function CoursesPage() {
                                     {currencySymbols[course.currency] ||
                                       course.currency}{" "}
                                     {Number(
-                                      course.originalPrice
+                                      course.originalPrice,
                                     ).toLocaleString()}
                                   </span>
                                 )}
@@ -632,7 +645,7 @@ export default function CoursesPage() {
                                   {isExpired
                                     ? "Expired"
                                     : `Until ${new Date(
-                                        course.expiryDate
+                                        course.expiryDate,
                                       ).toLocaleDateString()}`}
                                 </p>
                               )}
