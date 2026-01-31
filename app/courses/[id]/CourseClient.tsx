@@ -326,7 +326,10 @@ const handleShare = () => {
                   <CardContent>
                     <div className="prose max-w-none">
                       <div
-                        className="whitespace-pre-line text-gray-700 text-justify"
+                          className="text-gray-700 whitespace-pre-line text-justify
+             [&_a]:text-blue-600
+             [&_a]:underline
+             [&_a:hover]:text-blue-700"
                         dangerouslySetInnerHTML={{ __html: course.description }}
                       />
                     </div>
@@ -334,7 +337,7 @@ const handleShare = () => {
                 </Card>
 
                 {/* Requirements */}
-                <Card>
+                {course.requirements?.length > 0 && <Card>
                   <CardHeader>
                     <CardTitle>Requirements</CardTitle>
                   </CardHeader>
@@ -353,7 +356,7 @@ const handleShare = () => {
                       )}
                     </ul>
                   </CardContent>
-                </Card>
+                </Card>}
               </TabsContent>
 
               <TabsContent value="curriculum" className="space-y-4">
@@ -643,7 +646,7 @@ const handleShare = () => {
             </Card>
 
             {/* Related Courses */}
-            <Card>
+         {course.relatedCourses?.length > 0 && <Card>
               <CardHeader>
                 <CardTitle>Related Courses</CardTitle>
               </CardHeader>
@@ -683,7 +686,7 @@ const handleShare = () => {
                   </Link>
                 ))}
               </CardContent>
-            </Card>
+            </Card>}
           </div>
         </div>
       </div>

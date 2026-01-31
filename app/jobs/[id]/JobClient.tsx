@@ -296,7 +296,10 @@ export default function JobDetailPage() {
                     </CardHeader>
                     <CardContent>
                       <p
-                        className="whitespace-pre-line text-gray-700 text-justify"
+                         className="text-gray-700 whitespace-pre-line text-justify
+             [&_a]:text-blue-600
+             [&_a]:underline
+             [&_a:hover]:text-blue-700"
                         dangerouslySetInnerHTML={{
                           __html: job.fullDescription,
                         }}

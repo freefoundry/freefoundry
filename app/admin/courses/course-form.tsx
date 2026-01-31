@@ -33,6 +33,7 @@ import { RichTextEditor } from "@/components/rich-text-editor";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { Separator } from "@radix-ui/react-separator";
+import { COURSE_CATEGORIES } from "@/lib/constants/course";
 
 export default function CourseForm({
   mode = "create",
@@ -411,20 +412,11 @@ const parseMultilineInput = (
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="programming">Programming</SelectItem>
-                        <SelectItem value="web-development">
-                          Web Development
-                        </SelectItem>
-                        <SelectItem value="data-science">
-                          Data Science
-                        </SelectItem>
-                        <SelectItem value="machine-learning">
-                          Machine Learning
-                        </SelectItem>
-                        <SelectItem value="design">Design</SelectItem>
-                        <SelectItem value="business">Business</SelectItem>
-                        <SelectItem value="marketing">Marketing</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
+                        {COURSE_CATEGORIES.map((cat) => (
+                          <SelectItem key={cat.value} value={cat.value}>
+                            {cat.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -708,7 +700,7 @@ const parseMultilineInput = (
               <CardContent>
                 <div className="space-y-4">
                   <div>
-                    <Label>Paste Multiple  Criteria</Label>
+                    <Label>Paste Multiple Criteria</Label>
                     <textarea
                       className="w-full min-h-[120px] rounded-md border p-2 text-sm"
                       placeholder={`Paste multiple lines here, `}
@@ -717,7 +709,7 @@ const parseMultilineInput = (
                       }
                     />
                     <p className="text-xs text-muted-foreground mt-1">
-                      Tip: Each line becomes a separate  item
+                      Tip: Each line becomes a separate item
                     </p>
                   </div>
                   <div className="flex space-x-2">
