@@ -25,45 +25,43 @@ import { buildResourceShareMessage } from "@/lib/shareMessage";
 import { ShareModal } from "@/components/share/ShareModal";
 
 export default function ResourceClient() {
-    const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>();
   const [resource, setResource] = useState<Resource | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [shareData, setShareData] = useState<{
-      title: string;
-      url: string;
-      message: string;
-    } | null>(null);
-
+    title: string;
+    url: string;
+    message: string;
+  } | null>(null);
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-    const handleShare = () => {
-      if (!resource) return;
+  const handleShare = () => {
+    if (!resource) return;
 
-      const url = `${baseUrl}/resources/${resource.slug}`;
+    const url = `${baseUrl}/resources/${resource.slug}`;
 
-      setShareData({
+    setShareData({
+      title: resource.title,
+      url,
+      message: buildResourceShareMessage({
         title: resource.title,
+        type: resource.type,
+        category: resource.category,
+        difficulty: resource.difficulty,
+        estimatedTime: resource.estimatedTime,
+        features: resource.whatYouWillGet || resource.features,
         url,
-        message: buildResourceShareMessage({
-          title: resource.title,
-          type: resource.type,
-          category: resource.category,
-          difficulty: resource.difficulty,
-          estimatedTime: resource.estimatedTime,
-          features: resource.whatYouWillGet || resource.features,
-          url,
-          source: "Free Foundry",
-        }),
-      });
-    };
+        source: "Free Foundry",
+      }),
+    });
+  };
   //  Fetch resource from API
   useEffect(() => {
     async function fetchResource() {
       try {
-        
         setLoading(true);
         const res = await fetch(`/api/resources/${id}`, {
           cache: "no-store",
@@ -328,7 +326,11 @@ export default function ResourceClient() {
                   className="text-gray-700 whitespace-pre-line text-justify
              [&_a]:text-blue-600
              [&_a]:underline
-             [&_a:hover]:text-blue-700"
+             [&_a:hover]:text-blue-700  [&_ul]:list-disc
+    [&_ul]:ml-6
+    [&_ol]:list-decimal
+    [&_ol]:ml-6
+    [&_li]:mb-1"
                   dangerouslySetInnerHTML={{
                     __html: resource.content ?? "",
                   }}
