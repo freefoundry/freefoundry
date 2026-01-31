@@ -390,18 +390,60 @@ const parseMultilineInput = (
                       <SelectTrigger>
                         <SelectValue placeholder="Select platform" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Udemy">Udemy</SelectItem>
-                        <SelectItem value="Coursera">Coursera</SelectItem>
-                        <SelectItem value="edX">edX</SelectItem>
-                        <SelectItem value="Khan Academy">
-                          Khan Academy
-                        </SelectItem>
-                        <SelectItem value="freeCodeCamp">
-                          freeCodeCamp
-                        </SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
+                     <SelectContent>
+  {/* Major MOOC Platforms */}
+  <SelectItem value="Udemy">Udemy</SelectItem>
+  <SelectItem value="Coursera">Coursera</SelectItem>
+  <SelectItem value="edX">edX</SelectItem>
+  <SelectItem value="FutureLearn">FutureLearn</SelectItem>
+  <SelectItem value="Udacity">Udacity</SelectItem>
+  <SelectItem value="Pluralsight">Pluralsight</SelectItem>
+
+  {/* Free / Non-profit */}
+  <SelectItem value="Khan Academy">Khan Academy</SelectItem>
+  <SelectItem value="freeCodeCamp">freeCodeCamp</SelectItem>
+  <SelectItem value="MIT OpenCourseWare">MIT OpenCourseWare</SelectItem>
+  <SelectItem value="OpenLearn">OpenLearn</SelectItem>
+
+  {/* Programming / Tech */}
+  <SelectItem value="Codecademy">Codecademy</SelectItem>
+  <SelectItem value="Pluralsight">Pluralsight</SelectItem>
+  <SelectItem value="DataCamp">DataCamp</SelectItem>
+  <SelectItem value="Frontend Masters">Frontend Masters</SelectItem>
+  <SelectItem value="Scrimba">Scrimba</SelectItem>
+  <SelectItem value="Treehouse">Treehouse</SelectItem>
+
+  {/* Design / Creative */}
+  <SelectItem value="Skillshare">Skillshare</SelectItem>
+  <SelectItem value="Domestika">Domestika</SelectItem>
+
+  {/* University / Academic */}
+  <SelectItem value="Harvard Online">Harvard Online</SelectItem>
+  <SelectItem value="Stanford Online">Stanford Online</SelectItem>
+
+  {/* Language Learning */}
+  <SelectItem value="Duolingo">Duolingo</SelectItem>
+  <SelectItem value="Babbel">Babbel</SelectItem>
+  <SelectItem value="Memrise">Memrise</SelectItem>
+  
+
+  {/* Business / Marketing */}
+  <SelectItem value="LinkedIn Learning">LinkedIn Learning</SelectItem>
+  <SelectItem value="HubSpot Academy">HubSpot Academy</SelectItem>
+  <SelectItem value="Google Digital Garage">
+    Google Digital Garage
+  </SelectItem>
+  <SelectItem value="Alison">Alison</SelectItem>
+  <SelectItem value="Microsoft Learn">Microsoft Learn</SelectItem>
+
+
+  {/* Misc */}
+  <SelectItem value="YouTube">YouTube</SelectItem>
+  <SelectItem value="Blog">Blog</SelectItem>
+  <SelectItem value="Book">Book</SelectItem>
+  <SelectItem value="Other">Other</SelectItem>
+</SelectContent>
+
                     </Select>
                   </div>
 
