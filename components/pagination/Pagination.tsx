@@ -29,6 +29,13 @@ export function Pagination({
     if (page < totalPages - 2) pages.push("...");
     pages.push(totalPages);
   }
+const handlePageChange = (newPage: number) => {
+  // Scroll to the top of the page
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
+  // Call the onPageChange callback
+  onPageChange(newPage);
+};
 
   return (
     <div className="mt-12 space-y-4">
@@ -43,7 +50,7 @@ export function Pagination({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => onPageChange(1)}
+          onClick={() => handlePageChange(1)}
           disabled={page === 1}
         >
           First
@@ -51,7 +58,7 @@ export function Pagination({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => onPageChange(Math.max(1, page - 1))}
+          onClick={() => handlePageChange(Math.max(1, page - 1))}
           disabled={page === 1}
         >
           Previous
@@ -68,21 +75,21 @@ export function Pagination({
                 key={i}
                 variant={page === p ? "default" : "outline"}
                 size="sm"
-                onClick={() => onPageChange(p)}
+                onClick={() => handlePageChange(p)}
                 className={`w-7 h-7 ${
                   page === p ? "bg-blue-600 text-white" : ""
                 }`}
               >
                 {p}
               </Button>
-            )
+            ),
           )}
         </div>
 
         <Button
           variant="outline"
           size="sm"
-          onClick={() => onPageChange(Math.min(totalPages, page + 1))}
+          onClick={() => handlePageChange(Math.min(totalPages, page + 1))}
           disabled={page === totalPages}
         >
           Next
@@ -90,7 +97,7 @@ export function Pagination({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => onPageChange(totalPages)}
+          onClick={() => handlePageChange(totalPages)}
           disabled={page === totalPages}
         >
           Last

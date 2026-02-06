@@ -3,7 +3,120 @@ import { NextResponse } from "next/server";
 
 const db = connectMySQL("courses");
 
-// --- Utility to build dynamic query ---
+// // --- Utility to build dynamic query ---
+// function buildQuery({
+//   page = 1,
+//   limit = 10,
+//   search,
+//   platforms,
+//   categories,
+//   levels,
+//   sort = "popular",
+// }: any) {
+//   const conditions: string[] = ["visibility = 'public'"];
+//   const values: any[] = [];
+
+//   if (search) {
+//     conditions.push("(title LIKE ? OR instructor LIKE ? OR tags LIKE ?)");
+//     values.push(`%${search}%`, `%${search}%`, `%${search}%`);
+//   }
+
+//   if (platforms?.length) {
+//     conditions.push(`platform IN (${platforms.map(() => "?").join(",")})`);
+//     values.push(...platforms);
+//   }
+
+//   if (categories?.length) {
+//     conditions.push(`category IN (${categories.map(() => "?").join(",")})`);
+//     values.push(...categories);
+//   }
+
+//   if (levels?.length) {
+//     conditions.push(`difficulty IN (${levels.map(() => "?").join(",")})`);
+//     values.push(...levels);
+//   }
+
+//   let orderBy = "students DESC";
+//   if (sort === "rating") orderBy = "rating DESC";
+//   if (sort === "newest") orderBy = "createdAt DESC";
+//   if (sort === "duration-short") orderBy = "duration ASC";
+//   if (sort === "duration-long") orderBy = "duration DESC";
+
+//   const offset = (page - 1) * limit;
+
+//   const sql = `
+//     SELECT SQL_CALC_FOUND_ROWS *
+//     FROM courses
+//     WHERE ${conditions.join(" AND ")}
+//     ORDER BY ${orderBy}
+//     LIMIT ? OFFSET ?
+//   `;
+
+//   return { sql, values: [...values, limit, offset] };
+// }
+
+// // --- GET (query params) ---
+// export async function GET(req: Request) {
+//   try {
+//     const { searchParams } = new URL(req.url);
+
+//     const query = {
+//       page: parseInt(searchParams.get("page") || "1"),
+//       limit: parseInt(searchParams.get("limit") || "9"),
+//       search: searchParams.get("search") || undefined,
+//       platforms: searchParams.getAll("platform"),
+//       categories: searchParams.getAll("category"),
+//       levels: searchParams.getAll("level"),
+//       sort: searchParams.get("sort") || "popular",
+//     };
+
+//     const { sql, values } = buildQuery(query);
+//     const [rows] = await db.query(sql, values);
+//     const [[{ total }]]: any = await db.query("SELECT FOUND_ROWS() as total");
+
+//     return NextResponse.json({
+//       data: rows,
+//       pagination: {
+//         total,
+//         page: query.page,
+//         limit: query.limit,
+//         totalPages: Math.ceil(total / query.limit),
+//       },
+//     });
+//   } catch (err: any) {
+//     return NextResponse.json({ error: err.message }, { status: 500 });
+//   }
+// }
+
+function parseQueryParams(searchParams: URLSearchParams) {
+  const page = parseInt(searchParams.get("page") || "1", 10);
+  const limit = parseInt(searchParams.get("limit") || "10", 10);
+  const sort = searchParams.get("sort") || "newest";
+
+  // Validate page and limit
+  if (isNaN(page) || page < 1) {
+    throw new Error("Invalid page number. It must be a positive integer.");
+  }
+  if (isNaN(limit) || limit < 1) {
+    throw new Error("Invalid limit number. It must be a positive integer.");
+  }
+
+  return {
+    page,
+    limit,
+    search: searchParams.get("search") || undefined,
+    platforms: searchParams.getAll("platform"),
+    categories: searchParams.getAll("category"),
+    levels: searchParams.getAll("level"),
+    type: searchParams.get("type") || "all",
+    level: searchParams.get("level") || "all",
+    field: searchParams.get("field") || "all",
+    country: searchParams.get("country") || "all",
+    sort,
+  };
+}
+
+
 function buildQuery({
   page = 1,
   limit = 10,
@@ -55,22 +168,15 @@ function buildQuery({
   return { sql, values: [...values, limit, offset] };
 }
 
-// --- GET (query params) ---
 export async function GET(req: Request) {
+  
   try {
     const { searchParams } = new URL(req.url);
+    const query = parseQueryParams(searchParams);
 
-    const query = {
-      page: parseInt(searchParams.get("page") || "1"),
-      limit: parseInt(searchParams.get("limit") || "9"),
-      search: searchParams.get("search") || undefined,
-      platforms: searchParams.getAll("platform"),
-      categories: searchParams.getAll("category"),
-      levels: searchParams.getAll("level"),
-      sort: searchParams.get("sort") || "popular",
-    };
-
-    const { sql, values } = buildQuery(query);
+   const { sql, values } = buildQuery(query);
+   console.log("Generated SQL Query:", sql);
+   console.log("Query Values:", values);
     const [rows] = await db.query(sql, values);
     const [[{ total }]]: any = await db.query("SELECT FOUND_ROWS() as total");
 
@@ -84,9 +190,12 @@ export async function GET(req: Request) {
       },
     });
   } catch (err: any) {
+    console.error("Error querying courses:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
+
+
 
 // --- POST (JSON body) ---
 export async function POST(req: Request) {
@@ -94,8 +203,14 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     const { sql, values } = buildQuery(body);
+
+    const countSql = `
+  SELECT COUNT(*) as total
+  FROM courses
+  WHERE visibility = 'public'
+`;
     const [rows] = await db.query(sql, values);
-    const [[{ total }]]: any = await db.query("SELECT FOUND_ROWS() as total");
+   const [[{ total }]]: any = await db.query(countSql); 
 
     return NextResponse.json({
       data: rows,

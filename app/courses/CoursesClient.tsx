@@ -105,18 +105,40 @@ export default function CoursesPage() {
   ];
   const allLevels = ["Beginner", "Intermediate", "Advanced"];
   const platformNames: Record<string, string> = {
-    udemy: "Udemy",
-    coursera: "Coursera",
-    edx: "edX",
-    pluralsight: "Pluralsight",
-    skillshare: "Skillshare",
-    linkedin: "LinkedIn Learning",
-    codecademy: "Codecademy",
-    freecodecamp: "freeCodeCamp",
-    "khan-academy": "Khan Academy",
-    youtube: "YouTube",
-    default: "Other",
-  };
+  udemy: "Udemy",
+  coursera: "Coursera",
+  edx: "edX",
+  pluralsight: "Pluralsight",
+  skillshare: "Skillshare",
+  linkedin: "LinkedIn Learning",
+  codecademy: "Codecademy",
+  freecodecamp: "freeCodeCamp",
+  "khan-academy": "Khan Academy",
+  youtube: "YouTube",
+  "futurelearn": "FutureLearn",
+  "udacity": "Udacity",
+  "mit opencourseware": "MIT OpenCourseWare",
+  "openlearn": "OpenLearn",
+  "datacamp": "DataCamp",
+  "frontendmasters": "Frontend Masters",
+  "scrimba": "Scrimba",
+  "treehouse": "Treehouse",
+  "domestika": "Domestika",
+  "harvard online": "Harvard Online",
+  "stanford-online": "Stanford Online",
+  "duolingo": "Duolingo",
+  "babbel": "Babbel",
+  "memrise": "Memrise",
+  "hubspot academy": "HubSpot Academy",
+  "google digital garage": "Google Digital Garage",
+  alison: "Alison",
+  "microsoft learn": "Microsoft Learn",
+  "tutorful": "Tutorful", // Added Tutorful
+  "skillshare plus": "Skillshare Plus", // Added Skillshare Plus
+  default: "Other",
+};
+
+
 
   // Fetch courses
   const fetchCourses = async () => {
