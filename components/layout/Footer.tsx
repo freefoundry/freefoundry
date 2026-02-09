@@ -160,6 +160,11 @@ export function Footer() {
                   Contact
                 </a>
               </li>
+              <li>
+                <a href="/faq" className="text-gray-400 hover:text-white">
+                  FAQs
+                </a>
+              </li>
             </ul>
           </div>
 
