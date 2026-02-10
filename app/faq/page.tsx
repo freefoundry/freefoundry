@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
+import { Header } from "@/components/layout/Header";
 
 interface FAQItem {
   id: number;
@@ -140,60 +141,8 @@ export default function FAQPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#EEF4FF] via-white to-[#EEF4FF]">
       {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <img
-              src="/freefoundry-logo.png"
-              alt="FreeFoundry Logo"
-              className="h-9 w-9"
-            />
-            <span className="text-xl font-bold text-blue-600">FreeFoundry</span>
-          </div>
-          <nav className="hidden md:flex items-center space-x-6">
-            <Link
-              href="/courses"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
-            >
-              Courses
-            </Link>
-            <Link
-              href="/resources"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
-            >
-              Resources
-            </Link>
-            <Link
-              href="/jobs"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
-            >
-              Jobs
-            </Link>
-            <Link
-              href="/scholarships"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
-            >
-              Scholarships
-            </Link>
-            <Link
-              href="/faq"
-              className="text-gray-600 hover:text-blue-600 transition-colors font-medium"
-            >
-              FAQ
-            </Link>
-          </nav>
-          <div className="relative hidden md:block">
-            <Input
-              type="search"
-              placeholder="search resources..."
-              className="pl-3 pr-8 py-1.5 w-48 rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
-            <button className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-500 hover:text-blue-500">
-              <Search className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-      </header>
+    <Header showSearch />
+    
 
       {/* Hero Section */}
       <section className="py-16 px-4 text-center">
@@ -201,16 +150,16 @@ export default function FAQPage() {
           <div className="mb-6 inline-flex items-center justify-center w-14 h-14 bg-blue-100 rounded-full">
             <HelpCircle className="h-7 w-7 text-blue-600" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          <h1 className="text-2xl md:text-5xl font-bold mb-4">
             Frequently Asked Questions
           </h1>
-          <p className="text-xl text-gray-600 mb-8">
+          <p className="text:lg md:text-xl text-gray-600 mb-8">
             Find answers to common questions about FreeFoundry, our services,
             and how to get the most out of our platform.
           </p>
 
           {/* Search Bar */}
-          <div className="relative mb-8">
+          <div className="relative mb-2 md:mb-8">
             <Input
               type="search"
               placeholder="Search questions..."
@@ -224,14 +173,14 @@ export default function FAQPage() {
       </section>
 
       {/* Category Filter */}
-      <section className="px-4 mb-8">
-        <div className="container mx-auto max-w-3xl">
+      <section className="px-4 mb-2 md:mb-8">
+        <div className="container mx-auto w-full md:max-w-3xl">
           <div className="flex flex-wrap gap-2">
             {categories.map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-full font-medium transition-all ${
+                className={`px-4 py-2 rounded-full font-medium transition-all text-sm ${
                   selectedCategory === category
                     ? "bg-blue-600 text-white shadow-md"
                     : "bg-white border border-gray-300 text-gray-700 hover:border-blue-600 hover:text-blue-600"
@@ -261,10 +210,10 @@ export default function FAQPage() {
                     className="w-full px-6 py-5 flex items-start justify-between hover:bg-gray-50 transition-colors"
                   >
                     <div className="text-left flex-1">
-                      <div className="text-xs font-medium text-blue-600 mb-1 uppercase tracking-wide">
+                      <div className="text-md md:text-xs font-medium text-blue-600 mb-1 uppercase tracking-wide">
                         {faq.category}
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 text-balance">
+                      <h3 className="text-sm md:text-lg font-semibold text-gray-900 text-balance">
                         {faq.question}
                       </h3>
                     </div>
@@ -354,7 +303,7 @@ export default function FAQPage() {
       </section>
 
       {/* Footer */}
-     <Footer/>
+      <Footer />
     </div>
   );
 }
