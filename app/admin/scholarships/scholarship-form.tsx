@@ -31,6 +31,8 @@ import {
 import Link from "next/link";
 import { toast } from "react-toastify";
 
+
+
 export default function ScholarshipForm({
   mode,
   scholarship,
@@ -85,6 +87,53 @@ export default function ScholarshipForm({
     scholarship?.featuredImage || ""
   );
   const [uploading, setUploading] = useState(false);
+
+  const [scrapeUrl, setScrapeUrl] = useState("");
+const [loadingImport, setLoadingImport] = useState(false);
+
+const importScholarship = async () => {
+  if (!scrapeUrl) return;
+
+  setLoadingImport(true);
+
+  try {
+    const res = await fetch("/api/scholarships/import", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ url: scrapeUrl }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error);
+
+    // Autofill form fields
+    setTitle(data.title || "");
+    setProvider(data.provider || "");
+    setDescription(data.description || "");
+    setAmount(data.amount || "");
+    setCurrency(data.currency || "USD");
+    setType(data.type || "");
+    setLevel(data.level || "");
+    setField(data.field || "");
+    setLocation(data.location || "");
+    setCountry(data.country || "");
+    setApplicationUrl(data.applicationUrl || "");
+    setApplicationDeadline(data.applicationDeadline || "");
+
+    setEligibility(data.eligibility || [""]);
+    setRequirements(data.requirements || [""]);
+    setBenefits(data.benefits || [""]);
+    setTags(data.tags || []);
+
+  } catch (err: any) {
+    toast.error(err.message);
+  }
+
+  setLoadingImport(false);
+};
 
   // Auto-sync location and country if one is filled
   const handleLocationChange = (value: string) => {
@@ -230,7 +279,19 @@ const parseMultilineInput = (
             Back to Scholarships
           </Link>
         </Button>
+<div className="flex gap-2 mb-4">
 
+  <Input
+    placeholder="Paste scholarship URL to import..."
+    value={scrapeUrl}
+    onChange={(e) => setScrapeUrl(e.target.value)}
+  />
+
+  <Button onClick={importScholarship} disabled={loadingImport}>
+    {loadingImport ? "Importing..." : "Import"}
+  </Button>
+
+</div>
         <div className="grid lg:grid-cols-4 gap-8">
           {/* MAIN FORM */}
           <div className="lg:col-span-3 space-y-6">

@@ -89,6 +89,7 @@ export function connectMySQL(name: DbName) {
       const conn = await mysql.createConnection({
         ...getConfig(name),
         ssl: { rejectUnauthorized: false },
+        charset: "utf8mb4",
       });
 
       try {
