@@ -18,25 +18,21 @@ function buildQuery({
   const conditions: string[] = ["visibility = 'public'"];
   const values: any[] = [];
 
-  //  Search by title, company, or tags
   if (search) {
     conditions.push("(title LIKE ? OR company LIKE ? OR tags LIKE ?)");
     values.push(`%${search}%`, `%${search}%`, `%${search}%`);
   }
 
-  //  Filter by job type (Full-time, Contract, etc.)
   if (types?.length) {
     conditions.push(`type IN (${types.map(() => "?").join(",")})`);
     values.push(...types);
   }
 
-  //  Filter by work mode (Remote, Hybrid, Onsite)
   if (workModes?.length) {
     conditions.push(`workMode IN (${workModes.map(() => "?").join(",")})`);
     values.push(...workModes);
   }
 
-  //  Filter by experience level (Junior, Mid, Senior)
   if (experienceLevels?.length) {
     conditions.push(
       `experience IN (${experienceLevels.map(() => "?").join(",")})`
@@ -44,14 +40,12 @@ function buildQuery({
     values.push(...experienceLevels);
   }
 
-  //  Filter by location
   if (locations?.length) {
     conditions.push(`location IN (${locations.map(() => "?").join(",")})`);
     values.push(...locations);
   }
 
-  //  Sorting options
-  let orderBy = "createdAt DESC"; // newest by default
+  let orderBy = "createdAt DESC";
   if (sort === "popular") orderBy = "views DESC";
   if (sort === "applications") orderBy = "applications DESC";
   if (sort === "salary-high") orderBy = "CAST(salary AS UNSIGNED) DESC";
@@ -59,15 +53,13 @@ function buildQuery({
 
   const offset = (page - 1) * limit;
 
-  const sql = `
-    SELECT SQL_CALC_FOUND_ROWS *
-    FROM jobs
-    WHERE ${conditions.join(" AND ")}
-    ORDER BY ${orderBy}
-    LIMIT ? OFFSET ?
-  `;
-
-  return { sql, values: [...values, limit, offset] };
+  return {
+    where: `WHERE ${conditions.join(" AND ")}`,
+    values,
+    orderBy,
+    limit,
+    offset,
+  };
 }
 
 // --- GET (query params) ---
@@ -86,12 +78,32 @@ export async function GET(req: Request) {
       sort: searchParams.get("sort") || "newest",
     };
 
-    const { sql, values } = buildQuery(query);
-    const [rows] = await db.query(sql, values);
-    const [[{ total }]]: any = await db.query("SELECT FOUND_ROWS() as total");
+    const { where, values, orderBy, limit, offset } = buildQuery(query);
+
+    const dataSql = `
+      SELECT *
+      FROM jobs
+      ${where}
+      ORDER BY ${orderBy}
+      LIMIT ? OFFSET ?
+    `;
+
+    const countSql = `
+      SELECT COUNT(*) as total
+      FROM jobs
+      ${where}
+    `;
+
+    const [dataResult, countResult]: any = await Promise.all([
+      db.query(dataSql, [...values, limit, offset]),
+      db.query(countSql, values),
+    ]);
+
+    const data = dataResult[0];
+    const total = countResult[0][0].total;
 
     return NextResponse.json({
-      data: rows,
+      data,
       pagination: {
         total,
         page: query.page,
@@ -109,12 +121,32 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const { sql, values } = buildQuery(body);
-    const [rows] = await db.query(sql, values);
-    const [[{ total }]]: any = await db.query("SELECT FOUND_ROWS() as total");
+    const { where, values, orderBy, limit, offset } = buildQuery(body);
+
+    const dataSql = `
+      SELECT *
+      FROM jobs
+      ${where}
+      ORDER BY ${orderBy}
+      LIMIT ? OFFSET ?
+    `;
+
+    const countSql = `
+      SELECT COUNT(*) as total
+      FROM jobs
+      ${where}
+    `;
+
+    const [dataResult, countResult]: any = await Promise.all([
+      db.query(dataSql, [...values, limit, offset]),
+      db.query(countSql, values),
+    ]);
+
+    const data = dataResult[0];
+    const total = countResult[0][0].total;
 
     return NextResponse.json({
-      data: rows,
+      data,
       pagination: {
         total,
         page: body.page || 1,

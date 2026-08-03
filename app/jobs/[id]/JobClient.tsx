@@ -510,6 +510,7 @@ export default function JobDetailPage() {
                       <p className="text-sm text-gray-500">/{job.salaryType}</p>
                     )}
                 </div>
+               {job.applicationUrl.trim() && (
                 <Button
                   className="w-full bg-blue-600 hover:bg-blue-700 mb-3"
                   asChild
@@ -518,7 +519,7 @@ export default function JobDetailPage() {
                     <ExternalLink className="h-4 w-4 mr-2" />
                     Apply on {job.platform}
                   </Link>
-                </Button>
+                </Button>)}
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between text-gray-600">
                     <span>Type:</span>{" "}

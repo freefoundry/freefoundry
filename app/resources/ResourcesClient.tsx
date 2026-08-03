@@ -331,7 +331,7 @@ export default function ResourcesPage() {
                       </div>
 
                       <CardContent className="p-5">
-                        <h3 className="font-semibold text-lg mb-1 line-clamp-1">
+                        <h3 className="font-semibold text-lg mb-1">
                           {r.title}
                         </h3>
                         <p className="text-sm text-blue-600 mb-2">

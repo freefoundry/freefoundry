@@ -8,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
         allow: "/", // Allows crawling of all pages
       },
     ],
-    sitemap: "https://freefoundryhub.com/sitemap.xml", // Corrected sitemap URL
+    sitemap: "https://www.freefoundryhub.com/sitemap.xml", // Corrected sitemap URL
   };
 }
