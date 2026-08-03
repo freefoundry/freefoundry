@@ -108,14 +108,14 @@ const faqs: FAQItem[] = [
     category: "Support",
     question: "How can I report a broken link or outdated information?",
     answer:
-      "We appreciate your help in keeping our platform up to date. If you find a broken link or outdated information, please email us directly at support@freefoundry.com with the details.",
+      "We appreciate your help in keeping our platform up to date. If you find a broken link or outdated information, please email us directly at support@freefoundryhub.com with the details.",
   },
   {
     id: 14,
     category: "Support",
     question: "Can I suggest resources for FreeFoundry?",
     answer:
-      "Yes! We welcome community suggestions. If you’d like to recommend a free and legitimate resource, please send the details to support@freefoundry.com. Our team will review it for relevance and quality.",
+      "Yes! We welcome community suggestions. If you’d like to recommend a free and legitimate resource, please send the details to support@freefoundryhub.com. Our team will review it for relevance and quality.",
   },
 ];
 
@@ -291,10 +291,10 @@ export default function FAQPage() {
                   Send us an email and we'll get back to you shortly
                 </p>
                 <a
-                  href="mailto:support@freefoundry.com"
+                  href="mailto:support@freefoundryhub.com"
                   className="text-blue-100 hover:text-white font-medium"
                 >
-                  support@freefoundry.com
+                  support@freefoundryhub.com
                 </a>
               </CardContent>
             </Card>
